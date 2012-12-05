@@ -1,0 +1,29 @@
+{
+  "name": "nerdobot",
+  "preferGlobal": "true",
+  "version": "0.0.1",
+  "author": "Álvaro Cuesta <alvaro-cuesta@GitHub>",
+  "description": "IRC bot for #mv.nerd",
+  "contributors": [],
+  "bin": {
+    "app": "./app.coffee"
+  },
+  "scripts": {
+    "start": "coffee ./app.coffee"
+  },
+  "main": "./lib/bot.coffee",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alvaro-cuesta/nerdobot.git"
+  },
+  "keywords": ["irc", "bot"],
+  "dependencies": {
+    "sqlite3": "*"
+  },
+  "devDependencies": {},
+  "license": "MIT",
+  "engines": {
+    "node": "*",
+    "coffee": "*"
+  }
+}

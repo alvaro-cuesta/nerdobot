@@ -14,3 +14,4 @@ module.exports =
     '.*!.*@184\.Red-80-36-134\.staticIP\.rima-tde\.net'
     ]
   channels: ['#mv.nerd']
+  db: "/home/kaod/projects/coffee/nerdo/nerdobot.sqlite3"
