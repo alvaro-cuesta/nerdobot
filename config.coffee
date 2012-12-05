@@ -13,3 +13,4 @@ module.exports =
   admins: [
     '.*!.*@184\.Red-80-36-134\.staticIP\.rima-tde\.net'
     ]
+  channels: ['#mv.nerd']

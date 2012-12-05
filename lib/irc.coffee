@@ -59,10 +59,10 @@ module.exports.Client = class Client
       when '001'
         @events.emit 'welcome'
       when 'PRIVMSG'
-        if @config.user.nick in message.params
+        if message.params[0] == @config.user.nick
           @events.emit 'private', message.prefix, message.trailing
         else
-          @events.emit 'channel', message.params[0], message.prefix, message.trailing
+          @events.emit 'channel', message.prefix, message.trailing, message.params[0]
 
     @events.emit 'parsed', message
 
