@@ -1,4 +1,4 @@
-irc = require('./irc.coffee')
+irc = require('./irc')
 EventEmitter = require('events').EventEmitter
 
 module.exports.Bot = class Bot extends irc.Client
