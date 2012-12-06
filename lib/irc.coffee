@@ -85,3 +85,32 @@ module.exports.Client = class Client
   say: (message, to) -> @raw "PRIVMSG #{to} :#{message}"
   me: (message, to) -> @say("\x01ACTION #{message}\x01", to)
   notice: (message, to) -> @raw "NOTICE #{to} :#{message}"
+
+  color: (foreground, background) ->
+    fore = @COLORS.indexOf foreground
+    color = "\x03#{fore}"
+    if background?
+      back = @COLORS.indexOf background
+      color += ",#{back}"
+    color
+  BOLD: "\x02"
+  UNDERLINE: "\x1f"
+  RESET: "\x0f"
+  COLORS: [
+    'white',
+    'black',
+    'blue',
+    'green',
+    'red',
+    'brown',
+    'purple',
+    'orange',
+    'yellow',
+    'light green',
+    'teal',
+    'cyan',
+    'light blue',
+    'pink',
+    'grey',
+    'light grey'
+    ]

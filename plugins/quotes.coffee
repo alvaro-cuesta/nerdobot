@@ -10,48 +10,67 @@ module.exports = (bot) ->
         channel VARCHAR NOT NULL,
         nick VARCHAR NOT NULL,
         quote VARCHAR NOT NULL,
+        by VARCHAR NOT NULL,
         timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL);"
       bot.commands.on 'addquote', (from, message, to) ->
-        if to?
-          end = message.indexOf ' '
-          nick = message.slice 0, end
-          quote = message.slice end + 1
+        if not message?
+          bot.notice "Tell me the quote, moron!", from.nick
+          return
 
-          db.run(
-            "INSERT INTO quotes (channel, nick, quote) VALUES ($channel, $nick, $quote);",
-            $channel: to
-            $nick: nick
-            $quote: quote
-            , (err) ->
-              if err
-                bot.raw "Error inserting quote: #{err}", to
-              else
-                bot.say "Quote #{this.lastID} inserted!", to)
-        else
+        if not to?
           bot.notice "That will only work in channels, idiot...", from.nick
+          return
 
-     bot.commands.on 'quote', (from, message, to) ->
-      if to? and to != ''
-        db.get "SELECT * FROM quotes WHERE channel = ? ORDER BY RANDOM() LIMIT 1;",
-          to,
-          (err, row) ->
+        end = message.indexOf ' '
+        nick = message[0..end]
+        quote = message[end+1..]
+
+        if not nick? or nick == ''
+          bot.notice "Tell me the quote, moron!", from.nick
+          return
+
+        if end <= 0 or not quote? or quote == ''
+          bot.notice "So... what did #{nick} say?", from.nick
+          return
+
+        db.run(
+          "INSERT INTO quotes (channel, nick, quote, by)
+           VALUES ($channel, $nick, $quote, $by);",
+          $channel: to
+          $nick: nick
+          $quote: quote
+          $by: from.nick
+          , (err) ->
             if err
-              bot.say "Error selecting quote: #{err}", to
+              bot.say "\x02Error inserting quote:\x0f #{err}", to
             else
-              bot.say "#{row.timestamp} | #{row.nick}: #{row.quote}", to
-      else
-        if message? and message != ''
-          db.get "SELECT * FROM quotes WHERE channel = ? ORDER BY RANDOM() LIMIT 1;",
-            message.split(' ')[0],
-            (err, row) ->
-              if err
-                bot.say "Error selecting quote: #{err}", from.nick
-              else
-                bot.say "#{row.timestamp} | #{row.nick}: #{row.quote}", from.nick
+              bot.say "Quote inserted! \x02(#{this.lastID})\x0f", to)
+
+      bot.commands.on 'quote', (from, message, to) ->
+        fields = [
+          'rowid',
+          'nick',
+          'quote',
+          'by',
+          "strftime('%Y-%m-%d %H:%M', timestamp, 'localtime') as timestamp"]
+
+        if to? and to != ''
+          whereClause = "WHERE channel = '#{to}'"
+          replyTo = to
         else
-          db.get "SELECT * FROM quotes ORDER BY RANDOM() LIMIT 1;",
-            (err, row) ->
-              if err
-                bot.say "Error selecting quote: #{err}", from.nick
-              else
-                bot.say "#{row.timestamp} | #{row.nick}@#{row.channel}: #{row.quote}", from.nick
+          replyTo = from.nick
+          if message? and message != ''
+            whereClause = "WHERE channel = '#{message.split(' ')[0]}'"
+          else
+            whereClause = ''
+            fields.unshift 'channel'
+
+        db.get(
+          "SELECT #{fields.join ', '} FROM quotes #{whereClause} ORDER BY RANDOM() LIMIT 1;"
+          (err, row) ->
+            bot.say (if err then "Error selecting quote: #{err}" else
+              "#{bot.UNDERLINE}#{row.timestamp}#{bot.RESET} - #{row.by} " +
+              "#{bot.BOLD}(#{row.rowid})#{bot.RESET} | #{bot.color 'red'}#{row.nick}" +
+              if row.channel? then "#@{row.channel}" else '' +
+              "#{bot.RESET}: #{row.quote}")
+              , replyTo)
