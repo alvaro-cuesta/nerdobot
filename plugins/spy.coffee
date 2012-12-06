@@ -1,6 +1,6 @@
 module.exports = (bot) ->
-  bot.events.on 'private', (from, message) ->
-    console.log "#{from}: #{message}"
-
-  bot.events.on 'channel', (from, message, channel) ->
-    console.log "#{from}@#{channel}: #{message}"
+  bot.events.on 'message', (from, message, channel) ->
+    if channel
+      console.log "[#{channel}] #{from.nick}: #{message}"
+    else
+      console.log "[QUERY] #{from.nick}: #{message}"

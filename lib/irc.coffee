@@ -12,11 +12,13 @@ module.exports.parse = parse = (message) ->
   message = message.slice end + 1
 
   end = message.indexOf ':'
-  if end > 0
-    params = message.slice(0, end - 1).split(' ')
+  if end >= 0
+    if end != 0
+      params = message.slice(0, end - 1).split(' ')
+    message = message.slice(end + 1)
   else
-    params = []
-  message = message.slice end + 1
+    params = message.split(' ')
+    message = undefined
 
   prefix: prefix
   command: command
@@ -35,6 +37,8 @@ module.exports.parse_prefix = parse_prefix = (prefix) ->
 module.exports.Client = class Client
   constructor: (@config) ->
     @events = new EventEmitter()
+    @nick = @config.user.nick
+    @channels = []
 
   connect: () ->
     @socket = net.connect @config.socket, () =>
@@ -59,13 +63,24 @@ module.exports.Client = class Client
       when '001'
         @events.emit 'welcome'
       when 'PRIVMSG'
-        if message.params[0] == @config.user.nick
-          @events.emit 'private', message.prefix, message.trailing
-        else
-          @events.emit 'channel', message.prefix, message.trailing, message.params[0]
+        who = parse_prefix(message.prefix)
+        if message.params[0] != @config.user.nick
+          channel = message.params[0]
+        @events.emit 'message', who, message.trailing, channel
+      when 'JOIN'
+        who = parse_prefix(message.prefix)
+        if who == @nick
+          @channels.unshift message.trailing
+        for channel in message.params
+          @events.emit 'join', who, channel
 
     @events.emit 'parsed', message
 
   raw: (message) ->
     @socket.write message + '\r\n'
     console.log " -> #{message}"
+
+  join: (channel) -> @raw "JOIN #{channel}"
+  say: (message, to) -> @raw "PRIVMSG #{to} :#{message}"
+  me: (message, to) -> @say("\x01ACTION #{message}\x01", to)
+  notice: (message, to) -> @raw "NOTICE #{to} :#{message}"

@@ -24,11 +24,11 @@ module.exports = (bot) ->
             $quote: quote
             , (err) ->
               if err
-                bot.raw "PRIVMSG #{to} :Error inserting quote: #{err}"
+                bot.raw "Error inserting quote: #{err}", to
               else
-                bot.raw "PRIVMSG #{to} :Quote #{this.lastID} inserted!")
+                bot.say "Quote #{this.lastID} inserted!", to)
         else
-          bot.raw "NOTICE #{from.nick} :That will only work in channels, idiot..."
+          bot.notice "That will only work in channels, idiot...", from.nick
 
      bot.commands.on 'quote', (from, message, to) ->
       if to? and to != ''
@@ -36,23 +36,22 @@ module.exports = (bot) ->
           to,
           (err, row) ->
             if err
-              bot.raw "PRIVMSG #{to} :Error selecting quote: #{err}"
+              bot.say "Error selecting quote: #{err}", to
             else
-              bot.raw "PRIVMSG #{to} :#{row.timestamp} | #{row.nick}: #{row.quote}"
+              bot.say "#{row.timestamp} | #{row.nick}: #{row.quote}", to
       else
         if message? and message != ''
           db.get "SELECT * FROM quotes WHERE channel = ? ORDER BY RANDOM() LIMIT 1;",
             message.split(' ')[0],
             (err, row) ->
               if err
-                bot.raw "PRIVMSG #{from.nick} :Error selecting quote: #{err}"
+                bot.say "Error selecting quote: #{err}", from.nick
               else
-                bot.raw "PRIVMSG #{from.nick} :#{row.timestamp} | #{row.nick}: #{row.quote}"
+                bot.say "#{row.timestamp} | #{row.nick}: #{row.quote}", from.nick
         else
           db.get "SELECT * FROM quotes ORDER BY RANDOM() LIMIT 1;",
             (err, row) ->
-              console.log row
               if err
-                bot.raw "PRIVMSG #{from.nick} :Error selecting quote: #{err}"
+                bot.say "Error selecting quote: #{err}", from.nick
               else
-                bot.raw "PRIVMSG #{from.nick} :#{row.timestamp} | #{row.nick}@#{row.channel}: #{row.quote}"
+                bot.say "#{row.timestamp} | #{row.nick}@#{row.channel}: #{row.quote}", from.nick

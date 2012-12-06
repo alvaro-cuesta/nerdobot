@@ -7,18 +7,14 @@ module.exports.Bot = class Bot extends irc.Client
     @commands = new EventEmitter()
 
     @events.on 'welcome', () =>
-      for channel in @config.channels
-        @raw 'JOIN ' + channel
-
-    @events.on 'private', (from, message) =>
-      @parseMessage from, message
-    @events.on 'channel', (from, message, to) =>
-      @parseMessage from, message, to
+      @join channel for channel in @config.channels
+    @events.on 'message', (from, message, to) =>
+      @parseCommand from, message, to
 
     for plugin in config.plugins
       require('../plugins/' + plugin)(this)
 
-  parseMessage: (from, message, to) ->
+  parseCommand: (from, message, to) ->
     if message.charAt(0) == '!'
       end = message.indexOf ' '
       if end > 0
@@ -27,9 +23,7 @@ module.exports.Bot = class Bot extends irc.Client
       else
         command = message.slice 1
 
-      from = irc.parse_prefix(from)
-
       if @commands.listeners(command).length > 0
         @commands.emit command, from, trailing, to
       else
-        @raw "NOTICE #{from.nick} :Unknown command #{command}"
+        @notice "Unknown command #{command}", from.nick

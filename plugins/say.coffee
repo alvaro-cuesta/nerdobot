@@ -5,8 +5,8 @@ module.exports = (bot) ->
       to = message.slice 0, end
       message = message.slice end + 1
       if to? and to != '' and message? and message != ''
-        bot.raw "PRIVMSG #{to} :#{message}"
+        bot.say message, to
       else
-        bot.raw "NOTICE #{from.nick} :Say what?"
+        bot.notice 'Say what?', from.nick
     else
-      bot.raw "NOTICE #{from.nick} :Say what?"
+      bot.notice 'Say what?', from.nick

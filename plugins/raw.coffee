@@ -3,4 +3,4 @@ module.exports = (bot) ->
     if command? and command != ''
       bot.raw command
     else
-      bot.raw "NOTICE #{from.nick} :What should I do?"
+      bot.notice "What should I do?", from.nick
