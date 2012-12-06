@@ -20,5 +20,6 @@ module.exports =
     'say',
     'raw',
 #    'debug',
-    'spy'
+    'spy',
+    'hi'
     ]
