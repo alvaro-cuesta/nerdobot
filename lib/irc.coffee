@@ -2,20 +2,20 @@ net = require('net')
 EventEmitter = require('events').EventEmitter
 
 module.exports.parse = parse = (message) ->
-  if message.charAt(0) == ':'
+  if message[0] == ':'
     end = message.indexOf ' '
-    prefix = message.slice 1, end
-    message = message.slice end + 1
+    prefix = message[1..end-1]
+    message = message[end+1..]
 
   end = message.indexOf ' '
-  command = message.slice 0, end
-  message = message.slice end + 1
+  command = message[0..end-1]
+  message = message[end+1..]
 
   end = message.indexOf ':'
   if end >= 0
-    if end != 0
-      params = message.slice(0, end - 1).split(' ')
-    message = message.slice(end + 1)
+    if end isnt 0
+      params = message[..end-2].split(' ')
+    message = message[end+1..]
   else
     params = message.split(' ')
     message = undefined
