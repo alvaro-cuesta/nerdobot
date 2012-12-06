@@ -15,3 +15,10 @@ module.exports =
     ]
   channels: ['#mv.nerd']
   db: "/home/kaod/projects/coffee/nerdo/nerdobot.sqlite3"
+  plugins: [
+    'quotes',
+    'say',
+    'raw',
+#    'debug',
+    'spy'
+    ]

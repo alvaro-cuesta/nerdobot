@@ -15,6 +15,9 @@ module.exports.Bot = class Bot extends irc.Client
     @events.on 'channel', (from, message, to) =>
       @parseMessage from, message, to
 
+    for plugin in config.plugins
+      require('../plugins/' + plugin)(this)
+
   parseMessage: (from, message, to) ->
     if message.charAt(0) == '!'
       end = message.indexOf ' '
