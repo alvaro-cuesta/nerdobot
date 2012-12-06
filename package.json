@@ -3,10 +3,10 @@
   "preferGlobal": "true",
   "version": "0.0.1",
   "author": "Álvaro Cuesta <alvaro-cuesta@GitHub>",
-  "description": "IRC bot for #mv.nerd",
+  "description": "IRC bot for #mv.nerd built with CoffeeScript + NodeJS",
   "contributors": [],
   "bin": {
-    "app": "./app.coffee"
+    "nerdobot": "./app.coffee"
   },
   "scripts": {
     "start": "coffee ./app.coffee"
