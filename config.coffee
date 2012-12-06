@@ -23,3 +23,24 @@ module.exports =
     'spy',
     'hi'
     ]
+  greetings: [
+    (bot, channel) ->
+      bot.me 'says hi', channel
+    , (bot, channel) ->
+      bot.me "is pleased to be in #{channel}!", channel
+    , (bot, channel) ->
+      bot.me "doesn't follow the laws of robotics...", channel
+    , (bot, channel) ->
+      bot.me 'is going to kill you', channel
+    , (bot, channel) ->
+      bot.say 'hi!', channel
+    , (bot, channel) ->
+      bot.say 'did you miss me?', channel
+    , (bot, channel) ->
+      bot.say "I'm back!", channel
+    , (bot, channel) ->
+      bot.say "what's that smell?", channel
+      bot.say "wooops, sorry, it's me", channel
+    , (bot, channel) ->
+      bot.say "no, I won't !help you", channel
+    ]
