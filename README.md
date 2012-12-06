@@ -1,37 +1,64 @@
 # nerdobot
 
-IRC bot for #mv.nerd built with CoffeeScript + NodeJS
+IRC bot for #mv.nerd built with CoffeeScript + NodeJS.
+
+You can use `nerdobot` as a configurable bot, as a bot library and as an IRC library (look into the `/lib/` folder.)
 
 ## Usage
 
-`nerdobot` requires [NodeJS](http://nodejs.org/) and NPM (usually installed with Node) to be run.
+### Requirements
 
-[CoffeeScript](http://coffeescript.org) also needs to be installed. Use `npm install -g coffee-script`, which will install `coffee` globally so you can run CoffeeScript code using `coffee <file.coffee>`.
+`nerdobot` requires [NodeJS](http://nodejs.org/) and NPM (usually installed with Node) to be run. [CoffeeScript](http://coffeescript.org) also needs to be installed. Use `npm install -g coffee-script`, which will install `coffee` globally so you can run CoffeeScript code using `coffee <file.coffee>`.
 
-As this is being written, `nerdobot` is not stable enough to be uploaded to external repositories, so you'll have to fetch it from GitHub (either the repository or `master` branch realization.) Edit `config.coffee` to setup your bot configuration.
+### Installing
 
-```sh
-$ npm install
-<fancy colors and lots of characters>
-$ coffee ./bin/nerdobot.coffee
-or
-$ npm start
-```
-
-You can also install `nerdobot` globaly:
+As this is being written, `nerdobot` is not stable enough to be uploaded to external repositories, so you'll have to fetch it from GitHub (either the repository or `master` branch realization.) If you don't want/need to download the code and only want to run the bot:
 
 ```sh
-$ npm install -g
-$ nerdobot
+$ sudo npm install -g https://github.com/alvaro-cuesta/nerdobot/tarball/master
 ```
 
 Once `nerdobot` is stable enough it will be available in NPM's repositories, so you'll be able to install it like this:
 
 ```sh
-$ npm install -g nerdobot
+$ sudo npm install -g nerdobot
+```
+
+### Running
+
+Just edit `config.coffee` to setup your bot configuration (will make this easier as CLI, I promise) and run:
+
+```sh
+$ nerdobot
 ```
 
 ## Developing
+
+### Running your own nerdobot copy
+
+If you did download the code, there's an easy way to update dependencies. Run this under `nerdobot`'s code folder:
+
+```sh
+$ npm install
+```
+
+And run using:
+
+```sh
+$ coffee ./bin/nerdobot.coffee
+or
+$ npm start
+```
+
+You can also install `nerdobot` globaly issuing this commands:
+
+```sh
+$ sudo npm install -g
+```
+
+Now you'll be able to run your own copy using `nerdobot` anywhere in your system.
+
+### Contributing
 
 Just fork this repository and start hacking on your own copy. Preferably, make your own branch out of `develop` (this will be easier for everyone to maintain.) Once you're happy with the results, need comments, or just want to let us know, issue a [pull request](https://github.com/alvaro-cuesta/nerdobot/pull/new/develop).
 
