@@ -10,7 +10,7 @@ IRC bot for #mv.nerd built with CoffeeScript + NodeJS
 
 As this is being written, `nerdobot` is not stable enough to be uploaded to external repositories, so you'll have to fetch it from GitHub (either the repository or `master` branch realization.) Edit `config.coffee` to setup your bot configuration.
 
-```
+```sh
 $ npm install
 <fancy colors and lots of characters>
 $ coffee ./bin/nerdobot.coffee
@@ -20,14 +20,16 @@ $ npm start
 
 You can also install `nerdobot` globaly:
 
-```
+```sh
 $ npm install -g
 $ nerdobot
 ```
 
 Once `nerdobot` is stable enough it will be available in NPM's repositories, so you'll be able to install it like this:
 
-`$ npm install -g nerdobot`
+```sh
+$ npm install -g nerdobot
+```
 
 ## Developing
 
