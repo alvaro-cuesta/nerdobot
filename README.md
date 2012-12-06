@@ -4,11 +4,18 @@ IRC bot for #mv.nerd built with CoffeeScript + NodeJS
 
 ## Usage
 
+`nerdobot` requires [NodeJS](http://nodejs.org/) and NPM (usually installed with Node) to be run.
+
+[CoffeeScript](http://coffeescript.org) also needs to be installed. Use `npm install -g coffee-script`, which will install `coffee` globally so you can run CoffeeScript code using `coffee <file.coffee>`.
+
 As this is being written, `nerdobot` is not stable enough to be uploaded to external repositories, so you'll have to fetch it from GitHub (either the repository or `master` branch realization.) Edit `config.coffee` to setup your bot configuration.
 
 ```
 $ npm install
-$ coffee app.js
+<fancy colors and lots of characters>
+$ coffee ./bin/nerdobot.coffee
+or
+$ npm start
 ```
 
 You can also install `nerdobot` globaly:
@@ -43,7 +50,7 @@ module.exports = function(bot) {
   /* your code here
    * 'bot' will be your bot instance
    *
-   * see 'lib/irc.coffee' and 'lib/bot.coffee'
+   * see 'lib/irc.coffee', 'lib/bot.coffee'
    * and other plugins for API/examples
    */
 }
@@ -54,7 +61,7 @@ module.export = (bot) ->
   # your code here
   # 'bot' will be your bot instance
   #
-  # see 'lib/irc.coffee' and 'lib/bot.coffee'
+  # see 'lib/irc.coffee', 'lib/bot.coffee'
   # and other plugins for API/examples
 ```
 

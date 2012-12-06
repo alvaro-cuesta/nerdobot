@@ -1,5 +1,7 @@
-Bot = require('./lib/bot').Bot
-config = require('./config')
+#!/usr/bin/env coffee
+
+Bot = require('../lib/bot').Bot
+config = require('../config')
 
 bot = new Bot(config)
 

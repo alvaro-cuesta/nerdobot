@@ -6,10 +6,10 @@
   "description": "IRC bot for #mv.nerd built with CoffeeScript + NodeJS",
   "contributors": [],
   "bin": {
-    "nerdobot": "./app.coffee"
+    "nerdo": "./bin/nerdo.coffee"
   },
   "scripts": {
-    "start": "coffee ./app.coffee"
+    "start": "coffee ./bin/nerdo.coffee"
   },
   "main": "./lib/bot.coffee",
   "repository": {
