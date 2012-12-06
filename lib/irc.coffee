@@ -38,6 +38,7 @@ module.exports.parse_prefix = parse_prefix = (prefix) ->
 module.exports.Client = class Client
   constructor: (@config) ->
     @events = new EventEmitter()
+    @server = new EventEmitter()
     @nick = @config.user.nick
     @channels = []
 
@@ -52,6 +53,9 @@ module.exports.Client = class Client
         @events.emit 'end'
 
       @raw "NICK #{@config.user.nick}"
+      modes = 0
+      modes += 1<<2 if @config.user.wallops
+      modes += 1<<3 if @config.user.invisible
       @raw "USER #{@config.user.login} 0 * :#{@config.user.realname}"
       @events.emit 'connected'
 
@@ -68,6 +72,9 @@ module.exports.Client = class Client
         if message.params[0] != @config.user.nick
           channel = message.params[0]
         @events.emit 'message', who, message.trailing, channel
+      when 'NOTICE'
+        who = parse_prefix(message.prefix) if message.prefix?
+        @events.emit 'notice', who, message.trailing, message.params[0]
       when 'JOIN'
         who = parse_prefix(message.prefix)
         if who == @nick
@@ -75,6 +82,10 @@ module.exports.Client = class Client
         for channel in message.params
           @events.emit 'join', who, channel
 
+    @server.emit message.command,
+      message.prefix,
+      message.params,
+      message.trailing
     @events.emit 'parsed', message
 
   raw: (message) ->

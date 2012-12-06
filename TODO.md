@@ -6,6 +6,10 @@
 - Join multiple channels
 - Detect multiple channels joined in event?
 - Part command and detection
+- Ident
+- Debug/spy colors
+- Mode helper
+- Track self nick
 
 ### Bot
 
@@ -22,11 +26,11 @@
 - Search quote by ID (or other filters)
 - Search quote using SQL's like
 - Print up to 5 quotes/last/other
-- Better print colors
 - SQL Index
 
 ### Suggested plugins
 
+- Nickserv
 - Google/I'm Feeling Lucky/lmgtfy
 - Wikipedia
 - Google bit.ly shortener/expander
