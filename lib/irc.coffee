@@ -56,7 +56,7 @@ module.exports.Client = class Client
       modes = 0
       modes += 1<<2 if @config.user.wallops
       modes += 1<<3 if @config.user.invisible
-      @raw "USER #{@config.user.login} 0 * :#{@config.user.realname}"
+      @raw "USER #{@config.user.login} #{modes} * :#{@config.user.realname}"
       @events.emit 'connected'
 
     @socket.setEncoding @config.connection.encoding
