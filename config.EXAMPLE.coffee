@@ -10,7 +10,7 @@ module.exports =
     login: 'nerdobot'
     pass: 'password'
     realname: 'NerdoBot'
-    invisble: true
+    invisible: true
     wallops: false
   admins: ['.*!.*@your.host.here'] # admin prefix (regexes)
   channels: ['#mediavida'] # channels to log upon connection (even before service auths)
