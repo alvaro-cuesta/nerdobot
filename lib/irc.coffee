@@ -1,6 +1,5 @@
 net = require('net')
 EventEmitter = require('events').EventEmitter
-util = require './util'
 
 module.exports.parse = parse = (message) ->
   if message[0] == ':'
@@ -90,7 +89,7 @@ module.exports.Client = class Client
 
   raw: (message) ->
     @socket.write message + '\r\n'
-    util.log " -> #{message}"
+    @events.emit 'raw', message
 
   join: (channel) -> @raw "JOIN #{channel}"
   say: (message, to) -> @raw "PRIVMSG #{to} :#{message}"
