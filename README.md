@@ -12,21 +12,11 @@ You can use `nerdobot` as a configurable bot, as a bot library and as an IRC lib
 
 ### Installing
 
-As this is being written, `nerdobot` is not stable enough to be uploaded to external repositories, so you'll have to fetch it from GitHub (either the repository or `master` branch realization.) If you don't want/need to download the code and only want to run the bot:
-
 ```sh
 $ sudo npm install -g https://github.com/alvaro-cuesta/nerdobot/tarball/master
 ```
 
-Once `nerdobot` is stable enough it will be available in NPM's repositories, so you'll be able to install it like this:
-
-```sh
-$ sudo npm install -g nerdobot
-```
-
-### Running
-
-Just edit `config.coffee` to setup your bot configuration (will make this easier as CLI, I promise) and run:
+Create `config.coffee` under `/usr/local/lib/node_modules/nerdobot/` (follow `config.EXAMPLE.coffee`) to setup your bot configuration (will make this easier as CLI argument/envvar, I promise) and run:
 
 ```sh
 $ nerdobot
@@ -86,7 +76,7 @@ module.exports = function(bot) {
 ```
 
 ```coffee
-module.export = (bot) ->
+module.exports = (bot) ->
   # your code here
   # 'bot' will be your bot instance
   #
