@@ -7,8 +7,9 @@ module.exports = (bot) ->
     text = " <- [#{prefix}, #{command}, #{if params? then '['+params.join(', ')+']' else '[]'}, #{trailing}]"
     util.log text
 
-  bot.events.on 'raw', (message) ->
-    util.log " -> #{message}"
+  bot.events.on 'out', (parsed) ->
+    {_, command, params, trailing} = parsed
+    util.log " -> [#{command}, #{if params? then '['+params.join(', ')+']' else '[]'}, #{trailing}]"
 
   name: 'Debug'
   description: "Show in/out communication in nerdobot's console"

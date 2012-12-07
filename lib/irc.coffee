@@ -89,7 +89,7 @@ module.exports.Client = class Client
 
   raw: (message) ->
     @socket.write message + '\r\n'
-    @events.emit 'raw', message
+    @events.emit 'out', parse message
 
   join: (channel) -> @raw "JOIN #{channel}"
   say: (message, to) -> @raw "PRIVMSG #{to} :#{message}"
