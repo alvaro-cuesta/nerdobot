@@ -4,3 +4,8 @@ module.exports = (bot) ->
       bot.raw command
     else
       bot.notice "What should I do?", from.nick
+
+  name: 'Raw'
+  description: 'Send raw IRC commands to server'
+  version: '0.1'
+  authors: ['Álvaro Cuesta']

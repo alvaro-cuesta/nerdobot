@@ -72,6 +72,17 @@ module.exports = function(bot) {
    * see 'lib/irc.coffee', 'lib/bot.coffee'
    * and other plugins for API/examples
    */
+
+  return {
+    name: 'Plugin long name',
+    description: 'This plugin does something... probably',
+    version: '0.1',
+    authors: [
+      'You',
+      'Some guy',
+      'The internet'
+    ]
+  }
 }
 ```
 
@@ -82,6 +93,15 @@ module.exports = (bot) ->
   #
   # see 'lib/irc.coffee', 'lib/bot.coffee'
   # and other plugins for API/examples
+
+  name: 'Plugin long name'
+  description: 'This plugin does something... probably'
+  version: '0.1'
+  authors: [
+    'You',
+    'Some guy',
+    'The internet'
+    ]
 ```
 
 ## License

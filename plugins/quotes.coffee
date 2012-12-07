@@ -84,3 +84,8 @@ module.exports = (bot) ->
             "#{bot.RESET}: #{row.quote}")
             , replyTo
       )
+
+  name: 'Quotes'
+  description: 'Add and print/browse quotes'
+  version: '0.1'
+  authors: ['Álvaro Cuesta']

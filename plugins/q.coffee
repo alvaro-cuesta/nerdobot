@@ -35,3 +35,8 @@ module.exports = (bot) ->
     console.log trailing
     if trailing == 'is now your hidden host'
         bot.join channel for channel in config.channels
+
+  name: 'Q'
+  description: 'Q authentication using CHALLENGEAUTH'
+  version: '0.1'
+  authors: ['Álvaro Cuesta']

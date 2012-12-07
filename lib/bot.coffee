@@ -5,6 +5,7 @@ module.exports.Bot = class Bot extends irc.Client
   constructor: (config) ->
     super(config)
     @commands = new EventEmitter()
+    @plugins = {}
 
     @events.on 'welcome', () =>
       @join channel for channel in @config.channels
@@ -12,7 +13,8 @@ module.exports.Bot = class Bot extends irc.Client
       @parseCommand from, message, to
 
     for plugin in config.plugins
-      require('../plugins/' + plugin)(this)
+      meta = require('../plugins/' + plugin)(this)
+      @plugins[plugin] = meta if meta
 
   parseCommand: (from, message, to) ->
     if message[0] == '!'
