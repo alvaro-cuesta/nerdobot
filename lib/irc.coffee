@@ -41,7 +41,7 @@ module.exports.Client = class Client
     @socket = net.connect @config.socket, () =>
       @socket.on 'data', (chunk) =>
         @buffer += chunk;
-        while @buffer
+        while @buffer? and @buffer != ''
           offset = @buffer.indexOf '\r\n'
           return if offset < 0
 
@@ -75,7 +75,7 @@ module.exports.Client = class Client
         @events.emit 'notice', who, message.trailing, message.params[0]
       when 'JOIN'
         who = parse_prefix(message.prefix)
-        if who == @nick
+        if who.nick == @nick
           @channels.unshift message.trailing
         for channel in message.params
           @events.emit 'join', who, channel
