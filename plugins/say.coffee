@@ -3,15 +3,15 @@ util = require '../lib/util'
 module.exports = (bot) ->
   bot.commands.on 'say', (from, message, channel) ->
     if message? and message != ''
-      [a, b] = util.split message, ' '
-
-      if b? and b != ''
-        [dest, msg] = [a, b]
-      else if channel? and a? and a != ''
-        [dest, msg] = [channel, a]
+      if channel?
+        [dest, msg] = [channel, message]
       else
-        bot.notice 'Say what?', from.nick
-        return
+        [a, b] = util.split message, ' '
+        if b? and b != ''
+          [dest, msg] = [a, b]
+        else
+          bot.notice 'Say what?', from.nick
+          return
 
       bot.say msg, dest
     else
