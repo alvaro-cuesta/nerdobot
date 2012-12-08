@@ -1,3 +1,4 @@
+util = require '../lib/util'
 sqlite3 = require('sqlite3')
 
 isInt = (n) ->
@@ -28,34 +29,32 @@ module.exports = (bot, file) ->
         bot.notice "That will only work in channels, idiot...", from.nick
         return
 
-      end = message.indexOf ' '
-      nick = message[0..end]
-      quote = message[end+1..]
+      [nick, quote] = util.split message, ' '
 
       if not nick? or nick == ''
         bot.notice "Tell me the quote, moron!", from.nick
         return
 
-      if end <= 0 or not quote? or quote == ''
+      if not quote? or quote == ''
         bot.notice "So... what did #{nick} say?", from.nick
         return
 
-      db.run(
-        "INSERT INTO quotes (channel, nick, quote, by)
+      db.run "INSERT INTO quotes (channel, nick, quote, by)
          VALUES ($channel, $nick, $quote, $by);",
         $channel: to
         $nick: nick
         $quote: quote
         $by: from.nick
-        , (err) ->
-          bot.say (if err then "\x02Error inserting quote:\x0f #{err}" else
-            "Quote inserted! \x02(#{this.lastID})\x0f")
-            , to
-      )
+      , (err) ->
+        if err
+          boy.say "\x02Error inserting quote:\x0f #{err}", to
+          return
+        bot.say "Quote inserted! \x02(#{this.lastID})\x0f", to
 
     # SELECT
     fields = [
       'rowid',
+      'channel',
       'nick',
       'quote',
       'by',
@@ -87,33 +86,33 @@ module.exports = (bot, file) ->
       if channel? or number?
         whereClause = 'WHERE '
         if channel
-          whereClause += 'channel = $channel'  # SQL Injection
+          whereClause += 'channel = $channel'
           bind.$channel = channel
-        else
-         fields.unshift 'channel'
 
         if number
           whereClause += ' AND ' if channel
           whereClause += "rowid = $id"
           bind.$id = number
 
-      console.log channel
+      fieldString = fields.join ', '
 
-      db.get "SELECT #{fields.join ', '} FROM quotes
+      db.get "SELECT #{fieldString} FROM quotes
         #{whereClause} ORDER BY RANDOM() LIMIT 1;",
         bind,
         (err, row) ->
-          bot.say (if err
-              "Error selecting quote: #{err}"
-            else if not row?
-              'Quote not found'
-            else
-              # Print quote
-              "#{bot.UNDERLINE}#{row.timestamp}#{bot.RESET} - #{row.by} " +
-              "#{bot.BOLD}(#{row.rowid})#{bot.RESET} | #{bot.color 'red'}#{row.nick}" +
-              (if not channel? then "@#{row.channel}" else '') +
-              "#{bot.RESET}: #{row.quote}")
-            , replyTo
+          if err
+            bot.say "Error selecting quote: #{err}", replyTo
+            return
+
+          if not row?
+            bot.say  'Quote not found', replyTo
+            return
+
+          bot.say "#{bot.UNDERLINE}#{row.timestamp}#{bot.RESET} - #{row.by} " +
+            "#{bot.BOLD}(#{row.rowid})#{bot.RESET} | #{bot.color 'red'}#{row.nick}" +
+            (if channel != replyTo then "@#{row.channel}" else '') +
+            "#{bot.RESET}: #{row.quote}"
+          , replyTo
 
   name: 'Quotes'
   description: 'Add and print/browse quotes'
