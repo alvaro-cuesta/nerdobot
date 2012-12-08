@@ -74,6 +74,13 @@ module.exports.Client = class Client
 
   # Parse server message
   message: (message) ->
+    @events.emit 'in', message
+
+    @server.emit message.command,
+      message.prefix,
+      message.params,
+      message.trailing
+
     switch message.command
       when 'PING'
         @raw "PONG :#{message.trailing}"
@@ -94,17 +101,10 @@ module.exports.Client = class Client
         for channel in message.params
           @events.emit 'join', who, channel
 
-    @server.emit message.command,
-      message.prefix,
-      message.params,
-      message.trailing
-
-    @events.emit 'in', message
-
   # IRC actions
   raw: (message) ->
-    @socket.write message + '\r\n'
     @events.emit 'out', parse message
+    @socket.write message + '\r\n'
 
   join: (channel) ->
     @raw "JOIN #{channel}"
