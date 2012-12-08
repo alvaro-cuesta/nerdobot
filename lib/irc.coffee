@@ -1,15 +1,10 @@
+util = require './util'
 net = require('net')
 EventEmitter = require('events').EventEmitter
 
 module.exports.parse = parse = (message) ->
-  if message[0] == ':'
-    end = message.indexOf ' '
-    prefix = message[1..end-1]
-    message = message[end+1..]
-
-  end = message.indexOf ' '
-  command = message[0..end-1]
-  message = message[end+1..]
+  [prefix, message] = util.split message[1..], ' ' if message[0] == ':'
+  [command, message] = util.split message, ' '
 
   end = message.indexOf ':'
   if end >= 0
