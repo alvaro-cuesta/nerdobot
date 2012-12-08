@@ -1,3 +1,4 @@
+util = require './util'
 irc = require('./irc')
 EventEmitter = require('events').EventEmitter
 
@@ -22,14 +23,12 @@ module.exports.Bot = class Bot extends irc.Client
 
   parseCommand: (from, message, to) ->
     if message[0] == '!'
-      end = message.indexOf ' '
-      if end > 0
-        command = message[1..end-1]
-        trailing = message[end+1..]
-      else
-        command = message[1..]
+      [command, trailing] = util.split message[1..], ' '
+
+      if not command? or command == ''
+        return
 
       if @commands.listeners(command).length > 0
         @commands.emit command, from, trailing, to
       else
-        @notice "Unknown command #{command}", from.nick
+        @notice "Unknown command #{@BOLD}!#{command}#{@RESET}", from.nick

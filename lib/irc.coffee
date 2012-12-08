@@ -1,29 +1,16 @@
+util = require './util'
 net = require('net')
 EventEmitter = require('events').EventEmitter
 
 module.exports.parse = parse = (message) ->
-  if message[0] == ':'
-    end = message.indexOf ' '
-    prefix = message[1..end-1]
-    message = message[end+1..]
-
-  end = message.indexOf ' '
-  command = message[0..end-1]
-  message = message[end+1..]
-
-  end = message.indexOf ':'
-  if end >= 0
-    if end isnt 0
-      params = message[..end-2].split(' ')
-    message = message[end+1..]
-  else
-    params = message.split(' ')
-    message = undefined
+  [prefix, message] = util.split message[1..], ' ' if message[0] == ':'
+  [message, trailing] = util.split message, ' :'
+  [command, params] = util.split message, ' '
 
   prefix: prefix
   command: command
-  params: params
-  trailing: message
+  params: params.split ' ' if params
+  trailing: trailing
 
 module.exports.parse_prefix = parse_prefix = (prefix) ->
   match = prefix.match /^(.*)!(\S+)@(\S+)/
@@ -46,7 +33,7 @@ module.exports.Client = class Client
     @socket = net.connect @config.socket, () =>
       @socket.on 'data', (chunk) =>
         @buffer += chunk;
-        while @buffer
+        while @buffer? and @buffer != ''
           offset = @buffer.indexOf '\r\n'
           return if offset < 0
 
@@ -80,7 +67,7 @@ module.exports.Client = class Client
         @events.emit 'notice', who, message.trailing, message.params[0]
       when 'JOIN'
         who = parse_prefix(message.prefix)
-        if who == @nick
+        if who.nick == @nick
           @channels.unshift message.trailing
         for channel in message.params
           @events.emit 'join', who, channel
