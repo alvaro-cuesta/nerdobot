@@ -4,21 +4,13 @@ EventEmitter = require('events').EventEmitter
 
 module.exports.parse = parse = (message) ->
   [prefix, message] = util.split message[1..], ' ' if message[0] == ':'
-  [command, message] = util.split message, ' '
-
-  end = message.indexOf ':'
-  if end >= 0
-    if end isnt 0
-      params = message[..end-2].split(' ')
-    message = message[end+1..]
-  else
-    params = message.split(' ')
-    message = undefined
+  [message, trailing] = util.split message, ' :'
+  [command, params] = util.split message, ' '
 
   prefix: prefix
   command: command
-  params: params
-  trailing: message
+  params: params.split ' ' if params
+  trailing: trailing
 
 module.exports.parse_prefix = parse_prefix = (prefix) ->
   match = prefix.match /^(.*)!(\S+)@(\S+)/
