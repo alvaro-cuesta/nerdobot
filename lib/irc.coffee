@@ -40,14 +40,18 @@ module.exports.Client = class Client
     @server = new EventEmitter()
     @nick = @config.user.nick
     @channels = []
+    @buffer = ''
 
   connect: () ->
     @socket = net.connect @config.socket, () =>
-      @socket.on 'data', (data) =>
-        for message in data.split '\r\n'
-          if message != ''
-            @events.emit 'raw', message
-            @data parse(message)
+      @socket.on 'data', (chunk) =>
+        @buffer += chunk;
+        while @buffer
+          offset = @buffer.indexOf '\r\n'
+          return if offset < 0
+
+          @data parse @buffer[0..offset-1]
+          @buffer = @buffer[offset+2..]
       @socket.on 'end', () =>
         @events.emit 'end'
 
