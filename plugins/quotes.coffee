@@ -19,14 +19,15 @@ module.exports = (bot, file) ->
       by VARCHAR NOT NULL,
       timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL);"
 
-    # COMMAND !addquote
-    bot.commands.on 'addquote', (from, message, to) ->
-      if not message?
-        bot.notice "Tell me the quote, moron!", from.nick
+    # COMMAND !addquote <quote>
+    #  only works in channels
+    bot.commands.on 'addquote', (from, message, channel) ->
+      if not channel?
+        bot.notice "That will only work in channels, idiot...", from.nick
         return
 
-      if not to?
-        bot.notice "That will only work in channels, idiot...", from.nick
+      if not message?
+        bot.notice "Tell me the quote, moron!", from.nick
         return
 
       [nick, quote] = util.split message, ' '
@@ -41,64 +42,62 @@ module.exports = (bot, file) ->
 
       db.run "INSERT INTO quotes (channel, nick, quote, by)
          VALUES ($channel, $nick, $quote, $by);",
-        $channel: to
+        $channel: channel
         $nick: nick
         $quote: quote
         $by: from.nick
       , (err) ->
         if err
-          boy.say "\x02Error inserting quote:\x0f #{err}", to
-          return
-        bot.say "Quote inserted! \x02(#{this.lastID})\x0f", to
+          boy.say "\x02Error inserting quote:\x0f #{err}", channel
+        else
+          bot.say "Quote inserted! \x02(#{this.lastID})\x0f", channel
 
-    # SELECT
-    fields = [
+    # SELECT string of fields for !quote
+    FIELDS = [
       'rowid',
       'channel',
       'nick',
       'quote',
       'by',
       "strftime('%Y-%m-%d %H:%M', timestamp, 'localtime') as timestamp"]
+      .join ', '
 
-    # COMMAND !quote
-    bot.commands.on 'quote', (from, message, to) ->
-      # Parse arguments: [channel] [number]
+    # COMMAND !quote <channel> <number> (both optional)
+    bot.commands.on 'quote', (from, message, channel) ->
+      # Parse arguments
       if message?
         args = message.split ' '
-        if args.length == 2
-          channel = args[0]
-          number = parseInt args[1]
-        else if args.length == 1
-          arg = args[0]
-          if isInt arg
-            number = parseInt arg
-          else
-            channel = arg
+        switch args.length
+          when 2
+            chn = args[0]
+            num = parseInt args[1]
+          when 1
+            arg = args[0]
+            if isInt arg
+              num = parseInt arg
+            else
+              chn = arg
 
-      if to
-        replyTo = to
-        channel = to if not channel?
+      if channel
+        chn ?= channel
+        replyTo = channel
       else
         replyTo = from.nick
 
-      bind = {}
-      whereClause = ''
-      if channel? or number?
-        whereClause = 'WHERE '
-        if channel
-          whereClause += 'channel = $channel'
-          bind.$channel = channel
+      # SELECT's extra clause
+      clause = ''
+      if chn? or num?
+        clause  = 'WHERE '
+        clause += 'channel = $channel' if chn?
+        if num?
+          clause += ' AND ' if chn
+          clause += 'rowid = $id'
 
-        if number
-          whereClause += ' AND ' if channel
-          whereClause += "rowid = $id"
-          bind.$id = number
+      clause += ' ORDER BY RANDOM() LIMIT 1' if not num?
 
-      fieldString = fields.join ', '
-
-      db.get "SELECT #{fieldString} FROM quotes
-        #{whereClause} ORDER BY RANDOM() LIMIT 1;",
-        bind,
+      db.get "SELECT #{FIELDS} FROM quotes #{clause};",
+        $channel: chn
+        $id: num,
         (err, row) ->
           if err
             bot.say "Error selecting quote: #{err}", replyTo
@@ -110,7 +109,7 @@ module.exports = (bot, file) ->
 
           bot.say "#{bot.UNDERLINE}#{row.timestamp}#{bot.RESET} - #{row.by} " +
             "#{bot.BOLD}(#{row.rowid})#{bot.RESET} | #{bot.color 'red'}#{row.nick}" +
-            (if channel != replyTo then "@#{row.channel}" else '') +
+            (if not (chn? or chn == replyTo) then "@#{row.channel}" else '') +
             "#{bot.RESET}: #{row.quote}"
           , replyTo
 

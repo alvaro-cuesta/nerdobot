@@ -2,6 +2,8 @@ util = require './util'
 net = require('net')
 EventEmitter = require('events').EventEmitter
 
+# Parse an IRC command into {prefix, command, [params], trailing}
+# prefix, params and trailing may be undefined
 module.exports.parse = parse = (message) ->
   [prefix, message] = util.split message[1..], ' ' if message[0] == ':'
   [message, trailing] = util.split message, ' :'
@@ -12,46 +14,66 @@ module.exports.parse = parse = (message) ->
   params: params.split ' ' if params
   trailing: trailing
 
+# Parse an IRC prefix into {nick, user, host}
 module.exports.parse_prefix = parse_prefix = (prefix) ->
   match = prefix.match /^(.*)!(\S+)@(\S+)/
   if match
     nick: match[1]
     user: match[2]
     host: match[3]
-  else
-    null
 
+# IRC client class
 module.exports.Client = class Client
   constructor: (@config) ->
-    @events = new EventEmitter()
-    @server = new EventEmitter()
     @nick = @config.user.nick
     @channels = []
-    @buffer = ''
 
-  connect: () ->
-    @socket = net.connect @config.socket, () =>
+    @events = new EventEmitter()
+    # Emits:
+    #  connected
+    #  end
+    #  welcome
+    #  message -> from, msg, channel
+    #    if channel = undefined, it's a private message
+    #  notice -> from, msg, to
+    #  join -> who, channel
+    #  in -> parsed_message
+    #  out -> parsed_message
+
+    @server = new EventEmitter()
+    # Emits server commands -> prefix, [params], trailing
+
+  connect: ->
+    @socket = net.connect @config.socket, =>
+      # ON CONNECTION
+      @events.emit 'connected'
+
+      # Receive chunks in a buffer, splitting by \r\n
+      buffer = ''
       @socket.on 'data', (chunk) =>
-        @buffer += chunk;
-        while @buffer? and @buffer != ''
-          offset = @buffer.indexOf '\r\n'
+        buffer += chunk;
+        while buffer != ''
+          offset = buffer.indexOf '\r\n'
           return if offset < 0
 
-          @data parse @buffer[0..offset-1]
-          @buffer = @buffer[offset+2..]
-      @socket.on 'end', () =>
-        @events.emit 'end'
+          if offset > 0
+            @message parse buffer[0..offset-1]
 
+          buffer = buffer[offset+2..]
+
+      @socket.on 'end', => @events.emit 'end'
+
+      # Auth to IRC server
       @raw "NICK #{@config.user.nick}"
       modes = 0
       modes += 1<<2 if @config.user.wallops
       modes += 1<<3 if @config.user.invisible
       @raw "USER #{@config.user.login} #{modes} * :#{@config.user.realname}"
-      @events.emit 'connected'
 
     @socket.setEncoding @config.connection.encoding
 
-  data: (message) ->
+  # Parse server message
+  message: (message) ->
     switch message.command
       when 'PING'
         @raw "PONG :#{message.trailing}"
@@ -76,17 +98,27 @@ module.exports.Client = class Client
       message.prefix,
       message.params,
       message.trailing
+
     @events.emit 'in', message
 
+  # IRC actions
   raw: (message) ->
     @socket.write message + '\r\n'
     @events.emit 'out', parse message
 
-  join: (channel) -> @raw "JOIN #{channel}"
-  say: (message, to) -> @raw "PRIVMSG #{to} :#{message}"
-  me: (message, to) -> @say("\x01ACTION #{message}\x01", to)
-  notice: (message, to) -> @raw "NOTICE #{to} :#{message}"
+  join: (channel) ->
+    @raw "JOIN #{channel}"
 
+  say: (message, to) ->
+    @raw "PRIVMSG #{to} :#{message}"
+
+  me: (message, to) ->
+    @say "\x01ACTION #{message}\x01", to
+
+  notice: (message, to) ->
+    @raw "NOTICE #{to} :#{message}"
+
+  # IRC control characters (color, bold...)
   color: (foreground, background) ->
     fore = @COLORS.indexOf foreground
     color = "\x03#{fore}"
@@ -94,9 +126,13 @@ module.exports.Client = class Client
       back = @COLORS.indexOf background
       color += ",#{back}"
     color
+
   BOLD: "\x02"
+
   UNDERLINE: "\x1f"
+
   RESET: "\x0f"
+
   COLORS: [
     'white',
     'black',

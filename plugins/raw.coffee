@@ -1,5 +1,5 @@
 module.exports = (bot) ->
-  bot.commands.on 'raw', (from, command, to) ->
+  bot.commands.on 'raw', (from, command) ->
     if command? and command != ''
       bot.raw command
     else
