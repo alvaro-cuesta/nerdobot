@@ -1,5 +1,8 @@
 sqlite3 = require('sqlite3')
 
+isInt = (n) ->
+  !isNaN(parseInt(n)) and isFinite(n)
+
 module.exports = (bot, file) ->
   db = new sqlite3.cached.Database file, (err) ->
     if err
@@ -50,40 +53,67 @@ module.exports = (bot, file) ->
             , to
       )
 
+    # SELECT
+    fields = [
+      'rowid',
+      'nick',
+      'quote',
+      'by',
+      "strftime('%Y-%m-%d %H:%M', timestamp, 'localtime') as timestamp"]
+
     # COMMAND !quote
     bot.commands.on 'quote', (from, message, to) ->
-      # SELECT
-      fields = [
-        'rowid',
-        'nick',
-        'quote',
-        'by',
-        "strftime('%Y-%m-%d %H:%M', timestamp, 'localtime') as timestamp"]
+      # Parse arguments: [channel] [number]
+      if message?
+        args = message.split ' '
+        if args.length == 2
+          channel = args[0]
+          number = parseInt args[1]
+        else if args.length == 1
+          arg = args[0]
+          if isInt arg
+            number = parseInt arg
+          else
+            channel = arg
 
-      # Manage !quote arguments
-      whereClause = ''
-      if to? and to != ''
-        whereClause = "WHERE channel = '#{to}'"
+      if to
         replyTo = to
+        channel = to if not channel?
       else
         replyTo = from.nick
-        if message? and message != ''
-          whereClause = "WHERE channel = '#{message.split(' ')[0]}'"
-        else
-          fields.unshift 'channel'
 
-      db.get(
-        "SELECT #{fields.join ', '} FROM quotes
-         #{whereClause} ORDER BY RANDOM() LIMIT 1;"
+      bind = {}
+      whereClause = ''
+      if channel? or number?
+        whereClause = 'WHERE '
+        if channel
+          whereClause += 'channel = $channel'  # SQL Injection
+          bind.$channel = channel
+        else
+         fields.unshift 'channel'
+
+        if number
+          whereClause += ' AND ' if channel
+          whereClause += "rowid = $id"
+          bind.$id = number
+
+      console.log channel
+
+      db.get "SELECT #{fields.join ', '} FROM quotes
+        #{whereClause} ORDER BY RANDOM() LIMIT 1;",
+        bind,
         (err, row) ->
-          bot.say (if err then "Error selecting quote: #{err}" else
-            # Print quote
-            "#{bot.UNDERLINE}#{row.timestamp}#{bot.RESET} - #{row.by} " +
-            "#{bot.BOLD}(#{row.rowid})#{bot.RESET} | #{bot.color 'red'}#{row.nick}" +
-            if row.channel? then "#@{row.channel}" else '' +
-            "#{bot.RESET}: #{row.quote}")
+          bot.say (if err
+              "Error selecting quote: #{err}"
+            else if not row?
+              'Quote not found'
+            else
+              # Print quote
+              "#{bot.UNDERLINE}#{row.timestamp}#{bot.RESET} - #{row.by} " +
+              "#{bot.BOLD}(#{row.rowid})#{bot.RESET} | #{bot.color 'red'}#{row.nick}" +
+              (if not channel? then "@#{row.channel}" else '') +
+              "#{bot.RESET}: #{row.quote}")
             , replyTo
-      )
 
   name: 'Quotes'
   description: 'Add and print/browse quotes'
