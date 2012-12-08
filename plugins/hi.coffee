@@ -1,8 +1,8 @@
-module.exports = (bot) ->
+module.exports = (bot, greetings) ->
   bot.events.on 'join', (who, channel) ->
     if who.nick == bot.nick
-      rand = Math.floor(Math.random() * bot.config.greetings.length)
-      bot.config.greetings[rand](bot, channel)
+      random = greetings[Math.floor(Math.random() * greetings.length)]
+      random(bot, channel)
 
   name: 'Hi'
   description: 'Greets randomly upon joining any channel'

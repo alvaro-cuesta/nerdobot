@@ -1,9 +1,9 @@
 sqlite3 = require('sqlite3')
 
-module.exports = (bot) ->
-  db = new sqlite3.cached.Database bot.config.db, (err) ->
+module.exports = (bot, file) ->
+  db = new sqlite3.cached.Database file, (err) ->
     if err
-      console.log "Error opening #{bot.config.db}: #{err}"
+      console.log "Error opening deatabase #{file}: #{err}"
       console.log "Disabling quote system!"
       return
 

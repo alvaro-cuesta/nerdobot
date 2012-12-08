@@ -12,9 +12,13 @@ module.exports.Bot = class Bot extends irc.Client
     @events.on 'message', (from, message, to) =>
       @parseCommand from, message, to
 
-    for plugin in config.plugins
-      meta = require('../plugins/' + plugin)(this)
-      @plugins[plugin] = meta if meta
+    for own plugin, config of config.plugins
+      meta = require('../plugins/' + plugin)(this, config)
+      if meta
+        @plugins[plugin] = meta
+        console.log "#{meta.name} #{meta.version} - #{meta.description}"
+      else
+        console.log "Error loading '#{plugin}'"
 
   parseCommand: (from, message, to) ->
     if message[0] == '!'

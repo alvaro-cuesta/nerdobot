@@ -13,6 +13,7 @@
 
 ### Bot
 
+- Antiflood
 - Command permissions (at least admin)
 - Web interface
    - For plugins too!

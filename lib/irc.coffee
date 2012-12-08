@@ -85,7 +85,7 @@ module.exports.Client = class Client
       message.prefix,
       message.params,
       message.trailing
-    @events.emit 'parsed', message
+    @events.emit 'in', message
 
   raw: (message) ->
     @socket.write message + '\r\n'

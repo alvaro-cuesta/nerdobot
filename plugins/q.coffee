@@ -1,7 +1,6 @@
 crypto = require 'crypto'
 
-module.exports = (bot) ->
-  config = bot.config.q
+module.exports = (bot, config) ->
   {nick, user, host} = config.service
 
   if config.pass?
