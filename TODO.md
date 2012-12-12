@@ -24,10 +24,13 @@
 
 ### Quote
 
-- Search quote by ID (or other filters)
 - Search quote using SQL's like
-- Print up to 5 quotes/last/other
 - SQL Index
+
+### GitHub
+
+- Self-update
+- Abstract Express usage
 
 ### Suggested plugins
 
