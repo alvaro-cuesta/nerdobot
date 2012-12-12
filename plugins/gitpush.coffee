@@ -13,22 +13,19 @@ module.exports = (bot, config) ->
     for repo in config.repositories \
         when repo.name == payload.repository.name \
         and repo.owner == payload.repository.owner.name
+      commits = payload.commits.length
+      if commits == 0
+        return
+
+      plural = if commits > 1 then 's' else ''
+
       for to in repo.to
-        commits = payload.commits.length
-        if commits == 0
-          bot.say to,
-            "#{bot.color 'orange'}#{payload.pusher.name}#{bot.RESET} " +
-            "#{bot.color 'red'}REMOVED branch#{bot.RESET} "+
-            "#{bot.BOLD}#{repo.owner}/#{repo.name}" +
-            (if branch? then "/#{branch}" else '') + "#{bot.RESET}"
-        else
-          plural = if commits > 1 then 's' else ''
-          bot.say to,
-            "#{bot.color 'orange'}#{payload.pusher.name}#{bot.RESET} " +
-            "pushed#{bot.color 'green'} #{commits} commit#{plural} " +
-            "#{bot.RESET}to #{bot.BOLD}#{repo.owner}/#{repo.name}" +
-            (if branch? then "/#{branch}" else '') + "#{bot.RESET} <- " +
-            "#{bot.color 'blue'}#{bot.UNDERLINE}#{payload.compare}#{bot.RESET}"
+        bot.say to,
+          "#{bot.color 'orange'}#{payload.pusher.name}#{bot.RESET} " +
+          "pushed#{bot.color 'green'} #{commits} commit#{plural} " +
+          "#{bot.RESET}to #{bot.BOLD}#{repo.owner}/#{repo.name}" +
+          (if branch? then "/#{branch}" else '') + "#{bot.RESET} <- " +
+          "#{bot.color 'blue'}#{bot.UNDERLINE}#{payload.compare}#{bot.RESET}"
 
   name: 'GitPush'
   description: 'GitHub push notifications plugin for nerdobot'
