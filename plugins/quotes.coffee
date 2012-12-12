@@ -23,21 +23,21 @@ module.exports = (bot, file) ->
     #  only works in channels
     bot.commands.on 'addquote', (from, message, channel) ->
       if not channel?
-        bot.notice "That will only work in channels, idiot...", from.nick
+        bot.notice from.nick, "That will only work in channels, idiot..."
         return
 
       if not message?
-        bot.notice "Tell me the quote, moron!", from.nick
+        bot.notice from.nick, "Tell me the quote, moron!"
         return
 
       [nick, quote] = util.split message, ' '
 
       if not nick? or nick == ''
-        bot.notice "Tell me the quote, moron!", from.nick
+        bot.notice from.nick, "Tell me the quote, moron!"
         return
 
       if not quote? or quote == ''
-        bot.notice "So... what did #{nick} say?", from.nick
+        bot.notice from.nick, "So... what did #{nick} say?"
         return
 
       db.run "INSERT INTO quotes (channel, nick, quote, by)
@@ -48,9 +48,9 @@ module.exports = (bot, file) ->
         $by: from.nick
       , (err) ->
         if err
-          boy.say "\x02Error inserting quote:\x0f #{err}", channel
+          boy.say channel, "\x02Error inserting quote:\x0f #{err}"
         else
-          bot.say "Quote inserted! \x02(#{this.lastID})\x0f", channel
+          bot.say channel, "Quote inserted! \x02(#{this.lastID})\x0f"
 
     # SELECT string of fields for !quote
     FIELDS = [
@@ -100,18 +100,18 @@ module.exports = (bot, file) ->
         $id: num,
         (err, row) ->
           if err
-            bot.say "Error selecting quote: #{err}", replyTo
+            bot.say replyTo, "Error selecting quote: #{err}"
             return
 
           if not row?
-            bot.say  'Quote not found', replyTo
+            bot.say replyTo, 'Quote not found'
             return
 
-          bot.say "#{bot.UNDERLINE}#{row.timestamp}#{bot.RESET} - #{row.by} " +
+          bot.say replyTo,
+            "#{bot.UNDERLINE}#{row.timestamp}#{bot.RESET} - #{row.by} " +
             "#{bot.BOLD}(#{row.rowid})#{bot.RESET} | #{bot.color 'red'}#{row.nick}" +
             (if not (chn? or chn == replyTo) then "@#{row.channel}" else '') +
             "#{bot.RESET}: #{row.quote}"
-          , replyTo
 
   name: 'Quotes'
   description: 'Add and print/browse quotes'

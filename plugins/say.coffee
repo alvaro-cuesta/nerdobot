@@ -10,12 +10,12 @@ module.exports = (bot) ->
         if b? and b != ''
           [dest, msg] = [a, b]
         else
-          bot.notice 'Say what?', from.nick
+          bot.notice from.nick, 'Say what?'
           return
 
-      bot.say msg, dest
+      bot.say dest, msg
     else
-      bot.notice 'Say what?', from.nick
+      bot.notice from.nick, 'Say what?'
 
   name: 'Say'
   description: 'Command to say things'

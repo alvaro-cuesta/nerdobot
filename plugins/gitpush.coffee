@@ -14,12 +14,12 @@ module.exports = (bot, config) ->
         when repo.name == payload.repository.name \
         and repo.owner == payload.repository.owner.name
       for to in repo.to
-        bot.say "#{bot.color 'red'}#{payload.pusher.name}#{bot.RESET} pushed " +
+        bot.say to,
+          "#{bot.color 'red'}#{payload.pusher.name}#{bot.RESET} pushed " +
           "#{bot.color 'green'}#{payload.commits.length} commits#{bot.RESET} " +
           "to #{bot.BOLD}#{repo.owner}/#{repo.name}" +
           (if branch? then "/#{branch}" else '') + "#{bot.RESET} <- " +
           "#{bot.color 'blue'}#{bot.UNDERLINE}#{payload.compare}#{bot.RESET}"
-        , to
 
   name: 'GitPush'
   description: 'GitHub push notifications plugin for nerdobot'

@@ -109,13 +109,13 @@ module.exports.Client = class Client
   join: (channel) ->
     @raw "JOIN #{channel}"
 
-  say: (message, to) ->
+  say: (to, message) ->
     @raw "PRIVMSG #{to} :#{message}"
 
-  me: (message, to) ->
+  me: (to, message) ->
     @say "\x01ACTION #{message}\x01", to
 
-  notice: (message, to) ->
+  notice: (to, message) ->
     @raw "NOTICE #{to} :#{message}"
 
   # IRC control characters (color, bold...)

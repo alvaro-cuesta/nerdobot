@@ -9,7 +9,7 @@ module.exports = (bot, config) ->
 
   # Ask for challeng when welcome to IRC server
   bot.events.on 'welcome', ->
-    bot.say 'CHALLENGE', "#{nick}@#{host}"
+    bot.say "#{nick}@#{host}", 'CHALLENGE'
 
   # Check for challenge responses
   bot.events.on 'notice', (who, notice, to) ->
@@ -28,7 +28,7 @@ module.exports = (bot, config) ->
             k = crypto.createHash('sha1').update("#{userLow}:#{passHash}").digest('hex')
             response = crypto.createHmac('sha1', k).update(challenge).digest('hex')
 
-            bot.say "CHALLENGEAUTH #{config.user} #{response} HMAC-SHA-1", "#{nick}@#{host}"
+            bot.say "#{nick}@#{host}", "CHALLENGEAUTH #{config.user} #{response} HMAC-SHA-1"
           else
             console.log "[Q] None of the algorithms is supported: #{algorithms.join ', '}"
 

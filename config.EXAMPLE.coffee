@@ -25,24 +25,24 @@ module.exports =
     ]
   greetings: [ # random greetings for the 'hi' plugin (a list of functions!)
     (bot, channel) ->
-      bot.me 'says hi', channel
+      bot.me channel, 'says hi'
     , (bot, channel) ->
-      bot.me "is pleased to be in #{channel}!", channel
+      bot.me channel, "is pleased to be in #{channel}!"
     , (bot, channel) ->
-      bot.me "doesn't follow the laws of robotics...", channel
+      bot.me channel, "doesn't follow the laws of robotics..."
     , (bot, channel) ->
-      bot.me 'is going to kill you', channel
+      bot.me channel, 'is going to kill you'
     , (bot, channel) ->
-      bot.say 'hi!', channel
+      bot.say channel, 'hi!'
     , (bot, channel) ->
-      bot.say 'did you miss me?', channel
+      bot.say channel, 'did you miss me?'
     , (bot, channel) ->
-      bot.say "I'm back!", channel
+      bot.say channel, "I'm back!"
     , (bot, channel) ->
-      bot.say "what's that smell?", channel
-      bot.say "wooops, sorry, it's me", channel
+      bot.say channel, "what's that smell?"
+      bot.say channel, "wooops, sorry, it's me"
     , (bot, channel) ->
-      bot.say "no, I won't !help you", channel
+      bot.say channel, "no, I won't !help you"
     ]
   q:
     service: # the Q service data
