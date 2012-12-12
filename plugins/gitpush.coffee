@@ -10,13 +10,13 @@ module.exports = (bot, config) ->
   app.listen config.port ? 9999
 
   ps.on 'push', (branch, payload) ->
-    for repo in config.repos \
+    for repo in config.repositories \
         when repo.name == payload.repository.name \
         and repo.owner == payload.repository.owner.name
       for to in repo.to
-        bot.say "#{bot.color 'red'}#{payload.pusher.name}#{bot.RESET} pushed" +
-          "to #{bot.BOLD}#{payload.repository.owner}/#{payload.repository.name}" +
-          (if branch? then "/#{branch}" else '') + "#{bot.RESET} " +
+        bot.say "#{bot.color 'red'}#{payload.pusher.name}#{bot.RESET} pushed " +
+          "to #{bot.BOLD}#{repo.owner}/#{repo.name}" +
+          (if branch? then "/#{branch}" else '') + "#{bot.RESET} <- " +
           "#{bot.color 'blue'}#{bot.UNDERLINE}#{payload.compare}#{bot.RESET}"
         , to
 
