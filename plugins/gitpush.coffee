@@ -29,8 +29,6 @@ class PushServer extends EventEmitter
   constructor: (@config) ->
     super()
     @handler = (req, res) =>
-      console.log req.connection.remoteAddress
-
       if req.connection.remoteAddress not in @config.allowed
         res.send 403
         return
