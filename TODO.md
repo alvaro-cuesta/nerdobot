@@ -65,3 +65,5 @@
 - Git/GitHub
 - Autoreplys
 - Macros
+- Reddittits
+- Polls
