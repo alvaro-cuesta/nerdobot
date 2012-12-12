@@ -82,8 +82,8 @@ module.exports = function(bot) {
       'Some guy',
       'The internet'
     ]
-  }
-}
+  };
+};
 ```
 
 ```coffee
@@ -101,7 +101,7 @@ module.exports = (bot) ->
     'You',
     'Some guy',
     'The internet'
-    ]
+  ]
 ```
 
 ## License
