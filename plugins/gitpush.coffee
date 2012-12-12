@@ -33,15 +33,11 @@ class PushServer extends EventEmitter
         res.send 403
         return
 
-      if req.method != 'POST'
+      if req.method != 'POST' or not req.body.payload?
         res.send 400
         return
 
       payload = JSON.parse req.body.payload
-
-      if not payload?
-        res.send 400
-        return
 
       match = payload.ref.match /^refs\/heads\/(.*)$/
       if not match?
