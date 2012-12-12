@@ -12,7 +12,7 @@ module.exports = (bot, config) ->
   ps.on 'push', (branch, payload) ->
     for repo in config.repos \
         when repo.name == payload.repository.name \
-        and repo.owner == payload.repository.owner
+        and repo.owner == payload.repository.owner.name
       for to in repo.to
         bot.say "#{bot.color 'red'}#{payload.pusher.name}#{bot.RESET} pushed" +
           "to #{bot.BOLD}#{payload.repository.owner}/#{payload.repository.name}" +
