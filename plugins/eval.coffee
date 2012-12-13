@@ -13,7 +13,7 @@ sayOutput = (bot, to) -> (out) ->
   con += (util.inspect(log) for log in out.console[..MAX_LOGS]).join ', '
 
   if out.console.length > MAX_LOGS
-    con += ' ...'
+    con += ', ...'
 
   con += " ]"
   bot.say to, "#{bot.BOLD}>>#{bot.RESET} #{con}"
