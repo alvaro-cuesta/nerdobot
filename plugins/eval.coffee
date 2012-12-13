@@ -49,16 +49,23 @@ module.exports = (bot, {coffee}) ->
   if coffee
     cs = require 'coffee-script'
     bot.commands.on 'coff', ({nick}, trailing, to) ->
-      js = cs.compile trailing, bare: true
-      s.run js, sayOutput(bot, to ? nick)
+      to ?= nick
+      try
+        js = cs.compile trailing, bare: true
+        s.run js, sayOutput(bot, to)
+      catch error
+        bot.say to, " #{bot.BOLD}=#{bot.RESET} '#{error}'"
 
     bot.commands.on '!coff', ({nick}, trailing, to) ->
       to ?= nick
       bot.say to,
         " #{bot.color 'red'}! Reading CoffeeScript block from #{nick}#{bot.RESET}"
       readBlock nick, to, '!end', (buffer) ->
-        js = cs.compile buffer, bare: true
-        s.run js, sayOutput(bot, to ? nick)
+        try
+          js = cs.compile trailing, bare: true
+          s.run js, sayOutput(bot, to)
+        catch error
+          bot.say to, " #{bot.BOLD}=#{bot.RESET} '#{error}'"
 
   name: 'Eval'
   description: 'Evaluate sandboxed code using !eval (CoffeeScript optional)'
