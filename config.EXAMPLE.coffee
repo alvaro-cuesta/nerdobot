@@ -15,6 +15,7 @@ module.exports =
   admins: ['.*!.*@your.host.here'] # admin prefix (regexes)
   channels: ['#mediavida'] # channels to log upon connection (even before service auths)
   db: "/var/bot/nerdobot.sqlite3" # database file
+  timeout: 3000
   plugins: [ # enabled plugins
     'quotes',
     'say',
