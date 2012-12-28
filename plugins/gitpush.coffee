@@ -13,11 +13,15 @@ module.exports = (bot, config) ->
     for repo in config.repositories \
         when repo.name == payload.repository.name \
         and repo.owner == payload.repository.owner.name
+      commits = payload.commits.length
+      if commits == 0
+        return
+
+      plural = if commits > 1 then 's' else ''
+
       for to in repo.to
-        commits = payload.commits.length
-        plural = if commits > 1 then 's' else ''
         bot.say to,
-          "#{bot.color 'red'}#{payload.pusher.name}#{bot.RESET} " +
+          "#{bot.color 'orange'}#{payload.pusher.name}#{bot.RESET} " +
           "pushed#{bot.color 'green'} #{commits} commit#{plural} " +
           "#{bot.RESET}to #{bot.BOLD}#{repo.owner}/#{repo.name}" +
           (if branch? then "/#{branch}" else '') + "#{bot.RESET} <- " +
