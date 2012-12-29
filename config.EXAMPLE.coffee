@@ -15,8 +15,7 @@ module.exports =
   admins: ['.*!.*@your.host.here'] # admin prefix (regexes)
   channels: ['#mediavida'] # channels to log upon connection (even before service auths)
   db: "/var/bot/nerdobot.sqlite3" # database file
-<<<<<<< HEAD
-  timeout: 3000
+  timeout: 3000 # Antiflood ms time
   plugins: [ # enabled plugins
     'quotes',
     'say',
@@ -24,7 +23,6 @@ module.exports =
     'spy',
     'hi',
     'q'
-=======
   plugins:
     quotes: '/opt/nerdo/nerdobot.sqlite3'
     say: {}
@@ -51,7 +49,6 @@ module.exports =
         bot.say channel, "wooops, sorry, it's me"
       , (bot, channel) ->
         bot.say channel, "no, I won't !help you"
->>>>>>> 7904270e17384f546b8dd2a9eefda5f9a92384e5
     ]
     q:
       service:

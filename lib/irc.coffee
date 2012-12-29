@@ -98,8 +98,8 @@ module.exports.Client = class Client
         who = parse_prefix(message.prefix)
         if who.nick == @nick
           @channels.unshift message.trailing
-        #for channel in message.params
-        #  @events.emit 'join', who, channel
+        for channel in message.params
+          @events.emit 'join', who, channel
 
   # IRC actions
   raw: (message) ->
