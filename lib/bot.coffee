@@ -36,15 +36,15 @@ module.exports.Bot = class Bot extends irc.Client
       setTimeout =>
         @time = true
       , @config.timeout
-    # TODO: prefix in config
-    if message[0] == '!'
+
+    if message[0] == @config.prefix
       [command, args] = util.split message[1..], ' '
       if not command? or command == ''
         return
 
       if @commands.listeners(command).length > 0
         if @time == true
-          @time = false 
+          @time = false
           @commands.emit command, from, args, channel
           antiflood()
 
