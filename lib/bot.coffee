@@ -7,6 +7,7 @@ module.exports.Bot = class Bot extends irc.Client
     super(config)
 
     @plugins = {}
+    @time = true
 
     @commands = new EventEmitter()
     # Emits commands issues by users
@@ -31,14 +32,21 @@ module.exports.Bot = class Bot extends irc.Client
 
   # Parse messages looking for client commands
   parseCommand: (from, message, channel) ->
+    antiflood = =>
+      setTimeout =>
+        @time = true
+      , @config.timeout
     # TODO: prefix in config
     if message[0] == '!'
       [command, args] = util.split message[1..], ' '
-
       if not command? or command == ''
         return
 
       if @commands.listeners(command).length > 0
-        @commands.emit command, from, args, channel
+        if @time == true
+          @time = false 
+          @commands.emit command, from, args, channel
+          antiflood()
+
       else
         @notice "Unknown command #{@BOLD}!#{command}#{@RESET}", from.nick
