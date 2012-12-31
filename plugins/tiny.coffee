@@ -3,8 +3,6 @@ request = require('request')
 module.exports = (bot, apikey) ->
 
   bot.commands.on 'song', (from, message, channel) ->
-    if err?
-      return
     if not channel?
       bot.notice from.nick, 'Este comando solo funciona en un canal!'
       return

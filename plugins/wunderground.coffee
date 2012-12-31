@@ -31,8 +31,6 @@ module.exports = (bot, apikey) ->
       "#{bot.RESET} - #{bot.BOLD}#{data}#{bot.RESET}"
 
   bot.commands.on 'tiempo', (from, message, channel) ->
-    if err?
-      return
     if not channel?
       bot.notice from.nick, 'Este comando solo funciona en un canal!'
       return

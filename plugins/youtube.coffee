@@ -21,8 +21,6 @@ module.exports = (bot) ->
       "- #{bot.BOLD}#{err}#{bot.RESET}"
 
   bot.commands.on 'yt', (from, message, channel) ->
-    if err?
-      return
     if not channel?
       bot.notice from.nick, 'Este comando solo funciona en un canal!'
       return
@@ -46,8 +44,6 @@ module.exports = (bot) ->
         sendMsg data.feed.entry[0], channel
 
   bot.commands.on 'youtube', (from, message, channel) ->
-    if err?
-      return
     if not channel?
       bot.notice from.nick, 'Este comando solo funciona en un canal!'
       return
