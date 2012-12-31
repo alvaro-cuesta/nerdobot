@@ -114,7 +114,7 @@ module.exports.Client = class Client
     @raw "PRIVMSG #{to} :#{message}"
 
   me: (to, message) ->
-    @say "\x01ACTION #{message}\x01", to
+    @say to, "\x01ACTION #{message}\x01"
 
   notice: (to, message) ->
     @raw "NOTICE #{to} :#{message}"
