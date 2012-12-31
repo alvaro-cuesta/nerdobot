@@ -14,21 +14,18 @@ module.exports =
     wallops: false
   admins: ['.*!.*@your.host.here'] # admin prefix (regexes)
   channels: ['#mediavida'] # channels to log upon connection (even before service auths)
-  db: "/var/bot/nerdobot.sqlite3" # database file
-  timeout: 3000 # Antiflood ms time
-  plugins: [ # enabled plugins
-    'quotes',
-    'say',
-    'raw',
-    'spy',
-    'hi',
-    'q'
+  prefix: '!'
+  timeout: 1000 # Antiflood ms time
   plugins:
     quotes: '/opt/nerdo/nerdobot.sqlite3'
     say: {}
     raw: {}
     debug: {}
     spy: {}
+    tits: {}
+    youtube: {}
+    wunderground: 'api-key'
+    tiny: 'api-key'
     hi: [
       (bot, channel) ->
         bot.me channel, 'says hi'
