@@ -34,8 +34,8 @@ module.exports.Bot = class Bot extends irc.Client
   parseCommand: (from, message, channel) ->
     antiflood = =>
       setTimeout =>
-          @time = true
-        , @config.timeout
+        @time = true
+      , @config.timeout
     # TODO: prefix in config
     if message[0] == '!'
       [command, args] = util.split message[1..], ' '
