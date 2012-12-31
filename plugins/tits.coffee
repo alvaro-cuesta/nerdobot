@@ -21,7 +21,6 @@ module.exports = (bot) ->
           return
 
         num = Math.floor Math.random() * data.data.children.length
-        #console.log data.data.children[3].data.url
         bot.say channel, data.data.children[num].data.url
 
 
