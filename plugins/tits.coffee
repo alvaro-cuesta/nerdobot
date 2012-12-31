@@ -14,3 +14,4 @@ module.exports = (bot) ->
   description: 'Tits or get the fuck out '
   version: '0.1'
   authors: ['blzkz']
+  
