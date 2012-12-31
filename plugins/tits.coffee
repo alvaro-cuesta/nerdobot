@@ -9,7 +9,7 @@ module.exports = (bot) ->
           num = Math.floor Math.random() * data.data.children.length
           bot.say channel, data.data.children[num].data.url
         else
-          bot.say channel 'Error, not data found'
+          bot.say channel, 'Error, not data found'
 
 
   name: 'Tits'
