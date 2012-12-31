@@ -7,7 +7,9 @@ module.exports = (bot, config) ->
   app = express()
   app.use express.bodyParser()
   app.post config.path, ps.handler
-  app.listen config.port ? 9999
+  server = app.listen config.port ? 9999
+
+  bot.events.on 'end', -> server.close()
 
   ps.on 'push', (branch, payload) ->
     for repo in config.repositories \
