@@ -46,7 +46,7 @@ module.exports = (bot) ->
   bot.commands.on 'yt', youtube
   bot.commands.on 'youtube', youtube
 
-  name: 'Youtube Seach'
+  name: 'Youtube Search'
   description: 'Devuelve el primer resultado en youtube.'
   version: '0.4'
   authors: [
