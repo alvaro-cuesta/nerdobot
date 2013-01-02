@@ -16,11 +16,13 @@ You can use `nerdobot` as a configurable bot, as a bot library and as an IRC lib
 $ sudo npm install -g https://github.com/alvaro-cuesta/nerdobot/tarball/master
 ```
 
-Create `config.coffee` under `/usr/local/lib/node_modules/nerdobot/` (follow `config.EXAMPLE.coffee`) to setup your bot configuration (will make this easier as CLI argument/envvar, I promise) and run:
+That will install `nerdobot` globally, so you can run it like this:
 
 ```sh
 $ nerdobot
 ```
+
+To setup the bot configuration, follow [config.EXAMPLE.coffee](https://github.com/alvaro-cuesta/nerdobot/blob/master/config.EXAMPLE.coffee). After that, you can either set the `NERDO_CONFIG` environment variable, pass the config file path as a command-line argument or put the file under nerdobot's root folder.
 
 ## Developing
 
@@ -40,7 +42,7 @@ or
 $ npm start
 ```
 
-You can also install `nerdobot` globaly issuing this commands:
+You can also install your `nerdobot` copy globaly issuing this commands:
 
 ```sh
 $ sudo npm install -g
@@ -103,6 +105,11 @@ module.exports = (bot) ->
     'The internet'
   ]
 ```
+
+## Contributors
+
+- [blzkz](https://github.com/blzkz)
+- [Tunnecino](https://github.com/Arrogance) @ [arrogance.es](http://www.arrogance.es)
 
 ## License
 

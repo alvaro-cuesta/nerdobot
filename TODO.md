@@ -13,7 +13,6 @@
 
 ### Bot
 
-- Antiflood
 - Command permissions (at least admin)
 - Web interface
    - For plugins too!
@@ -37,10 +36,9 @@
 - Nickserv
 - Google/I'm Feeling Lucky/lmgtfy
 - Wikipedia
-- Google bit.ly shortener/expander
+- Google/bit.ly shortener/expander
 - More cool APIs?
 - Logging
-- JS eval in sandbox?
 - Stats (max users, most talking, most joins, etc.)
 - Dice throw
 - Timer/alarm/countdown
@@ -65,8 +63,6 @@
    - Ping
    - Time
 - Mail system
-- Git/GitHub
 - Autoreplys
 - Macros
-- Reddittits
 - Polls

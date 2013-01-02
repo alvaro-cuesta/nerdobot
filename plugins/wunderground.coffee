@@ -1,12 +1,12 @@
-request = require('request')
+request = require 'request'
 
 module.exports = (bot, apikey) ->
 
   success = (data, channel, message) ->
     [fecha, alta, baja, condition, wind, wind_d, hum, snow] = [
       data['date']['weekday'] + ", " +
-        data['date']['day'] + " de " +
-        data['date']['monthname'],
+      data['date']['day'] + " de " +
+      data['date']['monthname'],
       data['high']['celsius'],
       data['low']['celsius'],
       data['conditions'],
@@ -34,9 +34,11 @@ module.exports = (bot, apikey) ->
     if not channel?
       bot.notice from.nick, 'Este comando solo funciona en un canal!'
       return
+
     if not message?
       bot.notice from.nick, 'Debes de indicarme una búsqueda!'
       return
+
     request 
       url: "http://api.wunderground.com/api/#{apikey}/forecast"+
       "/lang:SP/q/autoip/#{message}.json"
