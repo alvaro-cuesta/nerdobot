@@ -42,13 +42,11 @@ or
 $ npm start
 ```
 
-You can also install your `nerdobot` copy globaly issuing this commands:
+You can also install your own nerdobot copy globally (to execute typing `nerdobot` anywhere in your system) executing this under nerdobot's root folder:
 
 ```sh
 $ sudo npm install -g
 ```
-
-Now you'll be able to run your own copy using `nerdobot` anywhere in your system.
 
 ### Contributing
 
