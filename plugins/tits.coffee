@@ -23,7 +23,6 @@ module.exports = (bot) ->
         num = Math.floor Math.random() * data.data.children.length
         bot.say channel, data.data.children[num].data.url
 
-
   name: 'Tits'
   description: 'Tits or get the fuck out '
   version: '0.1'
