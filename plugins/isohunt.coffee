@@ -63,8 +63,10 @@ module.exports = (bot) ->
   bot.commands.on 'isohunt', search
 
   name: 'ISOHunt Search'
-  description: 'Devuelve los tres primeros resultados de ISOHunt.'
-  version: '0.1'
+  description: 'Devuelve los tres primeros resultados de ISOHunt. ' +
+    'API IsoHunt: http://ca.isohunt.com/forum/viewtopic.php?p=433527#433527 ' +
+    'API ou.gd: http://ou.gd/pages/api.php'
+  version: '0.2'
   authors: [
     'Tunnecino @ arrogance.es',
   ]
