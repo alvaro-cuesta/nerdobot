@@ -16,7 +16,7 @@
     }
   ],
   "bin": {
-    "nerdo": "./bin/nerdo.coffee"
+    "nerdobot": "./bin/nerdo.coffee"
   },
   "scripts": {
     "start": "coffee ./bin/nerdo.coffee"
