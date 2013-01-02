@@ -104,6 +104,11 @@ module.exports = (bot) ->
   ]
 ```
 
+## Contributors
+
+- [blzkz](https://github.com/blzkz)
+- [Tunnecino](https://github.com/Arrogance) @ [arrogance.es](http://www.arrogance.es)
+
 ## License
 
 Copyright © 2012 Álvaro Cuesta and other contributors
