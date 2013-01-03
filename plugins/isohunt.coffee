@@ -37,21 +37,21 @@ module.exports = (bot) ->
         url: "http://ou.gd/api.php?format=json&action=shorturl&url=#{link}"
         json: true
         , (err, res, data) ->
-            if err?
-              enl = link
-            if not data?
-              enl = link
-            else if data['status'] isnt 'success'
-              enl = link
-            else
-              enl = data['shorturl']
+          if err?
+            enl = link
+          if not data?
+            enl = link
+          else if data['status'] isnt 'success'
+            enl = link
+          else
+            enl = data['shorturl']
 
-            title = item['title'].replace /<(.|\n)*?>/g, ""
-            bot.say channel,
-              "\"#{title}\" - #{enl} " +
-              "(#{item['size']}) Ratio:#{bot.BOLD}" +
-              "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
-              "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
+          title = item['title'].replace /<(.|\n)*?>/g, ""
+          bot.say channel,
+            "\"#{title}\" - #{enl} " +
+            "(#{item['size']}) Ratio:#{bot.BOLD}" +
+            "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
+            "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
 
     sendErr = (err) ->
       bot.say channel, 
