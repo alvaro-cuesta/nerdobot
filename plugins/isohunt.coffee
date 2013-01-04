@@ -23,35 +23,36 @@ itemBanner = (item, link) ->
               
 module.exports = (bot, shorten) ->
 
-  doURL = (item) ->
-    link = isoFileURL item.guid
-    if shorten
-      request
-        url: shortenURL link
-        json: true
-        , (err, res, data) ->
-          if not err? and data? and data['status'] is 'success'
-            link = data['shorturl']
-
-          bot.say channel, itemBanner(item, link)
-    else
-      bot.say channel, itemBanner(item, link)
-
-  sendMsg = (data, message) ->
-    bot.say channel, 
-      banner "#{bot.BOLD}#{message}#{bot.RESET} - top #{ROWS} seeded results"
-    doURL item for item in data.items.list
-
-  sendErr = (err) ->
-    bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
-      
   search = (from, message, channel) ->
     if not channel?
       bot.notice from.nick, 'That command only works in channels'
       return
+
     if not message?
       bot.notice from.nick, 'You should specify a search query!'
       return
+
+    doURL = (item) ->
+      link = isoFileURL item.guid
+      if shorten
+        request
+          url: shortenURL link
+          json: true
+          , (err, res, data) ->
+            if not err? and data? and data['status'] is 'success'
+              link = data['shorturl']
+
+            bot.say channel, itemBanner(item, link)
+      else
+        bot.say channel, itemBanner(item, link)
+
+    sendMsg = (data, message) ->
+      bot.say channel, 
+        banner "#{bot.BOLD}#{message}#{bot.RESET} - top #{ROWS} seeded results"
+      doURL item for item in data.items.list
+
+    sendErr = (err) ->
+      bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
 
     request 
       url: isoSearchURL message.replace(/\s/g, "+")
