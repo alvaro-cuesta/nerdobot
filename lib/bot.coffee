@@ -1,5 +1,5 @@
 util = require './util'
-irc = require('./irc')
+irc = require './irc'
 EventEmitter = require('events').EventEmitter
 
 module.exports.Bot = class Bot extends irc.Client
@@ -51,4 +51,4 @@ module.exports.Bot = class Bot extends irc.Client
           antiflood()
 
       else
-        @notice "Unknown command #{@BOLD}!#{command}#{@RESET}", from.nick
+        @notice from.nick, "Unknown command #{@BOLD}!#{command}#{@RESET}"
