@@ -1,44 +1,45 @@
 request = require('request')
 
-module.exports = (bot) ->
+searchURL = (q) ->
+  "http://gdata.youtube.com/feeds/api/videos?q=#{q}&max-results=1&v=2&alt=json"
+watchURL = (v) ->
+  "http://youtube.com/watch?v=#{v}"
+banner = (message) ->
+  "#{bot.BOLD}You#{bot.color 'white', 'red'}Tube#{bot.RESET} - #{message}"
 
+module.exports = (bot) ->
+  
   sendMsg = (content, channel) ->
-    links = JSON.stringify(content.id['$t'])
-    links = links.split ':'
+    links = JSON.stringify(content.id['$t']).split ':'
     [title, link, views] = [
       content.title['$t'], 
-      'http://youtube.com/watch?v='+links[3].replace('"', ''), 
+      watchURL links[3].replace('"', ''),
       content.yt$statistics['viewCount']
     ]
     bot.say channel, 
-      "#{bot.BOLD}You#{bot.color 'white', 'red'}Tube#{bot.RESET}" +
-      "- #{bot.BOLD}#{title}#{bot.RESET} - #{link} - " +
-      "#{bot.UNDERLINE}#{views}#{bot.RESET} visitas"
+      banner "#{link} - #{bot.UNDERLINE}#{views}#{bot.RESET} views"
 
   sendErr = (err, channel) ->
-    bot.say channel, 
-      "#{bot.BOLD}You#{bot.color 'white', 'red'}Tube#{bot.RESET}" + 
-      "- #{bot.BOLD}#{err}#{bot.RESET}"
+    bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
 
   youtube = (from, message, channel) ->
     if not channel?
-      bot.notice from.nick, 'Este comando solo funciona en un canal!'
+      bot.notice from.nick, 'That command only works in channels'
       return
     if not message?
-      bot.notice from.nick, 'Debes de indicarme una búsqueda!'
+      bot.notice from.nick, 'You should specify a search query!'
       return
 
     request 
-      url: "http://gdata.youtube.com/feeds/api/videos?q=#{message}"+
-        "&max-results=1&v=2&alt=json"
+      url: searchURL message
       json: true
     , (err, res, data) ->
         if err?
-          sendErr "Sin conexión a Youtube...", channel
+          sendErr "Couldn't connect...", channel
           return
 
         if data.feed.openSearch$totalResults['$t'] is 0
-          sendErr "Sin resultados...", channel
+          sendErr "No results...", channel
           return
 
         sendMsg data.feed.entry[0], channel
@@ -47,7 +48,7 @@ module.exports = (bot) ->
   bot.commands.on 'youtube', youtube
 
   name: 'Youtube Search'
-  description: 'Devuelve el primer resultado en youtube.'
+  description: 'Returns the first YouTube result.'
   version: '0.4'
   authors: [
     'Tunnecino @ arrogance.es',
