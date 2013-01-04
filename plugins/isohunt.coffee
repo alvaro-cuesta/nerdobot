@@ -23,6 +23,28 @@ itemBanner = (item, link) ->
               
 module.exports = (bot, shorten) ->
 
+  doURL = (item) ->
+    link = isoFileURL item.guid
+    if shorten
+      request
+        url: shortenURL link
+        json: true
+        , (err, res, data) ->
+          if not err? and data? and data['status'] is 'success'
+            link = data['shorturl']
+
+          bot.say channel, itemBanner(item, link)
+    else
+      bot.say channel, itemBanner(item, link)
+
+  sendMsg = (data, message) ->
+    bot.say channel, 
+      banner "#{bot.BOLD}#{message}#{bot.RESET} - top #{ROWS} seeded results"
+    doURL item for item in data.items.list
+
+  sendErr = (err) ->
+    bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
+      
   search = (from, message, channel) ->
     if not channel?
       bot.notice from.nick, 'That command only works in channels'
@@ -44,29 +66,6 @@ module.exports = (bot, shorten) ->
           return
 
         sendMsg data, message
-
-    sendMsg = (data, message) ->
-      bot.say channel, 
-        banner "#{bot.BOLD}#{message}#{bot.RESET} - top #{ROWS} seeded results"
-      doURL item for item in data.items.list
-
-    doURL = (item) ->
-      link = isoFileURL item.guid
-      if shorten
-        request
-          url: shortenURL link
-          json: true
-          , (err, res, data) ->
-            if not err? and data? and data['status'] is 'success'
-              link = data['shorturl']
-
-            bot.say channel, itemBanner(item, link)
-      else
-        bot.say channel, itemBanner(item, link)
-
-    sendErr = (err) ->
-      bot.say channel, 
-        banner "#{bot.BOLD}#{err}#{bot.RESET}"
 
   bot.commands.on 'torrent', search
   bot.commands.on 't', search
