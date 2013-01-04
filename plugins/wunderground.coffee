@@ -23,7 +23,7 @@ module.exports = (bot, apikey) ->
       [weekday, month, day] = [
           data.date.weekday,
           data.date.monthname,
-          util.pad data.date.day, 2
+          util.lpad data.date.day, 2
       ]
       [date, high, low, condition, wind, wind_d, hum, snow] = [
         "#{weekday}, #{month} #{day}",
