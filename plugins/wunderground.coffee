@@ -59,7 +59,7 @@ module.exports = (bot, apikey) ->
         if data.response.results?
           zmw = data.response.results[0]['zmw']
           request 
-            url: wunderURL zmw
+            url: infoURL zmw
             json: true
             (err, res, data) ->
               if err?
