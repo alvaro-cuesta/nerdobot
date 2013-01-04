@@ -6,7 +6,7 @@ module.exports = (bot, apikey) ->
     "http://tinysong.com/b/#{query}?format=json&key=#{apikey}"
   
   banner = (message) ->
-    "#{bot.color 'blue'}#{bot.BOLD}TinySong#{bot.RESET} - "
+    "#{bot.color 'blue'}#{bot.BOLD}TinySong#{bot.RESET} - #{message}"
 
   bot.commands.on 'song', (from, message, channel) ->
     if not channel?
