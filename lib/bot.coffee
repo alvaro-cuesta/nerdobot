@@ -38,9 +38,11 @@ module.exports.Bot = class Bot extends irc.Client
       , @config.timeout
 
     if message[0] == @config.prefix
-      [command, args] = util.split message[1..], ' '
+      [command, rest] = util.split message[1..], ' '
       if not command? or command == ''
         return
+        
+      args = rest if rest != ''
 
       if @commands.listeners(command).length > 0
         if @time == true
