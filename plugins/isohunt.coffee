@@ -40,7 +40,7 @@ module.exports = (bot, shorten) ->
         request
           url: shortenURL link
           json: true
-          , (err, res, data) ->
+          (err, res, data) ->
             if not err? and data? and data['status'] is 'success'
               link = data['shorturl']
 
@@ -57,9 +57,9 @@ module.exports = (bot, shorten) ->
       bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
 
     request 
-      url: isoSearchURL message.replace(/\s/g, "+")
+      url: isoSearchURL message.replace(/\s/g, '+')
       json: true
-      , (err, res, data) ->
+      (err, res, data) ->
         if err?
           sendErr "Couldn't connect..."
           return
@@ -78,5 +78,5 @@ module.exports = (bot, shorten) ->
   description: "Returns ISOHunt's top results."
   version: '0.3'
   authors: [
-    'Tunnecino @ arrogance.es',
+    'Tunnecino @ arrogance.es'
   ]
