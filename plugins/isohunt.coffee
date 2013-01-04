@@ -1,72 +1,80 @@
+# API IsoHunt: http://ca.isohunt.com/forum/viewtopic.php?p=433527#433527
+# API ou.gd: http://ou.gd/pages/api.php
+
 request = require('request')
 
-module.exports = (bot) ->
+ROWS = 3 # number of results to return from ISOHunt query
+
+isoSearchURL = (ihq) ->
+  "http://ca.isohunt.com/js/json.php?ihq=#{ihq}&rows=#{ROWS}&sort=seeds"
+isoFileURL = (guid) ->
+  "http://isohunt.com/download/#{guid}/file.torrent"
+shortenURL = (url) ->
+  "http://ou.gd/api.php?format=json&action=shorturl&url=#{url}"
+banner = (message) ->
+  "#{bot.BOLD}#{bot.color 'blue'}ISOHunt Torrent Search#{bot.RESET}" +
+  " - #{message}"
+itemBanner = (item, link) ->
+  title = item['title'].replace /<(.|\n)*?>/g, ""
+  "\"#{title}\" - #{link} " +
+  "(#{item['size']}) Ratio:#{bot.BOLD}" +
+  "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
+  "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
+              
+module.exports = (bot, shorten) ->
 
   search = (from, message, channel) ->
     if not channel?
-      bot.notice from.nick, 'Este comando solo funciona en un canal!'
+      bot.notice from.nick, 'That command only works in channels'
       return
     if not message?
-      bot.notice from.nick, 'Debes de indicarme una búsqueda!'
+      bot.notice from.nick, 'You should specify a search query!'
       return
 
-    msg = message.replace /\s/g, "+"
     request 
-      url: "http://ca.isohunt.com/js/json.php?ihq=#{msg}&rows=3&sort=seeds"
+      url: isoSearchURL message.replace(/\s/g, "+")
       json: true
       , (err, res, data) ->
         if err?
-          sendErr "Sin conexión a ISOHunt..."
+          sendErr "Couldn't connect..."
           return
 
         if not data.items?
-          sendErr "Sin resultados..."
+          sendErr "No results..."
           return
 
         sendMsg data, message
 
     sendMsg = (data, message) ->
       bot.say channel, 
-        "#{bot.BOLD}#{bot.color 'blue'}ISOHunt Torrent Search #{bot.RESET}" +
-        "- #{bot.BOLD}#{message}#{bot.RESET} - los 3 resultados con mas seeds"
-      for item in data.items.list
-        doURL "http://isohunt.com/download/#{item['guid']}/file.torrent", item
+        banner "#{bot.BOLD}#{message}#{bot.RESET} - top #{ROWS} seeded results"
+      doURL item for item in data.items.list
 
-    doURL = (link, item) ->
-      request
-        url: "http://ou.gd/api.php?format=json&action=shorturl&url=#{link}"
-        json: true
-        , (err, res, data) ->
-          if err?
-            enl = link
-          if not data?
-            enl = link
-          else if data['status'] isnt 'success'
-            enl = link
-          else
-            enl = data['shorturl']
+    doURL = (item) ->
+      link = isoFileURL item.guid
+      if shorten
+        request
+          url: shortenURL link
+          json: true
+          , (err, res, data) ->
+            if not err? and data? and data['status'] is 'success'
+              link = data['shorturl']
 
-          title = item['title'].replace /<(.|\n)*?>/g, ""
-          bot.say channel,
-            "\"#{title}\" - #{enl} " +
-            "(#{item['size']}) Ratio:#{bot.BOLD}" +
-            "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
-            "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
+            bot.say channel, itemBanner(item, link)
+      else
+        bot.say channel, itemBanner(item, link)
 
     sendErr = (err) ->
       bot.say channel, 
-        "#{bot.BOLD}#{bot.color 'blue'}ISOHunt Torrent Search #{bot.RESET}" +
-        "- #{bot.BOLD}#{err}#{bot.RESET}"
+        banner "#{bot.BOLD}#{err}#{bot.RESET}"
 
   bot.commands.on 'torrent', search
   bot.commands.on 't', search
   bot.commands.on 'isohunt', search
 
   name: 'ISOHunt Search'
-  description: 'Devuelve los tres primeros resultados de ISOHunt. ' +
-    'API IsoHunt: http://ca.isohunt.com/forum/viewtopic.php?p=433527#433527 ' +
-    'API ou.gd: http://ou.gd/pages/api.php'
-  version: '0.2'
+  description: "Returns ISOHunt's top results."
+  version: '0.3'
   authors: [
     'Tunnecino @ arrogance.es',
   ]
