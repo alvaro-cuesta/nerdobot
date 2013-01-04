@@ -14,7 +14,7 @@ module.exports = (bot) ->
     links = JSON.stringify(content.id['$t']).split ':'
     [title, link, views] = [
       content.title['$t'], 
-      watchURL links[3].replace('"', ''),
+      watchURL(links[3].replace '"', ''),
       content.yt$statistics['viewCount']
     ]
     bot.say channel, 
