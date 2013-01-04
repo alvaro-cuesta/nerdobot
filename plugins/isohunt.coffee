@@ -5,9 +5,10 @@ request = require('request')
 
 ROWS = 3 # number of results to return from ISOHunt query
 
-isoSearchURL = (ihq) ->
+searchURL = (query) ->
+  ihq = query.replace /\s/g, '+'
   "http://ca.isohunt.com/js/json.php?ihq=#{ihq}&rows=#{ROWS}&sort=seeds"
-isoFileURL = (guid) ->
+fileURL = (guid) ->
   "http://isohunt.com/download/#{guid}/file.torrent"
 shortenURL = (url) ->
   "http://ou.gd/api.php?format=json&action=shorturl&url=#{url}"
@@ -25,17 +26,17 @@ module.exports = (bot, shorten) ->
     "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
     "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
 
-  search = (from, message, channel) ->
+  search = (from, query, channel) ->
     if not channel?
       bot.notice from.nick, 'That command only works in channels'
       return
 
-    if not message?
+    if not query?
       bot.notice from.nick, 'You should specify a search query!'
       return
 
     doURL = (item) ->
-      link = isoFileURL item.guid
+      link = fileURL item.guid
       if shorten
         request
           url: shortenURL link
@@ -57,7 +58,7 @@ module.exports = (bot, shorten) ->
       bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
 
     request 
-      url: isoSearchURL message.replace(/\s/g, '+')
+      url: searchURL query
       json: true
       (err, res, data) ->
         if err?
