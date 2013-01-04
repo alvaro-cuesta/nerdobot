@@ -1,41 +1,43 @@
 request = require('request')
 
 module.exports = (bot, apikey) ->
+  
+  songURL = (query) ->
+    "http://tinysong.com/b/#{query}?format=json&key=#{apikey}"
+  
+  banner = (message) ->
+    "#{bot.color 'blue'}#{bot.BOLD}TinySong#{bot.RESET} - "
 
   bot.commands.on 'song', (from, message, channel) ->
     if not channel?
-      bot.notice from.nick, 'Este comando solo funciona en un canal!'
+      bot.notice from.nick, 'That command only works in channels'
       return
     if not message?
-      bot.notice from.nick, 'Debes de indicarme una búsqueda!'
+      bot.notice from.nick, 'You should specify a search query!'
       return
 
-    msg = message.replace /\s/g, "+"
     request
-      url: "http://tinysong.com/b/#{msg}?format=json&key=#{apikey}"
+      url: songURL message.replace(/\s/g, '+')
       json: true
-    , (err, res, data) ->
+      (err, res, data) ->
         if err?
           bot.say channel, 
-            "#{bot.color 'blue'}#{bot.BOLD}TinySong" +
-            "#{bot.RESET} - #{bot.BOLD}Sin conexión a TinySong#{bot.RESET}"
+            banner "#{bot.BOLD}Couldn't connect...#{bot.RESET}"
           return
         
         if not data.SongName?
           bot.say channel, 
-            "#{bot.color 'blue'}#{bot.BOLD}TinySong" +
-            "#{bot.RESET} - #{bot.BOLD}Sin resultados...#{bot.RESET}"
+            banner "#{bot.BOLD}No results...#{bot.RESET}"
           return
 
         [name, artist, url] = [data.SongName, data.ArtistName, data.Url]
         bot.say channel,
-          "#{bot.color 'blue'}#{bot.BOLD}TinySong" +
-          "#{bot.RESET} - #{bot.BOLD}#{name}#{bot.RESET} " +
+          banner "#{bot.BOLD}#{name}#{bot.RESET} " +
           "(#{bot.UNDERLINE}#{artist}#{bot.RESET}) - #{url}"
 
   name: 'TinySong Search'
-  description: 'Devuelve el primer resultado de búsqueda en Tiny Song.'
-  version: '0.4'
+  description: 'Return the first TinySong search result.'
+  version: '0.5'
   authors: [
-    'Tunnecino @ arrogance.es',
+    'Tunnecino @ arrogance.es'
   ]
