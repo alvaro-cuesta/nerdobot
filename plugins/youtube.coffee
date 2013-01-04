@@ -4,10 +4,11 @@ searchURL = (q) ->
   "http://gdata.youtube.com/feeds/api/videos?q=#{q}&max-results=1&v=2&alt=json"
 watchURL = (v) ->
   "http://youtube.com/watch?v=#{v}"
-banner = (message) ->
-  "#{bot.BOLD}You#{bot.color 'white', 'red'}Tube#{bot.RESET} - #{message}"
 
 module.exports = (bot) ->
+  
+  banner = (message) ->
+    "#{bot.BOLD}You#{bot.color 'white', 'red'}Tube#{bot.RESET} - #{message}"
   
   sendMsg = (content, channel) ->
     links = JSON.stringify(content.id['$t']).split ':'
