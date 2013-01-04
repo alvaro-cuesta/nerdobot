@@ -19,6 +19,6 @@ module.exports.split = (string, pattern) ->
     [string[0..], undefined]
 
 # Left pad with zeroes
-lpad = (value, padding) ->
+module.exports.lpad = (value, padding) ->
   value = '0' + value while ('' + value).length < padding
   value
