@@ -1,12 +1,22 @@
 {
   "name": "nerdobot",
   "preferGlobal": "true",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Álvaro Cuesta <alvaro-cuesta@GitHub>",
   "description": "IRC bot for #mv.nerd built with CoffeeScript + NodeJS",
-  "contributors": [],
+  "contributors": [
+    {
+      "name": "blzkz",
+      "github": "https://github.com/blzkz"
+    },
+    {
+      "name": "Tunnecino",
+      "web": "http://www.arrogance.es",
+      "github": "https://github.com/Arrogance"
+    }
+  ],
   "bin": {
-    "nerdo": "./bin/nerdo.coffee"
+    "nerdobot": "./bin/nerdo.coffee"
   },
   "scripts": {
     "start": "coffee ./bin/nerdo.coffee"

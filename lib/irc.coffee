@@ -96,6 +96,7 @@ module.exports.Client = class Client
         @events.emit 'notice', who, message.trailing, message.params[0]
       when 'JOIN'
         who = parse_prefix(message.prefix)
+        message.params = [message.trailing] if message.trailing?
         if who.nick == @nick
           @channels.unshift message.trailing
         for channel in message.params
@@ -113,7 +114,7 @@ module.exports.Client = class Client
     @raw "PRIVMSG #{to} :#{message}"
 
   me: (to, message) ->
-    @say "\x01ACTION #{message}\x01", to
+    @say to, "\x01ACTION #{message}\x01"
 
   notice: (to, message) ->
     @raw "NOTICE #{to} :#{message}"
