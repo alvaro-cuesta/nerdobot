@@ -41,7 +41,7 @@ module.exports = (bot, apikey) ->
         "#{bot.color 'red'} #{high}#{bot.RESET}#{bot.BOLD} /" +
         "#{bot.color 'blue'} #{low}#{bot.RESET} "
       bot.say channel,
-        "#{condition}, #{wind}kph (#{wind_d}) wind, #{hum}% " +
+        "#{condition}, #{wind}kph #{wind_d} wind, #{hum}% " +
         "humidity and #{snow}% probability of snowing."
   
     failure = (err) ->
