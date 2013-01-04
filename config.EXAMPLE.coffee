@@ -17,15 +17,18 @@ module.exports =
   prefix: '!'
   timeout: 1000 # Antiflood ms time
   plugins:
-    quotes: '/opt/nerdo/nerdobot.sqlite3'
-    say: {}
-    raw: {}
     debug: {}
-    spy: {}
-    tits: {}
-    youtube: {}
-    wunderground: 'api-key'
-    tiny: 'api-key'
+    eval:
+      coffee: true
+    gitpush:
+      allowed: ['207.97.227.253', '50.57.128.197', '108.171.174.178', '127.0.0.1']
+      path: '/'
+      port: 9999
+      repositories: [
+        name: 'nerdobot'
+        owner: 'alvaro-cuesta'
+        to: ['#mv.nerd']
+      ]
     hi: [
       (bot, channel) ->
         bot.me channel, 'says hi'
@@ -47,6 +50,7 @@ module.exports =
       , (bot, channel) ->
         bot.say channel, "no, I won't !help you"
     ]
+    isohunt: {}
     q:
       service:
         nick: 'Q'
@@ -56,12 +60,11 @@ module.exports =
       pass: 'password'
       hash: '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8' # remove 'pass' if you use this
       channels: ['#mv.nerd'] # channels to log AFTER Q authing
-    gitpush:
-      allowed: ['207.97.227.253', '50.57.128.197', '108.171.174.178', '127.0.0.1']
-      path: '/'
-      port: 9999
-      repositories: [
-        name: 'nerdobot'
-        owner: 'alvaro-cuesta'
-        to: ['#mv.nerd']
-      ]
+    quotes: '/opt/nerdo/nerdobot.sqlite3'
+    raw: {}
+    say: {} 
+    spy: {}
+    tiny: 'api-key'
+    tits: {}
+    wunderground: 'api-key'
+    youtube: {}
