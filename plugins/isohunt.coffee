@@ -49,12 +49,7 @@ module.exports = (bot, shorten) ->
       else
         bot.say channel, itemBanner(item, link)
 
-    sendMsg = (data, message) ->
-      bot.say channel, 
-        banner "#{bot.BOLD}#{message}#{bot.RESET} - top seeded results (up to #{ROWS})"
-      doURL item for item in data.items.list
-
-    sendErr = (err) ->
+    failure = (err) ->
       bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
 
     request 
@@ -62,14 +57,16 @@ module.exports = (bot, shorten) ->
       json: true
       (err, res, data) ->
         if err?
-          sendErr "Couldn't connect..."
+          failure "Couldn't connect..."
           return
 
         if not data.items?
-          sendErr "No results..."
+          failure "No results..."
           return
 
-        sendMsg data, message
+        bot.say channel, 
+          banner "#{bot.BOLD}#{query}#{bot.RESET} - top seeded results (up to #{ROWS})"
+        doURL item for item in data.items.list
 
   bot.commands.on 'torrent', search
   bot.commands.on 't', search
