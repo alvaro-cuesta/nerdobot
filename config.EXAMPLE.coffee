@@ -29,6 +29,7 @@ module.exports =
         owner: 'alvaro-cuesta'
         to: ['#mv.nerd']
       ]
+    google: {}
     hi: [
       (bot, channel) ->
         bot.me channel, 'says hi'
@@ -62,7 +63,7 @@ module.exports =
       channels: ['#mv.nerd'] # channels to log AFTER Q authing
     quotes: '/opt/nerdo/nerdobot.sqlite3'
     raw: {}
-    say: {} 
+    say: {}
     spy: {}
     tiny: 'api-key'
     tits: {}
