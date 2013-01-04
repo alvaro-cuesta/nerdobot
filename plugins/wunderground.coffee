@@ -1,4 +1,5 @@
 request = require 'request'
+util = require '../lib/util'
 
 module.exports = (bot, apikey) ->
     
@@ -19,9 +20,13 @@ module.exports = (bot, apikey) ->
       return
       
     success = (data) ->
-      rawDate = data['date']
+      [weekday, month, day] = [
+          data.date.weekday,
+          data.date.monthname,
+          util.pad data.date.day, 2
+      ]
       [date, high, low, condition, wind, wind_d, hum, snow] = [
-        "#{rawDate.weekday}, #{rawDate.monthname}'s #{rawDate.day}",
+        "#{weekday}, #{month} #{day}",
         data['high']['celsius'],
         data['low']['celsius'],
         data['conditions'],
