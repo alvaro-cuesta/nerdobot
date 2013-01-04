@@ -24,16 +24,16 @@ module.exports = (bot) ->
   sendErr = (err, channel) ->
     bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
 
-  youtube = (from, message, channel) ->
+  youtube = (from, query, channel) ->
     if not channel?
       bot.notice from.nick, 'That command only works in channels'
       return
-    if not message?
+    if not query?
       bot.notice from.nick, 'You should specify a search query!'
       return
 
     request 
-      url: searchURL message
+      url: searchURL query
       json: true
       (err, res, data) ->
         if err?
