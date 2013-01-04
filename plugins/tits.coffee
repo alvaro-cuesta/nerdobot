@@ -1,5 +1,7 @@
 request = require 'request'
 
+URL = 'http://www.reddit.com/r/legalteens+nipples+gonewild+nsfw+nsfw_gif+tits+realgirls/.json?'
+
 module.exports = (bot) ->
   bot.commands.on 'tits', (from, message, channel) ->
     if not channel?
@@ -7,7 +9,7 @@ module.exports = (bot) ->
       return
 
     request
-      url: "http://www.reddit.com/r/legalteens+nipples+gonewild+nsfw+nsfw_gif+tits+realgirls/.json?"
+      url: URL
       json: true
       (err, res, data) ->
         if err?
