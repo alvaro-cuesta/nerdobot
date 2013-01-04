@@ -1,12 +1,11 @@
 request = require 'request'
 
-searchURL = (location) ->
-  "http://api.wunderground.com/api/#{apikey}/forecast/lang:EN/q/autoip/#{location}.json"
-infoURL = (zmw) ->
-  "http://api.wunderground.com/api/#{apikey}/forecast/lang:EN/q/zmw:#{zmw}.json"
-
 module.exports = (bot, apikey) ->
     
+  searchURL = (location) ->
+    "http://api.wunderground.com/api/#{apikey}/forecast/lang:EN/q/autoip/#{location}.json"
+  infoURL = (zmw) ->
+    "http://api.wunderground.com/api/#{apikey}/forecast/lang:EN/q/zmw:#{zmw}.json"
   banner = (message) ->
     "#{bot.color 'blue'}#{bot.BOLD}Weather#{bot.RESET} - #{message}"
 
