@@ -21,8 +21,8 @@ module.exports = (bot, shorten) ->
     
   itemBanner = (item, link) ->
     title = item['title'].replace /<(.|\n)*?>/g, ""
-    "\"#{title}\" - #{link} " +
-    "(#{item['size']}) Ratio:#{bot.BOLD}" +
+    "\"#{title}\" - #{bot.UNDERLINE}#{bot.color 'blue'}#{link}" +
+    "#{bot.RESET} (#{item['size']}) Ratio:#{bot.BOLD}" +
     "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
     "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
 
