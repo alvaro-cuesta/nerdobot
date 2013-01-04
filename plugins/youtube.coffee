@@ -18,7 +18,8 @@ module.exports = (bot) ->
       content.yt$statistics['viewCount']
     ]
     bot.say channel, 
-      banner "#{link} - #{bot.UNDERLINE}#{views}#{bot.RESET} views"
+      banner "#{bot.BOLD}#{title}#{bot.RESET} - #{link} - " +
+        "#{bot.UNDERLINE}#{views}#{bot.RESET} views"
 
   sendErr = (err, channel) ->
     bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
