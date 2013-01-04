@@ -3,21 +3,22 @@ request = require('request')
 module.exports = (bot, apikey) ->
   
   songURL = (query) ->
+    query = query.replace /\s/g, '+'
     "http://tinysong.com/b/#{query}?format=json&key=#{apikey}"
   
   banner = (message) ->
     "#{bot.color 'blue'}#{bot.BOLD}TinySong#{bot.RESET} - #{message}"
 
-  bot.commands.on 'song', (from, message, channel) ->
+  bot.commands.on 'song', (from, query, channel) ->
     if not channel?
       bot.notice from.nick, 'That command only works in channels'
       return
-    if not message?
+    if not query?
       bot.notice from.nick, 'You should specify a search query!'
       return
 
     request
-      url: songURL message.replace(/\s/g, '+')
+      url: songURL query
       json: true
       (err, res, data) ->
         if err?
