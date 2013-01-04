@@ -33,7 +33,7 @@ module.exports = (bot) ->
     request 
       url: searchURL message
       json: true
-    , (err, res, data) ->
+      (err, res, data) ->
         if err?
           sendErr "Couldn't connect...", channel
           return
@@ -51,5 +51,5 @@ module.exports = (bot) ->
   description: 'Returns the first YouTube result.'
   version: '0.4'
   authors: [
-    'Tunnecino @ arrogance.es',
+    'Tunnecino @ arrogance.es'
   ]
