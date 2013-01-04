@@ -50,7 +50,7 @@ module.exports =
       , (bot, channel) ->
         bot.say channel, "no, I won't !help you"
     ]
-    isohunt: {}
+    isohunt: false # true = shorten torrent URL
     q:
       service:
         nick: 'Q'
