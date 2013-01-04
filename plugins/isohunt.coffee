@@ -11,17 +11,19 @@ isoFileURL = (guid) ->
   "http://isohunt.com/download/#{guid}/file.torrent"
 shortenURL = (url) ->
   "http://ou.gd/api.php?format=json&action=shorturl&url=#{url}"
-banner = (message) ->
-  "#{bot.BOLD}#{bot.color 'blue'}ISOHunt Torrent Search#{bot.RESET}" +
-  " - #{message}"
-itemBanner = (item, link) ->
-  title = item['title'].replace /<(.|\n)*?>/g, ""
-  "\"#{title}\" - #{link} " +
-  "(#{item['size']}) Ratio:#{bot.BOLD}" +
-  "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
-  "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
               
 module.exports = (bot, shorten) ->
+
+  banner = (message) ->
+    "#{bot.BOLD}#{bot.color 'blue'}ISOHunt Torrent Search#{bot.RESET}" +
+    " - #{message}"
+    
+  itemBanner = (item, link) ->
+    title = item['title'].replace /<(.|\n)*?>/g, ""
+    "\"#{title}\" - #{link} " +
+    "(#{item['size']}) Ratio:#{bot.BOLD}" +
+    "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
+    "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
 
   search = (from, message, channel) ->
     if not channel?
