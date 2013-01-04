@@ -34,7 +34,8 @@ module.exports = (bot, apikey) ->
         [name, artist, url] = [data.SongName, data.ArtistName, data.Url]
         bot.say channel,
           banner "#{bot.BOLD}#{name}#{bot.RESET} " +
-          "(#{bot.UNDERLINE}#{artist}#{bot.RESET}) - #{url}"
+          "(#{bot.UNDERLINE}#{artist}#{bot.RESET}) - " +
+          "#{bot.UNDERLINE}#{bot.color 'blue'}#{url}#{bot.RESET}"
 
   name: 'TinySong Search'
   description: 'Return the first TinySong search result.'
