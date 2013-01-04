@@ -50,7 +50,7 @@ module.exports = (bot, shorten) ->
 
     sendMsg = (data, message) ->
       bot.say channel, 
-        banner "#{bot.BOLD}#{message}#{bot.RESET} - top #{ROWS} seeded results"
+        banner "#{bot.BOLD}#{message}#{bot.RESET} - top seeded results (up to #{ROWS})"
       doURL item for item in data.items.list
 
     sendErr = (err) ->
