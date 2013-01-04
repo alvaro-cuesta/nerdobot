@@ -73,7 +73,7 @@ module.exports = (bot, apikey) ->
         success data.forecast.simpleforecast.forecastday[0]
 
   name: 'Wunderground Weather API'
-  description: 'Returns weather (today+tomorrow) for the most approximate city"
+  description: 'Returns weather (today+tomorrow) for the most approximate city'
   version: '0.5'
   authors: [
     'Tunnecino @ arrogance.es'
