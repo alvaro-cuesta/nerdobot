@@ -14,8 +14,8 @@ module.exports = (bot, apikey) ->
       bot.notice from.nick, 'That command only works in channels'
       return
 
-    if not message?
-      bot.notice from.nick, 'You should specify a search query!'
+    if not location?
+      bot.notice from.nick, 'You should specify a location!'
       return
       
     success = (data) ->
