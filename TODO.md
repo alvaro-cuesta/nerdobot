@@ -8,7 +8,7 @@
 - Part command and detection
 - Ident
 - Debug/spy colors
-- Mode helper
+- User/channel helper (modes, etc.)
 - Track self nick
 
 ### Bot
@@ -34,10 +34,7 @@
 ### Suggested plugins
 
 - Nickserv
-- Google/I'm Feeling Lucky/lmgtfy
-- Wikipedia
 - Google/bit.ly shortener/expander
-- More cool APIs?
 - Logging
 - Stats (max users, most talking, most joins, etc.)
 - Dice throw
