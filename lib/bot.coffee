@@ -51,4 +51,4 @@ module.exports.Bot = class Bot extends irc.Client
           antiflood()
 
       else
-        @notice from.nick, "Unknown command #{@BOLD}!#{command}#{@RESET}"
+        @notice from.nick, "Unknown command #{@BOLD}#{@config.prefix}#{command}#{@RESET}"
