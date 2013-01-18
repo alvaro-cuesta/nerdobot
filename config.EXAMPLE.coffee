@@ -17,6 +17,7 @@ module.exports =
   prefix: '!'
   timeout: 1000 # Antiflood ms time
   plugins:
+    brainfuck: 30000
     debug: {}
     eval:
       coffee: true
