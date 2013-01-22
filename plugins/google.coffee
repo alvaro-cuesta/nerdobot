@@ -52,13 +52,15 @@ module.exports = (bot) ->
           banner "#{bot.UNDERLINE}#{bot.color 'blue'}#{link}#{bot.RESET}" +
             " - #{title} (#{results} results)"
 
-  goog = google('')
-  wiki = google('site:en.wikipedia.org')
+  bot.addCommand 'google', ['g'],
+    'Google Search',
+    'ARGS: <search terms>',
+    google ''
 
-  bot.commands.on 'google', goog
-  bot.commands.on 'g', goog
-  bot.commands.on 'wiki', wiki
-  bot.commands.on 'w', wiki
+  bot.addCommand 'wiki', ['w'],
+    'Wikipedia Search',
+    'ARGS: <search terms>',
+    google('site:en.wikipedia.org')
 
   name: 'Google Search'
   description: 'Returns the first Google result.'

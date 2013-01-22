@@ -1,9 +1,12 @@
 module.exports = (bot) ->
-  bot.commands.on 'raw', (from, command) ->
-    if command? and command != ''
-      bot.raw command
-    else
-      bot.notice from.nick, "What should I do?"
+  bot.addCommand 'raw', [],
+    'Send a raw command to IRC server',
+    'ARGS: <command>',
+    (from, command) ->
+      if command? and command != ''
+        bot.raw command
+      else
+        bot.notice from.nick, "What should I do?"
 
   name: 'Raw'
   description: 'Send raw IRC commands to server'

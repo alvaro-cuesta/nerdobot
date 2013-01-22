@@ -36,36 +36,48 @@ module.exports = (bot, {coffee}) ->
       bot.events.on 'message', message
       bot.commands.on end_pattern, end
 
-  bot.commands.on 'eval', ({nick}, trailing, to) ->
-    s.run trailing, sayOutput(bot, to ? nick)
+  bot.addCommand 'eval', [],
+    'Evaluate JavaScript code',
+    'ARGS: <js code>',
+    ({nick}, trailing, to) ->
+      s.run trailing, sayOutput(bot, to ? nick)
 
-  bot.commands.on '!eval', ({nick}, trailing, to) ->
-    to ?= nnick
-    bot.say to,
-      " #{bot.color 'red'}! Reading JavaScript block from #{nick}#{bot.RESET}"
-    readBlock nick, to, '!end', (buffer) ->
-      s.run buffer, sayOutput(bot, to)
+  bot.addCommand '!eval', [],
+    'Evaluate a block of JavaScript code',
+    'When done write !!end and the full block will be executed',
+    ({nick}, trailing, to) ->
+      to ?= nnick
+      bot.say to,
+        " #{bot.color 'red'}! Reading JavaScript block from #{nick}#{bot.RESET}"
+      readBlock nick, to, '!end', (buffer) ->
+        s.run buffer, sayOutput(bot, to)
 
   if coffee
     cs = require 'coffee-script'
-    bot.commands.on 'coff', ({nick}, trailing, to) ->
-      to ?= nick
-      try
-        js = cs.compile trailing, bare: true
-        s.run js, sayOutput(bot, to)
-      catch error
-        bot.say to, " #{bot.BOLD}=#{bot.RESET} '#{error}'"
-
-    bot.commands.on '!coff', ({nick}, trailing, to) ->
-      to ?= nick
-      bot.say to,
-        " #{bot.color 'red'}! Reading CoffeeScript block from #{nick}#{bot.RESET}"
-      readBlock nick, to, '!end', (buffer) ->
+    bot.addCommand 'coff', [],
+      'Evaluate CoffeeScript code',
+      'ARGS: <cs code>',
+      ({nick}, trailing, to) ->
+        to ?= nick
         try
           js = cs.compile trailing, bare: true
           s.run js, sayOutput(bot, to)
         catch error
           bot.say to, " #{bot.BOLD}=#{bot.RESET} '#{error}'"
+
+    bot.addCommand '!coff', [],
+      'Evaluate a block of JavaScript code',
+      'When done write !!end and the full block will be executed',
+      ({nick}, trailing, to) ->
+        to ?= nick
+        bot.say to,
+          " #{bot.color 'red'}! Reading CoffeeScript block from #{nick}#{bot.RESET}"
+        readBlock nick, to, '!end', (buffer) ->
+          try
+            js = cs.compile trailing, bare: true
+            s.run js, sayOutput(bot, to)
+          catch error
+            bot.say to, " #{bot.BOLD}=#{bot.RESET} '#{error}'"
 
   name: 'Eval'
   description: 'Evaluate sandboxed code using !eval (CoffeeScript optional)'
