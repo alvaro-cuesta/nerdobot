@@ -1,6 +1,6 @@
 module.exports = (greetings) ->
 
-  @events.on 'join', (who, channel) ->
+  @events.on 'join', (who, channel) =>
     if who.nick == @nick
       sayFn = greetings[Math.floor(Math.random() * greetings.length)]
       sayFn channel
