@@ -10,10 +10,13 @@
 - Debug/spy colors
 - User/channel helper (modes, etc.)
 - Track self nick
+- SASL
+- Anti-throttling
 
 ### Bot
 
 - Command permissions (at least admin)
+   - Auth plugins
 - Web interface
    - For plugins too!
 
@@ -38,7 +41,6 @@
 ## Suggested plugins
 
 ### Simple
-- Dice throw
 - Fortune cookie
 - 8ball
 - Utils
