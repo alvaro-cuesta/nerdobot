@@ -11,16 +11,15 @@
 - User/channel helper (modes, etc.)
 - Track self nick
 - Strip colors when parsing for commands
+- SASL
+- Anti-throttling
 
 ### Bot
 
 - Command permissions (at least admin)
+   - Auth plugins
 - Web interface
    - For plugins too!
-
-# Plugins
-
-- Plugin info/help
 
 ## Quote
 
@@ -43,7 +42,6 @@
 ## Suggested plugins
 
 ### Simple
-- Dice throw
 - Fortune cookie
 - 8ball
 - Utils
