@@ -34,6 +34,7 @@
 
 ## YouTube/Google/Whatever
 - Some way to return random results instead of the first result.
+- Bug with tildes
 
 ## Suggested plugins
 
