@@ -59,7 +59,7 @@ module.exports.Bot = class Bot extends irc.Client
                 @say to, " #{info.help}"
 
               if info.aliases? and info.aliases.length > 0
-                @say to, " #{@BOLD}Aliases:#{@RESET} #{'!' + info.aliases.join ', !'}"
+                @say to, " #{@BOLD}Aliases:#{@RESET} #{@config.prefix + info.aliases.join ", #{@config.prefix}"}"
 
               return
 
@@ -70,8 +70,13 @@ module.exports.Bot = class Bot extends irc.Client
           for cmd, _ of meta.commands
             commands.push cmd
 
-        @say to, "#{@BOLD}#{@color 'red'}Available commands:#{@RESET} #{'!' + (commands.join ', !')}"
-        @say to, " Type #{@BOLD}!help <command>#{@BOLD} for detailed instructions."
+        commands.sort (a, b) ->
+          return 1 if a > b
+          return -1 if a < b
+          0
+
+        @say to, "#{@BOLD}#{@color 'red'}Available commands:#{@RESET} #{@config.prefix + commands.join ", #{@config.prefix}"}"
+        @say to, " Type #{@BOLD}#{@config.prefix}help <command>#{@BOLD} for detailed instructions."
 
   # Parse messages looking for client commands
   parseCommand: (from, message, channel) ->

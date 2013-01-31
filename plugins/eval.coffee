@@ -43,10 +43,10 @@ module.exports = ({coffee}) ->
     ({nick}, trailing, to) =>
       s.run trailing, sayOutput to ? nick
 
-  @addCommand '!eval',
-    aliases: ['!js']
+  @addCommand "#{@config.prefix}eval",
+    aliases: ["#{@config.prefix}js"]
     description: 'Evaluate a block of JavaScript code',
-    help: 'When done, write !!end and the full block will be executed',
+    help: "When done, write #{@config.prefix}#{@config.prefix}end and the full block will be executed"
     ({nick}, trailing, to) =>
       to ?= nnick
       @say to,
@@ -68,10 +68,10 @@ module.exports = ({coffee}) ->
         catch error
           @say to, " #{@BOLD}=#{@RESET} '#{error}'"
 
-    @addCommand '!coffee',
-      aliases: ['!coff']
+    @addCommand "#{@config.prefix}coffee",
+      aliases: ["#{@config.prefix}coff"]
       description: 'Evaluate a block of CoffeeScript code'
-      help: 'When done, write !!end and the full block will be executed',
+      help: "When done, write #{@config.prefix}#{@config.prefix}end and the full block will be executed"
       ({nick}, trailing, to) =>
         to ?= nick
         @say to,
