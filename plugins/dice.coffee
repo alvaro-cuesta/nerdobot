@@ -5,12 +5,13 @@ DEFAULT_DIES = 1
 DEFAULT_FACES = 6
 MAX_DIES = 100
 
-module.exports = (bot) ->
-  bot.addCommand 'dice',
+module.exports = ->
+
+  @addCommand 'dice',
     args: "<dices, default=#{DEFAULT_DIES}, max=#{MAX_DIES}> <faces, default=#{DEFAULT_FACES}>"
     aliases: ['d']
     description: 'Throw dies and show their sum'
-    ({nick}, message, to) ->
+    ({nick}, message, to) =>
       to ?= nick
 
       dies = DEFAULT_DIES
@@ -31,7 +32,7 @@ module.exports = (bot) ->
       sum = dies
       sum += floor random() * faces for _ in [1..dies]
 
-      bot.say to, " = #{sum}"
+      @say to, " = #{sum}"
 
   name: 'Dice'
   description: 'Throw dies'

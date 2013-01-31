@@ -1,26 +1,26 @@
 request = require 'request'
 util = require '../lib/util'
 
-module.exports = (bot, apikey) ->
+module.exports = (apikey) ->
 
   searchURL = (location) ->
     "http://api.wunderground.com/api/#{apikey}/forecast/lang:EN/q/autoip/#{location}.json"
   infoURL = (zmw) ->
     "http://api.wunderground.com/api/#{apikey}/forecast/lang:EN/q/zmw:#{zmw}.json"
   banner = (message) ->
-    "#{bot.color 'blue'}#{bot.BOLD}Weather#{bot.RESET} - #{message}"
+    "#{@color 'blue'}#{@BOLD}Weather#{@RESET} - #{message}"
 
-  bot.addCommand 'wunderground',
+  @addCommand 'wunderground',
     args: '<location>'
     description: 'Weather forecast'
     aliases: ['weather']
     (from, location, channel) ->
       if not channel?
-        bot.notice from.nick, 'That command only works in channels'
+        @notice from.nick, 'That command only works in channels'
         return
 
       if not location?
-        bot.notice from.nick, 'You should specify a location!'
+        @notice from.nick, 'You should specify a location!'
         return
 
       success = (data) ->
@@ -39,18 +39,18 @@ module.exports = (bot, apikey) ->
           data['avehumidity'],
           data['snow_allday']['in']
         ]
-        bot.say channel,
-          banner "#{bot.BOLD}#{location}#{bot.RESET} @ #{date}:" +
-          "#{bot.BOLD}" +
-          "#{bot.color 'red'} #{high}#{bot.RESET}#{bot.BOLD} /" +
-          "#{bot.color 'blue'} #{low}#{bot.RESET} "
-        bot.say channel,
+        @say channel,
+          banner "#{@BOLD}#{location}#{@RESET} @ #{date}:" +
+          "#{@BOLD}" +
+          "#{@color 'red'} #{high}#{@RESET}#{@BOLD} /" +
+          "#{@color 'blue'} #{low}#{@RESET} "
+        @say channel,
           "#{condition}, #{wind}kph #{wind_d} wind, #{hum}% " +
           "humidity and #{snow}% probability of snowing."
 
       failure = (err) ->
-        bot.say channel,
-          banner "#{bot.BOLD}#{err}#{bot.RESET}"
+        @say channel,
+          banner "#{@BOLD}#{err}#{@RESET}"
 
       request
         url: searchURL location

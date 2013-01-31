@@ -30,7 +30,7 @@ module.exports.Bot = class Bot extends irc.Client
         @commands.on command, cb
         @commands.on alias, cb for alias in meta.aliases if meta.aliases?
 
-      meta = require('../plugins/' + plugin)(botInstance, config)
+      meta = require('../plugins/' + plugin).apply botInstance, [config]
       # = {name, version, description, authors}
       if meta
         @plugins[plugin] = meta

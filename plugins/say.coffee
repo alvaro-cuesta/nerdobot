@@ -1,10 +1,10 @@
 util = require '../lib/util'
 
-module.exports = (bot) ->
-  bot.addCommand 'say',
+module.exports = ->
+  @addCommand 'say',
     args: '<to, optional> <message>'
     description: 'Make the bot say something'
-    (from, message, channel) ->
+    (from, message, channel) =>
       if message? and message != ''
         if channel?
           [dest, msg] = [channel, message]
@@ -13,12 +13,12 @@ module.exports = (bot) ->
           if b? and b != ''
             [dest, msg] = [a, b]
           else
-            bot.notice from.nick, 'Say what?'
+            @notice from.nick, 'Say what?'
             return
 
-        bot.say dest, msg
+        @say dest, msg
       else
-        bot.notice from.nick, 'Say what?'
+        @notice from.nick, 'Say what?'
 
   name: 'Say'
   description: 'Command to say things'

@@ -13,30 +13,30 @@ fileURL = (guid) ->
 shortenURL = (url) ->
   "http://ou.gd/api.php?format=json&action=shorturl&url=#{url}"
 
-module.exports = (bot, shorten) ->
+module.exports = (shorten) ->
 
-  banner = (message) ->
-    "#{bot.BOLD}#{bot.color 'blue'}ISOHunt Torrent Search#{bot.RESET}" +
+  banner = (message) =>
+    "#{@BOLD}#{@color 'blue'}ISOHunt Torrent Search#{@RESET}" +
     " - #{message}"
 
-  itemBanner = (item, link) ->
+  itemBanner = (item, link) =>
     title = item['title'].replace /<(.|\n)*?>/g, ""
-    "\"#{title}\" - #{bot.UNDERLINE}#{bot.color 'blue'}#{link}" +
-    "#{bot.RESET} (#{item['size']}) Ratio:#{bot.BOLD}" +
-    "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
-    "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
+    "\"#{title}\" - #{@UNDERLINE}#{@color 'blue'}#{link}" +
+    "#{@RESET} (#{item['size']}) Ratio:#{@BOLD}" +
+    "#{@color 'green'} #{item['Seeds']}#{@RESET}#{@BOLD} /" +
+    "#{@color 'red'} #{item['leechers']}#{@RESET}"
 
-  bot.addCommand 'isohunt',
+  @addCommand 'isohunt',
     args: '<search terms>'
     description: 'Search torrents in ISOHunt'
     aliases: ['torrent', 't']
-    (from, query, channel) ->
+    (from, query, channel) =>
       if not channel?
-        bot.notice from.nick, 'That command only works in channels'
+        @notice from.nick, 'That command only works in channels'
         return
 
       if not query?
-        bot.notice from.nick, 'You should specify a search query!'
+        @notice from.nick, 'You should specify a search query!'
         return
 
       doURL = (item) ->
@@ -49,12 +49,12 @@ module.exports = (bot, shorten) ->
               if not err? and data? and data['status'] is 'success'
                 link = data['shorturl']
 
-              bot.say channel, itemBanner(item, link)
+              @say channel, itemBanner(item, link)
         else
-          bot.say channel, itemBanner(item, link)
+          @say channel, itemBanner(item, link)
 
-      failure = (err) ->
-        bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
+      failure = (err) =>
+        @say channel, banner "#{@BOLD}#{err}#{@RESET}"
 
       request
         url: searchURL query
@@ -68,8 +68,8 @@ module.exports = (bot, shorten) ->
             failure "No results..."
             return
 
-          bot.say channel,
-            banner "#{bot.BOLD}#{query}#{bot.RESET} - top seeded results (up to #{ROWS})"
+          @say channel,
+            banner "#{@BOLD}#{query}#{@RESET} - top seeded results (up to #{ROWS})"
           doURL item for item in data.items.list
 
   name: 'ISOHunt Search'

@@ -4,8 +4,8 @@ sqlite3 = require('sqlite3')
 isInt = (n) ->
   !isNaN(parseInt(n)) and isFinite(n)
 
-module.exports = (bot, file) ->
-  db = new sqlite3.cached.Database file, (err) ->
+module.exports = (file) ->
+  db = new sqlite3.cached.Database file, (err) =>
     if err
       console.log "Error opening deatabase #{file}: #{err}"
       console.log "Disabling quote system!"
@@ -21,26 +21,26 @@ module.exports = (bot, file) ->
 
     # COMMAND !addquote <quote>
     #  only works in channels
-    bot.addCommand 'addquote',
+    @addCommand 'addquote',
       args: '<nick> <quote>'
       description: 'Add a quote'
-      (from, message, channel) ->
+      (from, message, channel) =>
         if not channel?
-          bot.notice from.nick, "That will only work in channels, idiot..."
+          @notice from.nick, "That will only work in channels, idiot..."
           return
 
         if not message?
-          bot.notice from.nick, "Tell me the quote, moron!"
+          @notice from.nick, "Tell me the quote, moron!"
           return
 
         [nick, quote] = util.split message, ' '
 
         if not nick? or nick == ''
-          bot.notice from.nick, "Tell me the quote, moron!"
+          @notice from.nick, "Tell me the quote, moron!"
           return
 
         if not quote? or quote == ''
-          bot.notice from.nick, "So... what did #{nick} say?"
+          @notice from.nick, "So... what did #{nick} say?"
           return
 
         db.run "INSERT INTO quotes (channel, nick, quote, by)
@@ -49,11 +49,11 @@ module.exports = (bot, file) ->
           $nick: nick
           $quote: quote
           $by: from.nick
-        , (err) ->
+        , (err) =>
           if err
             boy.say channel, "\x02Error inserting quote:\x0f #{err}"
           else
-            bot.say channel, "Quote inserted! \x02(#{this.lastID})\x0f"
+            @say channel, "Quote inserted! \x02(#{this.lastID})\x0f"
 
     # SELECT string of fields for !quote
     FIELDS = [
@@ -66,10 +66,10 @@ module.exports = (bot, file) ->
       .join ', '
 
     # COMMAND !quote <channel> <number> (both optional)
-    bot.addCommand 'quote',
+    @addCommand 'quote',
       args: '<channel, only in queries, optional> <number, optional>'
       description: 'Print quotes'
-      (from, message, channel) ->
+      (from, message, channel) =>
         # Parse arguments
         if message?
           args = message.split ' '
@@ -104,20 +104,20 @@ module.exports = (bot, file) ->
         db.get "SELECT #{FIELDS} FROM quotes #{clause};",
           $channel: chn
           $id: num,
-          (err, row) ->
+          (err, row) =>
             if err
-              bot.say replyTo, "Error selecting quote: #{err}"
+              @say replyTo, "Error selecting quote: #{err}"
               return
 
             if not row?
-              bot.say replyTo, 'Quote not found'
+              @say replyTo, 'Quote not found'
               return
 
-            bot.say replyTo,
-              "#{bot.UNDERLINE}#{row.timestamp}#{bot.RESET} - #{row.by} " +
-              "#{bot.BOLD}(#{row.rowid})#{bot.RESET} | #{bot.color 'red'}#{row.nick}" +
+            @say replyTo,
+              "#{@UNDERLINE}#{row.timestamp}#{@RESET} - #{row.by} " +
+              "#{@BOLD}(#{row.rowid})#{@RESET} | #{@color 'red'}#{row.nick}" +
               (if not (chn? or chn == replyTo) then "@#{row.channel}" else '') +
-              "#{bot.RESET}: #{row.quote}"
+              "#{@RESET}: #{row.quote}"
 
   name: 'Quotes'
   description: 'Add and print/browse quotes'
