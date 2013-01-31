@@ -69,10 +69,14 @@ Plugins follow this structure:
 ```javascript
 module.exports = function(pluginConfig) {
   /* your code here
-   * 'this' will be bound to the bot instance
+   *
+   * - 'this' will be your bot instance
+   * - pluginConfig contains the key value for this plugin in
+   *   nerdobot's config file
    *
    * see 'lib/irc.coffee', 'lib/bot.coffee'
    * and other plugins for API/examples
+   *
    */
 
   return {
@@ -91,7 +95,10 @@ module.exports = function(pluginConfig) {
 ```coffee
 module.exports = (pluginConfig) ->
   # your code here
-  # 'bot' will be your bot instance
+  #
+  # - 'this' will be your bot instance
+  # - pluginConfig contains the key value for this plugin in
+  #   nerdobot's config file
   #
   # see 'lib/irc.coffee', 'lib/bot.coffee'
   # and other plugins for API/examples
