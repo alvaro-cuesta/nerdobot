@@ -9,7 +9,6 @@ module.exports = (bot, apikey) ->
   banner = (message) ->
     "#{bot.color 'blue'}#{bot.BOLD}TinySong#{bot.RESET} - #{message}"
 
-<<<<<<< HEAD
   bot.addCommand 'song',
     args: '<search terms>'
     description: 'Search TinySong (GrooveShark)'
