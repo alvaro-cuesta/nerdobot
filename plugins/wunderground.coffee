@@ -10,9 +10,10 @@ module.exports = (bot, apikey) ->
   banner = (message) ->
     "#{bot.color 'blue'}#{bot.BOLD}Weather#{bot.RESET} - #{message}"
 
-  bot.addCommand 'wunderground, '['weather'],
-    'Weather forecast',
-    'ARGS: <location>',
+  bot.addCommand 'wunderground',
+    args: '<location>'
+    description: 'Weather forecast'
+    aliases: ['weather']
     (from, location, channel) ->
       if not channel?
         bot.notice from.nick, 'That command only works in channels'

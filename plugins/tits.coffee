@@ -3,9 +3,9 @@ request = require 'request'
 URL = 'http://www.reddit.com/r/legalteens+nipples+gonewild+nsfw+nsfw_gif+tits+realgirls/.json?'
 
 module.exports = (bot) ->
-  bot.addCommand 'tits', [],
-    'Return random tit picture from Reddit',
-    'Search is done in legalteens, nipples, gonewild, nsfw, nsfw_gif, tits, realgirls'
+  bot.addCommand 'tits',
+    description: 'Return random tit picture from Reddit',
+    help: 'Search is done in legalteens, nipples, gonewild, nsfw, nsfw_gif, tits, realgirls'
     (from, message, channel) ->
       if not channel?
         bot.notice from, 'Tits only works in a channel!'

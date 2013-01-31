@@ -36,15 +36,17 @@ module.exports = (bot, {coffee}) ->
       bot.events.on 'message', message
       bot.commands.on end_pattern, end
 
-  bot.addCommand 'eval', [],
-    'Evaluate JavaScript code',
-    'ARGS: <js code>',
+  bot.addCommand 'eval',
+    args: '<js code>'
+    aliases: ['js']
+    description: 'Evaluate JavaScript code'
     ({nick}, trailing, to) ->
       s.run trailing, sayOutput(bot, to ? nick)
 
-  bot.addCommand '!eval', [],
-    'Evaluate a block of JavaScript code',
-    'When done write !!end and the full block will be executed',
+  bot.addCommand '!eval',
+    aliases: ['!js']
+    description: 'Evaluate a block of JavaScript code',
+    help: 'When done, write !!end and the full block will be executed',
     ({nick}, trailing, to) ->
       to ?= nnick
       bot.say to,
@@ -54,9 +56,10 @@ module.exports = (bot, {coffee}) ->
 
   if coffee
     cs = require 'coffee-script'
-    bot.addCommand 'coff', [],
-      'Evaluate CoffeeScript code',
-      'ARGS: <cs code>',
+    bot.addCommand 'coffee',
+      args: '<cs code>'
+      aliases: ['coff']
+      description: 'Evaluate CoffeeScript code'
       ({nick}, trailing, to) ->
         to ?= nick
         try
@@ -65,9 +68,10 @@ module.exports = (bot, {coffee}) ->
         catch error
           bot.say to, " #{bot.BOLD}=#{bot.RESET} '#{error}'"
 
-    bot.addCommand '!coff', [],
-      'Evaluate a block of JavaScript code',
-      'When done write !!end and the full block will be executed',
+    bot.addCommand '!coffee',
+      aliases: ['!coff']
+      description: 'Evaluate a block of CoffeeScript code'
+      help: 'When done, write !!end and the full block will be executed',
       ({nick}, trailing, to) ->
         to ?= nick
         bot.say to,

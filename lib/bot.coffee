@@ -25,17 +25,13 @@ module.exports.Bot = class Bot extends irc.Client
       commands = {}
 
       botInstance = Object.create this
-      botInstance.addCommand = (command, aliases, description, help, cb) =>
-        commands[command] =
-          aliases: aliases
-          description: description
-          help: help
-          cb: cb
+      botInstance.addCommand = (command, meta, cb) =>
+        commands[command] = meta
         @commands.on command, cb
-        @commands.on alias, cb for alias in aliases
+        @commands.on alias, cb for alias in meta.aliases if meta.aliases?
 
       meta = require('../plugins/' + plugin)(botInstance, config)
-      # = {name, version, descriptioni, authors}
+      # = {name, version, description, authors}
       if meta
         @plugins[plugin] = meta
         @plugins[plugin].commands = commands
@@ -48,22 +44,34 @@ module.exports.Bot = class Bot extends irc.Client
       to ?= nick
 
       if command?
-        for plugin, meta of @plugins
-          for comm, info of meta.commands
-            if command == comm
-              @say to,
-                "#{@BOLD}#{@color 'red'}#{@config.prefix}#{command}#{@RESET}" +
-                " - #{info.description}"
-              @say to, " #{info.help}"
+        command = command[1..] if command[0] == @config.prefix
+
+        for _, meta of @plugins
+          for cmd, info of meta.commands
+            if command == cmd
+              helpMsg = "#{@BOLD}#{@color 'red'}#{@config.prefix}#{command}#{@RESET}"
+              helpMsg += ' ' + info.args if info.args?
+              helpMsg += ' - ' + info.description if info.description?
+
+              @say to, helpMsg
+
+              if info.help?
+                @say to, " #{info.help}"
+
               if info.aliases? and info.aliases.length > 0
-                @say to, " #{@BOLD}Aliases:#{@RESET} #{info.aliases}"
+                @say to, " #{@BOLD}Aliases:#{@RESET} #{'!' + info.aliases.join ', !'}"
+
               return
+
         @notice nick, "Unknown command #{@BOLD}#{@config.prefix}#{command}#{@RESET}"
       else
-        @say to, "#{@BOLD}#{@color 'red'}Available commands:#{@RESET}"
-        for plugin, meta of @plugins
-          for comm, info of meta.commands
-            @say to, " #{@BOLD}#{@config.prefix}#{comm}#{@RESET} - #{info.description}"
+        commands = []
+        for _, meta of @plugins
+          for cmd, _ of meta.commands
+            commands.push cmd
+
+        @say to, "#{@BOLD}#{@color 'red'}Available commands:#{@RESET} #{'!' + (commands.join ', !')}"
+        @say to, " Type #{@BOLD}!help <command>#{@BOLD} for detailed instructions."
 
   # Parse messages looking for client commands
   parseCommand: (from, message, channel) ->

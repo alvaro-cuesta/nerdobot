@@ -1,9 +1,9 @@
 util = require '../lib/util'
 
 module.exports = (bot) ->
-  bot.addCommand 'say', [],
-    'Make the bot say something',
-    'ARGS: [TO] MESSAGE',
+  bot.addCommand 'say',
+    args: '<to, optional> <message>'
+    description: 'Make the bot say something'
     (from, message, channel) ->
       if message? and message != ''
         if channel?

@@ -21,9 +21,9 @@ module.exports = (bot, file) ->
 
     # COMMAND !addquote <quote>
     #  only works in channels
-    bot.addCommand 'addquote', [],
-      'Add a quote',
-      'ARGS: <nick> <quote>'
+    bot.addCommand 'addquote',
+      args: '<nick> <quote>'
+      description: 'Add a quote'
       (from, message, channel) ->
         if not channel?
           bot.notice from.nick, "That will only work in channels, idiot..."
@@ -66,9 +66,9 @@ module.exports = (bot, file) ->
       .join ', '
 
     # COMMAND !quote <channel> <number> (both optional)
-    bot.addCommand 'quote', [],
-      'Print quotes',
-      'ARGS: [CHANNEL] [NUMBER]'
+    bot.addCommand 'quote',
+      args: '<channel, only in queries, optional> <number, optional>'
+      description: 'Print quotes'
       (from, message, channel) ->
         # Parse arguments
         if message?

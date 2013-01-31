@@ -26,9 +26,10 @@ module.exports = (bot, shorten) ->
     "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
     "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
 
-  bot.addCommand 'isohunt', ['torrent', 't'],
-    'Search torrents in ISOHunt',
-    'ARGS: <search terms>',
+  bot.addCommand 'isohunt',
+    args: '<search terms>'
+    description: 'Search torrents in ISOHunt'
+    aliases: ['torrent', 't']
     (from, query, channel) ->
       if not channel?
         bot.notice from.nick, 'That command only works in channels'

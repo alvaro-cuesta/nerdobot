@@ -24,9 +24,10 @@ module.exports = (bot) ->
   sendErr = (err, channel) ->
     bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
 
-  bot.addCommand 'youtube', ['yt'],
-    'YouTube search',
-    'ARGS: <search terms>'
+  bot.addCommand 'youtube',
+    args: '<search terms>'
+    description: 'YouTube search'
+    aliases: ['yt']
     (from, query, channel) ->
       if not channel?
         bot.notice from.nick, 'That command only works in channels'

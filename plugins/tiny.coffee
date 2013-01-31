@@ -9,9 +9,10 @@ module.exports = (bot, apikey) ->
   banner = (message) ->
     "#{bot.color 'blue'}#{bot.BOLD}TinySong#{bot.RESET} - #{message}"
 
-  bot.addCommand 'song', ['tiny'],
-    'Search TinySong (GrooveShark)',
-    'ARGS: <search terms>'
+  bot.addCommand 'song',
+    args: '<search terms>'
+    description: 'Search TinySong (GrooveShark)'
+    aliases: ['tiny']
     (from, query, channel) ->
       if not channel?
         bot.notice from.nick, 'That command only works in channels'
