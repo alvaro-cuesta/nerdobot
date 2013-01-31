@@ -5,36 +5,36 @@ searchURL = (q) ->
 watchURL = (v) ->
   "http://youtu.be/#{v}"
 
-module.exports = (bot) ->
+module.exports = ->
 
-  banner = (message) ->
-    "#{bot.BOLD}You#{bot.color 'white', 'red'}Tube#{bot.RESET} - #{message}"
+  banner = (message) =>
+    "#{@BOLD}You#{@color 'white', 'red'}Tube#{@RESET} - #{message}"
 
-  sendMsg = (content, channel) ->
+  sendMsg = (content, channel) =>
     links = JSON.stringify(content.id['$t']).split ':'
     [title, link, views] = [
       content.title['$t'],
       watchURL(links[3].replace '"', ''),
       content.yt$statistics['viewCount']
     ]
-    bot.say channel,
-      banner "#{bot.BOLD}#{title}#{bot.RESET} - " +
-        "#{bot.UNDERLINE}#{bot.color 'blue'}#{link}#{bot.RESET} - " +
-        "#{bot.UNDERLINE}#{views}#{bot.RESET} views"
+    @say channel,
+      banner "#{@BOLD}#{title}#{@RESET} - " +
+        "#{@UNDERLINE}#{@color 'blue'}#{link}#{@RESET} - " +
+        "#{@UNDERLINE}#{views}#{@RESET} views"
 
-  sendErr = (err, channel) ->
-    bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
+  sendErr = (err, channel) =>
+    @say channel, banner "#{@BOLD}#{err}#{@RESET}"
 
-  bot.addCommand 'youtube',
+  @addCommand 'youtube',
     args: '<search terms>'
     description: 'YouTube search'
     aliases: ['yt']
-    (from, query, channel) ->
+    (from, query, channel) =>
       if not channel?
-        bot.notice from.nick, 'That command only works in channels'
+        @notice from.nick, 'That command only works in channels'
         return
       if not query?
-        bot.notice from.nick, 'You should specify a search query!'
+        @notice from.nick, 'You should specify a search query!'
         return
 
       request

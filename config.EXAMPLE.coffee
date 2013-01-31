@@ -19,6 +19,7 @@ module.exports =
   plugins:
     brainfuck: 30000
     debug: {}
+    dice: {}
     eval:
       coffee: true
     gitpush:
@@ -32,25 +33,25 @@ module.exports =
       ]
     google: {}
     hi: [
-      (bot, channel) ->
-        bot.me channel, 'says hi'
-      , (bot, channel) ->
-        bot.me channel, "is pleased to be in #{channel}!"
-      , (bot, channel) ->
-        bot.me channel, "doesn't follow the laws of robotics..."
-      , (bot, channel) ->
-        bot.me channel, 'is going to kill you'
-      , (bot, channel) ->
-        bot.say channel, 'hi!'
-      , (bot, channel) ->
-        bot.say channel, 'did you miss me?'
-      , (bot, channel) ->
-        bot.say channel, "I'm back!"
-      , (bot, channel) ->
-        bot.say channel, "what's that smell?"
-        bot.say channel, "wooops, sorry, it's me"
-      , (bot, channel) ->
-        bot.say channel, "no, I won't !help you"
+      (channel) ->
+        @me channel, 'says hi'
+      , (channel) ->
+        @me channel, "is pleased to be in #{channel}!"
+      , (channel) ->
+        @me channel, "doesn't follow the laws of robotics..."
+      , (channel) ->
+        @me channel, 'is going to kill you'
+      , (channel) ->
+        @say channel, 'hi!'
+      , (channel) ->
+        @say channel, 'did you miss me?'
+      , (channel) ->
+        @say channel, "I'm back!"
+      , (channel) ->
+        @say channel, "what's that smell?"
+        @say channel, "wooops, sorry, it's me"
+      , (channel) ->
+        @say channel, "no, I won't !help you"
     ]
     isohunt: false # true = shorten torrent URL
     q:

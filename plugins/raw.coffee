@@ -1,12 +1,12 @@
-module.exports = (bot) ->
-  bot.addCommand 'raw',
+module.exports = ->
+  @addCommand 'raw',
     args: '<command>',
     description: 'Send a raw command to the IRC server'
-    (from, command) ->
+    (from, command) =>
       if command? and command != ''
-        bot.raw command
+        @raw command
       else
-        bot.notice from.nick, "What should I do?"
+        @notice from.nick, "What should I do?"
 
   name: 'Raw'
   description: 'Send raw IRC commands to server'

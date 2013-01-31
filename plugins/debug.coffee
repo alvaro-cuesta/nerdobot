@@ -1,14 +1,14 @@
 util = require '../lib/util'
 nutil = require 'util'
 
-module.exports = (bot) ->
+module.exports = ->
   array2str = (params) ->
     if params then "[#{params.join ', '}]" else '[]'
 
-  bot.events.on 'in', ({prefix, command, params, trailing}) ->
+  @events.on 'in', ({prefix, command, params, trailing}) ->
     util.log " <- [#{prefix}, #{command}, #{array2str params}, #{trailing}]"
 
-  bot.events.on 'out', ({_, command, params, trailing}) ->
+  @events.on 'out', ({_, command, params, trailing}) ->
     util.log " -> [#{command}, #{array2str params}, #{trailing}]"
 
   name: 'Debug'

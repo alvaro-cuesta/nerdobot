@@ -30,7 +30,7 @@ module.exports.Bot = class Bot extends irc.Client
         @commands.on command, cb
         @commands.on alias, cb for alias in meta.aliases if meta.aliases?
 
-      meta = require('../plugins/' + plugin)(botInstance, config)
+      meta = require('../plugins/' + plugin).apply botInstance, [config]
       # = {name, version, description, authors}
       if meta
         @plugins[plugin] = meta
@@ -80,10 +80,14 @@ module.exports.Bot = class Bot extends irc.Client
         @time = true
       , @config.timeout
 
-    if message[0] == @config.prefix
-      [command, rest] = util.split message[1..], ' '
-      if not command? or command == ''
-        return
+    [command, rest] = util.split message, ' '
+    if not command? or command == ''
+      return
+
+    command = @stripControl command
+
+    if command[0] == @config.prefix
+      command = command[1..]
 
       args = rest if rest != ''
 

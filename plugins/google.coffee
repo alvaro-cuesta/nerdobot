@@ -3,30 +3,30 @@ request = require 'request'
 searchURL = (q) ->
   "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=#{q}"
 
-module.exports = (bot) ->
+module.exports = ->
 
-  banner = (message) ->
-    "#{bot.BOLD}#{bot.color 'blue'}G#{bot.color 'red'}o" +
-    "#{bot.color 'yellow'}o#{bot.color 'blue'}g" +
-    "#{bot.color 'green'}l#{bot.color 'red'}e" +
-    "#{bot.RESET} - #{message}"
+  banner = (message) =>
+    "#{@BOLD}#{@color 'blue'}G#{@color 'red'}o" +
+    "#{@color 'yellow'}o#{@color 'blue'}g" +
+    "#{@color 'green'}l#{@color 'red'}e" +
+    "#{@RESET} - #{message}"
 
-  google = (postfix) -> (from, query, channel) ->
+  google = (postfix) => (from, query, channel) =>
     if not channel?
-      bot.notice from.nick, 'That command only works in channels'
+      @notice from.nick, 'That command only works in channels'
       return
 
     if not query?
-      bot.notice from.nick, 'You should specify a search query!'
+      @notice from.nick, 'You should specify a search query!'
       return
 
     failure = (err) ->
-      bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
+      @say channel, banner "#{@BOLD}#{err}#{@RESET}"
 
     request
       url: searchURL "#{query} #{postfix}"
       json: true
-      (err, res, data) ->
+      (err, res, data) =>
         if err?
           failure "Couldn't connect..."
           return
@@ -43,22 +43,22 @@ module.exports = (bot) ->
 
         link = data.results[0].url
         title = data.results[0].title
-          .replace('<b>', bot.BOLD)
-          .replace('</b>', bot.BOLD)
+          .replace('<b>', @BOLD)
+          .replace('</b>', @BOLD)
           .replace(/<(.|\n)*?>/g, "")
         results = data.cursor.resultCount
 
-        bot.say channel,
-          banner "#{bot.UNDERLINE}#{bot.color 'blue'}#{link}#{bot.RESET}" +
+        @say channel,
+          banner "#{@UNDERLINE}#{@color 'blue'}#{link}#{@RESET}" +
             " - \"#{title}\" (#{results} results)"
 
-  bot.addCommand 'google',
+  @addCommand 'google',
     args: '<search terms>'
     aliases: ['g']
     description: 'Google Search'
     google ''
 
-  bot.addCommand 'wiki',
+  @addCommand 'wiki',
     args: '<search terms>',
     aliases: ['w']
     description: 'Wikipedia Search'

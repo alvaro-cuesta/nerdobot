@@ -2,23 +2,23 @@ Sandbox = require 'sandbox'  # TODO: bugged!
 util = require 'util'
 MAX_LOGS = 5
 
-sayOutput = (bot, to) -> (out) ->
-  # TODO: Remove whitespace in output
-  #       Limit output characters
-  bot.say to, " #{bot.BOLD}=#{bot.RESET} #{out.result}"
+module.exports = ({coffee}) ->
+  sayOutput = (to) => (out) =>
+    # TODO: Remove whitespace in output
+    #       Limit output characters
+    @say to, " #{@BOLD}=#{@RESET} #{out.result}"
 
-  return unless out.console.length > 0
+    return unless out.console.length > 0
 
-  con = "[ "
-  con += (util.inspect(log) for log in out.console[..MAX_LOGS]).join ', '
+    con = "[ "
+    con += (util.inspect(log) for log in out.console[..MAX_LOGS]).join ', '
 
-  if out.console.length > MAX_LOGS
-    con += ', ...'
+    if out.console.length > MAX_LOGS
+      con += ', ...'
 
-  con += " ]"
-  bot.say to, "#{bot.BOLD}>>#{bot.RESET} #{con}"
+    con += " ]"
+    @say to, "#{@BOLD}>>#{@RESET} #{con}"
 
-module.exports = (bot, {coffee}) ->
   s = new Sandbox()
 
   readBlock = (nick, readOn, end_pattern, cb) ->
@@ -27,61 +27,61 @@ module.exports = (bot, {coffee}) ->
       message = (from, msg, to) ->
         if from.nick == nick and msg != end_pattern and to == readOn
           buffer += "#{msg}\n"
-      end = (from, trailing, to) ->
+      end = (from, trailing, to) =>
         if from.nick == nick and to == readOn
           cb buffer
-          bot.events.removeListener 'message', message
-          bot.commands.removeListener end_pattern, end
+          @events.removeListener 'message', message
+          @commands.removeListener end_pattern, end
 
-      bot.events.on 'message', message
-      bot.commands.on end_pattern, end
+      @events.on 'message', message
+      @commands.on end_pattern, end
 
-  bot.addCommand 'eval',
+  @addCommand 'eval',
     args: '<js code>'
     aliases: ['js']
     description: 'Evaluate JavaScript code'
-    ({nick}, trailing, to) ->
-      s.run trailing, sayOutput(bot, to ? nick)
+    ({nick}, trailing, to) =>
+      s.run trailing, sayOutput to ? nick
 
-  bot.addCommand '!eval',
+  @addCommand '!eval',
     aliases: ['!js']
     description: 'Evaluate a block of JavaScript code',
     help: 'When done, write !!end and the full block will be executed',
-    ({nick}, trailing, to) ->
+    ({nick}, trailing, to) =>
       to ?= nnick
-      bot.say to,
-        " #{bot.color 'red'}! Reading JavaScript block from #{nick}#{bot.RESET}"
-      readBlock nick, to, '!end', (buffer) ->
-        s.run buffer, sayOutput(bot, to)
+      @say to,
+        " #{@color 'red'}! Reading JavaScript block from #{nick}#{@RESET}"
+      readBlock nick, to, '!end', (buffer) =>
+        s.run buffer, sayOutput to
 
   if coffee
     cs = require 'coffee-script'
-    bot.addCommand 'coffee',
+    @addCommand 'coffee',
       args: '<cs code>'
       aliases: ['coff']
       description: 'Evaluate CoffeeScript code'
-      ({nick}, trailing, to) ->
+      ({nick}, trailing, to) =>
         to ?= nick
         try
           js = cs.compile trailing, bare: true
-          s.run js, sayOutput(bot, to)
+          s.run js, sayOutput to
         catch error
-          bot.say to, " #{bot.BOLD}=#{bot.RESET} '#{error}'"
+          @say to, " #{@BOLD}=#{@RESET} '#{error}'"
 
-    bot.addCommand '!coffee',
+    @addCommand '!coffee',
       aliases: ['!coff']
       description: 'Evaluate a block of CoffeeScript code'
       help: 'When done, write !!end and the full block will be executed',
-      ({nick}, trailing, to) ->
+      ({nick}, trailing, to) =>
         to ?= nick
-        bot.say to,
-          " #{bot.color 'red'}! Reading CoffeeScript block from #{nick}#{bot.RESET}"
-        readBlock nick, to, '!end', (buffer) ->
+        @say to,
+          " #{@color 'red'}! Reading CoffeeScript block from #{nick}#{@RESET}"
+        readBlock nick, to, '!end', (buffer) =>
           try
             js = cs.compile trailing, bare: true
-            s.run js, sayOutput(bot, to)
+            s.run js, sayOutput to
           catch error
-            bot.say to, " #{bot.BOLD}=#{bot.RESET} '#{error}'"
+            @say to, " #{@BOLD}=#{@RESET} '#{error}'"
 
   name: 'Eval'
   description: 'Evaluate sandboxed code using !eval (CoffeeScript optional)'
