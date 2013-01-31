@@ -57,7 +57,7 @@ module.exports.Client = class Client
           return if offset < 0
 
           if offset > 0
-            @message parse buffer[0..offset-1]
+            @message parse buffer[0...offset]
 
           buffer = buffer[offset+2..]
 
