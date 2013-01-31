@@ -1,50 +1,61 @@
-module.exports = (bot, memory) ->
+# TODO:
+#  max iterations
+#  toroidal memory?
+#  cin
 
-  brainfuck = ({nick}, program, to) ->
-    to ?= nick
+module.exports = (memory) ->
 
-    cin = ""
-    out = ""
-    ptr = 0
-    eip = 0
-    inptr = 0
+  brainfuck = ({nick}, program, to) =>
+    do =>
+      to ?= nick
 
-    mem = []
-    for i in [0..memory-1]
-      mem[i] = 0
+      cin = ""
+      out = ""
+      ptr = 0
+      eip = 0
+      inptr = 0
 
-    # TODO: umbalanced []
-    operators =
-      '>': -> ptr++
-      '<': -> ptr--
-      '+': -> mem[ptr]++
-      '-': -> mem[ptr]--
-      '.': -> out += String.fromCharCode mem[ptr]
-      ',': ->
-        mem[ptr] = cin.charCodeAt inptr
-        inptr++
-      '[': ->
-        if mem[ptr] == 0
-          eip += program[eip..].indexOf ']'
-      ']': ->
-        if mem[ptr] != 0
-          eip = program[..eip].lastIndexOf '['
+      mem = []
+      for i in [0..memory-1]
+        mem[i] = 0
 
-    exec = ->
-      if program[eip] of operators
-        operators[program[eip]]()
+      operators =
+        '>': -> ptr++
+        '<': -> ptr--
+        '+': -> mem[ptr]++
+        '-': -> mem[ptr]--
+        '.': -> out += String.fromCharCode mem[ptr]
+        ',': -> mem[ptr] = cin.charCodeAt inptr++
+        '[': ->
+          index = program[eip..].indexOf ']'
+          throw "Unbalanced '[' in char #{eip}" if index < 0
+          eip += index if mem[ptr] == 0
+        ']': ->
+          index = program[..eip].lastIndexOf '['
+          throw "Unbalanced ']' in char #{eip}" if index < 0
+          eip = index if mem[ptr] != 0
 
-      eip++
+      compiled = (operators[c] for c in program when c of operators)
 
-      if eip < program.length
-        process.nextTick exec
-      else
-        bot.say to, "OUTPUT: #{out}"
+      exec = =>
+        try
+          compiled[eip++]()
 
-    exec()
+          if eip < program.length
+            process.nextTick exec
+          else
+            @say to, "#{@color 'blue'}#{@BOLD}OUTPUT#{@RESET}: #{out}"
+        catch err
+          @say to, "#{@color 'red'}#{@BOLD}ERROR#{@RESET}: #{err}"
 
-  bot.commands.on 'brainfuck', brainfuck
-  bot.commands.on 'bf', brainfuck
+      exec()
+
+  @addCommand 'brainfuck',
+    args: '<code>'
+    aliases: ['bf']
+    description: 'Interpret Brainfuck code'
+    help: "Further details: #{@color 'blue'}#{@UNDERLINE}http://en.wikipedia.org/wiki/Brainfuck#{@RESET}"
+    brainfuck
 
   name: 'Brainfuck'
   description: "Brainfuck interpreter"
