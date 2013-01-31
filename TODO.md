@@ -10,6 +10,7 @@
 - Debug/spy colors
 - User/channel helper (modes, etc.)
 - Track self nick
+- Strip colors when parsing for commands
 
 ### Bot
 
@@ -23,13 +24,21 @@
 
 ## Quote
 
-- Search quote using SQL's like
+- Search quote using SQL's like for quote, nick, etc.
 - SQL Index
 
 ## GitHub
 
 - Self-update
 - Abstract Express usage
+
+## YouTube/Google/Whatever
+- Some way to return random results instead of the first result.
+- Bug with tildes
+
+## eval/coff
+- Buggy on long array outputs (\n is inserted)
+- Multiline !!eval/!!coff doesn't work
 
 ## Suggested plugins
 
