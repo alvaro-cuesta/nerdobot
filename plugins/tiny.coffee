@@ -1,10 +1,10 @@
 request = require('request')
 
-songURL = (query) ->
-  query = query.replace /\s/g, '+'
-  "http://tinysong.com/b/#{query}?format=json&key=#{apikey}"
-
 module.exports = (apikey) ->
+
+  songURL = (query) ->
+    query = query.replace /\s/g, '+'
+    "http://tinysong.com/b/#{query}?format=json&key=#{apikey}"
 
   banner = (message) =>
     "#{@color 'blue'}#{@BOLD}TinySong#{@RESET} - #{message}"
@@ -24,7 +24,7 @@ module.exports = (apikey) ->
       request
         url: songURL query
         json: true
-        (err, res, data) =>
+        (err, res, data) ->
           if err?
             @say channel,
               banner "#{@BOLD}Couldn't connect...#{@RESET}"

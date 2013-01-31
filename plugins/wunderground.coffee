@@ -7,14 +7,15 @@ module.exports = (apikey) ->
     "http://api.wunderground.com/api/#{apikey}/forecast/lang:EN/q/autoip/#{location}.json"
   infoURL = (zmw) ->
     "http://api.wunderground.com/api/#{apikey}/forecast/lang:EN/q/zmw:#{zmw}.json"
-  banner = (message) ->
+
+  banner = (message) =>
     "#{@color 'blue'}#{@BOLD}Weather#{@RESET} - #{message}"
 
   @addCommand 'wunderground',
     args: '<location>'
     description: 'Weather forecast'
     aliases: ['weather']
-    (from, location, channel) ->
+    (from, location, channel) =>
       if not channel?
         @notice from.nick, 'That command only works in channels'
         return
@@ -23,7 +24,7 @@ module.exports = (apikey) ->
         @notice from.nick, 'You should specify a location!'
         return
 
-      success = (data) ->
+      success = (data) =>
         [weekday, month, day] = [
             data.date.weekday,
             data.date.monthname,
@@ -48,7 +49,7 @@ module.exports = (apikey) ->
           "#{condition}, #{wind}kph #{wind_d} wind, #{hum}% " +
           "humidity and #{snow}% probability of snowing."
 
-      failure = (err) ->
+      failure = (err) =>
         @say channel,
           banner "#{@BOLD}#{err}#{@RESET}"
 
