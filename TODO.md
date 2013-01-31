@@ -36,6 +36,10 @@
 - Some way to return random results instead of the first result.
 - Bug with tildes
 
+## eval/coff
+- Buggy on long array outputs (\n is inserted)
+- Multiline !!eval/!!coff doesn't work
+
 ## Suggested plugins
 
 ### Simple
