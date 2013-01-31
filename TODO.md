@@ -10,17 +10,12 @@
 - Debug/spy colors
 - User/channel helper (modes, etc.)
 - Track self nick
-- Strip colors when parsing for commands
 
 ### Bot
 
 - Command permissions (at least admin)
 - Web interface
    - For plugins too!
-
-# Plugins
-
-- Plugin info/help
 
 ## Quote
 
