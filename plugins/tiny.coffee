@@ -24,7 +24,7 @@ module.exports = (apikey) ->
       request
         url: songURL query
         json: true
-        (err, res, data) ->
+        (err, res, data) =>
           if err?
             @say channel,
               banner "#{@BOLD}Couldn't connect...#{@RESET}"

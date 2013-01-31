@@ -3,7 +3,7 @@ util = require 'util'
 MAX_LOGS = 5
 
 module.exports = ({coffee}) ->
-  sayOutput = (to) -> (out) ->
+  sayOutput = (to) => (out) =>
     # TODO: Remove whitespace in output
     #       Limit output characters
     @say to, " #{@BOLD}=#{@RESET} #{out.result}"
@@ -27,7 +27,7 @@ module.exports = ({coffee}) ->
       message = (from, msg, to) ->
         if from.nick == nick and msg != end_pattern and to == readOn
           buffer += "#{msg}\n"
-      end = (from, trailing, to) ->
+      end = (from, trailing, to) =>
         if from.nick == nick and to == readOn
           cb buffer
           @events.removeListener 'message', message
@@ -40,18 +40,18 @@ module.exports = ({coffee}) ->
     args: '<js code>'
     aliases: ['js']
     description: 'Evaluate JavaScript code'
-    ({nick}, trailing, to) ->
+    ({nick}, trailing, to) =>
       s.run trailing, sayOutput to ? nick
 
   @addCommand '!eval',
     aliases: ['!js']
     description: 'Evaluate a block of JavaScript code',
     help: 'When done, write !!end and the full block will be executed',
-    ({nick}, trailing, to) ->
+    ({nick}, trailing, to) =>
       to ?= nnick
       @say to,
         " #{@color 'red'}! Reading JavaScript block from #{nick}#{@RESET}"
-      readBlock nick, to, '!end', (buffer) ->
+      readBlock nick, to, '!end', (buffer) =>
         s.run buffer, sayOutput to
 
   if coffee
@@ -60,7 +60,7 @@ module.exports = ({coffee}) ->
       args: '<cs code>'
       aliases: ['coff']
       description: 'Evaluate CoffeeScript code'
-      ({nick}, trailing, to) ->
+      ({nick}, trailing, to) =>
         to ?= nick
         try
           js = cs.compile trailing, bare: true
@@ -72,11 +72,11 @@ module.exports = ({coffee}) ->
       aliases: ['!coff']
       description: 'Evaluate a block of CoffeeScript code'
       help: 'When done, write !!end and the full block will be executed',
-      ({nick}, trailing, to) ->
+      ({nick}, trailing, to) =>
         to ?= nick
         @say to,
           " #{@color 'red'}! Reading CoffeeScript block from #{nick}#{@RESET}"
-        readBlock nick, to, '!end', (buffer) ->
+        readBlock nick, to, '!end', (buffer) =>
           try
             js = cs.compile trailing, bare: true
             s.run js, sayOutput to

@@ -5,13 +5,13 @@ searchURL = (q) ->
 
 module.exports = ->
 
-  banner = (message) ->
+  banner = (message) =>
     "#{@BOLD}#{@color 'blue'}G#{@color 'red'}o" +
     "#{@color 'yellow'}o#{@color 'blue'}g" +
     "#{@color 'green'}l#{@color 'red'}e" +
     "#{@RESET} - #{message}"
 
-  google = (postfix) -> (from, query, channel) =>
+  google = (postfix) => (from, query, channel) =>
     if not channel?
       @notice from.nick, 'That command only works in channels'
       return

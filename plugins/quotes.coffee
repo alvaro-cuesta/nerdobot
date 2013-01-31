@@ -43,17 +43,18 @@ module.exports = (file) ->
           @notice from.nick, "So... what did #{nick} say?"
           return
 
+        bot = this
         db.run "INSERT INTO quotes (channel, nick, quote, by)
            VALUES ($channel, $nick, $quote, $by);",
           $channel: channel
           $nick: nick
           $quote: quote
           $by: from.nick
-        , (err) =>
+        , (err) ->
           if err
-            boy.say channel, "\x02Error inserting quote:\x0f #{err}"
+            bot.say channel, "\x02Error inserting quote:\x0f #{err}"
           else
-            @say channel, "Quote inserted! \x02(#{this.lastID})\x0f"
+            bot.say channel, "Quote inserted! \x02(#{@lastID})\x0f"
 
     # SELECT string of fields for !quote
     FIELDS = [
