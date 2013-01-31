@@ -31,7 +31,7 @@ module.exports = (bot) ->
       sum = dies
       sum += floor random() * faces for _ in [1..dies]
 
-      bot.say to, " = #{sum}"
+      bot.say to, "#{dies}d#{faces} -> #{sum}"
 
   name: 'Dice'
   description: 'Throw dies'

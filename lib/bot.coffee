@@ -6,6 +6,11 @@ module.exports.Bot = class Bot extends irc.Client
   constructor: (config) ->
     super(config)
 
+    @express = express()
+    @express.use express.bodyParser()
+    server = @express.listen config.http-port ? 9999
+    @events.on 'end', -> server.close()
+
     @plugins = {}
     @time = true
 

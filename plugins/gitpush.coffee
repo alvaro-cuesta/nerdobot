@@ -4,17 +4,13 @@ express = require 'express'
 module.exports = (bot, config) ->
   ps = new PushServer(config)
 
-  app = express()
-  app.use express.bodyParser()
-  app.post config.path, ps.handler
-  server = app.listen config.port ? 9999
-
-  bot.events.on 'end', -> server.close()
+  bot.express.post config.path or '/gitpush', ps.handler
 
   ps.on 'push', (branch, payload) ->
     for repo in config.repositories \
         when repo.name == payload.repository.name \
         and repo.owner == payload.repository.owner.name
+
       commits = payload.commits.length
       if commits == 0
         return
