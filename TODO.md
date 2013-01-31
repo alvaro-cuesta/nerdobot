@@ -2,13 +2,13 @@
 
 ### IRC Client
 
-- Missing 'to' in say = say to all channels
-- Join multiple channels
+- Missing 'to' in say -> say to all channels
+- Join multiple channels at once
 - Detect multiple channels joined in event?
 - Part command and detection
 - Ident
 - Debug/spy colors
-- Mode helper
+- User/channel helper (modes, etc.)
 - Track self nick
 
 ### Bot
@@ -21,36 +21,52 @@
 
 - Plugin info/help
 
-### Quote
+## Quote
 
 - Search quote using SQL's like
 - SQL Index
 
-### GitHub
+## GitHub
 
 - Self-update
 - Abstract Express usage
 
-### Suggested plugins
+## Suggested plugins
 
-- Nickserv
-- Google/I'm Feeling Lucky/lmgtfy
-- Wikipedia
-- Google/bit.ly shortener/expander
-- More cool APIs?
-- Logging
-- Stats (max users, most talking, most joins, etc.)
+### Simple
 - Dice throw
-- Timer/alarm/countdown
-- Fetch MV
+- Fortune cookie
 - 8ball
+- Utils
+   - Ping
+   - Time
+
+### Networks/auth
+- IRC-Hispano auth
+- Nickserv
+
+### APIs
+- Google/bit.ly/cluds shortener/expander
+- MV
+
+### IRC
+- Proper logging
+- Stats (max users, most talking, most joins, etc.)
 - Op controls + autoop etc.
+- Seen
+
+### Games
+- Trivial
+- Hangman
+- Russian roulette
+- Rock, paper, scissors
+
+### Other/utils
+- Timer/alarm/countdown
 - Brainfuck/other interpreters
    - https://github.com/flatland/lazybot/blob/develop/src/lazybot/plugins/haskell.clj
    - https://github.com/flatland/lazybot/blob/develop/src/lazybot/plugins/brainfuck.clj
 - Karma
-- Seen
-- Fortune cookie
 - WhatIs/About/Help/Info
 - Admin
    - Load/unload plugins
@@ -59,10 +75,6 @@
    - Debug
    - Unsandboxed eval
    - Shell commands
-- Utils
-   - Ping
-   - Time
 - Mail system
 - Autoreplys
-- Macros
 - Polls

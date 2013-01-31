@@ -3,7 +3,7 @@ request = require('request')
 searchURL = (q) ->
   "http://gdata.youtube.com/feeds/api/videos?q=#{q}&max-results=1&v=2&alt=json"
 watchURL = (v) ->
-  "http://youtube.com/watch?v=#{v}"
+  "http://youtu.be/#{v}"
 
 module.exports = (bot) ->
 
@@ -18,7 +18,8 @@ module.exports = (bot) ->
       content.yt$statistics['viewCount']
     ]
     bot.say channel,
-      banner "#{bot.BOLD}#{title}#{bot.RESET} - #{link} - " +
+      banner "#{bot.BOLD}#{title}#{bot.RESET} - " +
+        "#{bot.UNDERLINE}#{bot.color 'blue'}#{link}#{bot.RESET} - " +
         "#{bot.UNDERLINE}#{views}#{bot.RESET} views"
 
   sendErr = (err, channel) ->

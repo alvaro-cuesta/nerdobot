@@ -50,7 +50,7 @@ module.exports = (bot) ->
 
         bot.say channel,
           banner "#{bot.UNDERLINE}#{bot.color 'blue'}#{link}#{bot.RESET}" +
-            " - #{title} (#{results} results)"
+            " - \"#{title}\" (#{results} results)"
 
   bot.addCommand 'google',
     args: '<search terms>'

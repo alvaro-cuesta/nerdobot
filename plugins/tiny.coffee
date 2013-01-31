@@ -9,6 +9,7 @@ module.exports = (bot, apikey) ->
   banner = (message) ->
     "#{bot.color 'blue'}#{bot.BOLD}TinySong#{bot.RESET} - #{message}"
 
+<<<<<<< HEAD
   bot.addCommand 'song',
     args: '<search terms>'
     description: 'Search TinySong (GrooveShark)'
@@ -38,7 +39,8 @@ module.exports = (bot, apikey) ->
           [name, artist, url] = [data.SongName, data.ArtistName, data.Url]
           bot.say channel,
             banner "#{bot.BOLD}#{name}#{bot.RESET} " +
-            "(#{bot.UNDERLINE}#{artist}#{bot.RESET}) - #{url}"
+              "(#{bot.UNDERLINE}#{artist}#{bot.RESET}) - " +
+              "#{bot.UNDERLINE}#{bot.color 'blue'}#{url}#{bot.RESET}"
 
   name: 'TinySong Search'
   description: 'Return the first TinySong search result.'
