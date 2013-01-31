@@ -50,15 +50,19 @@ module.exports = (bot) ->
 
         bot.say channel,
           banner "#{bot.UNDERLINE}#{bot.color 'blue'}#{link}#{bot.RESET}" +
-            " - #{title} (#{results} results)"
+            " - \"#{title}\" (#{results} results)"
 
-  goog = google('')
-  wiki = google('site:en.wikipedia.org')
+  bot.addCommand 'google',
+    args: '<search terms>'
+    aliases: ['g']
+    description: 'Google Search'
+    google ''
 
-  bot.commands.on 'google', goog
-  bot.commands.on 'g', goog
-  bot.commands.on 'wiki', wiki
-  bot.commands.on 'w', wiki
+  bot.addCommand 'wiki',
+    args: '<search terms>',
+    aliases: ['w']
+    description: 'Wikipedia Search'
+    google 'site:en.wikipedia.org'
 
   name: 'Google Search'
   description: 'Returns the first Google result.'

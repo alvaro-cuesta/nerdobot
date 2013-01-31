@@ -24,6 +24,8 @@ $ nerdobot
 
 To setup the bot configuration, follow [config.EXAMPLE.coffee](https://github.com/alvaro-cuesta/nerdobot/blob/master/config.EXAMPLE.coffee). After that, you can either set the `NERDO_CONFIG` environment variable, pass the config file path as a command-line argument or put the file under nerdobot's root folder.
 
+**Be careful!** Some plugins need additional dependencies which won't be auto-installed by NPM. Inspect the error logs and fetch them using `npm install <dependency>` under nerdobot's folder.
+
 ## Developing
 
 ### Running your own nerdobot copy
