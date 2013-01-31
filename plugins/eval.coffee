@@ -1,22 +1,29 @@
 Sandbox = require 'sandbox'  # TODO: bugged!
 util = require 'util'
-MAX_LOGS = 5
+
+MAX_CHARS = 128
+MAX_LOGS = 30
 
 module.exports = ({coffee}) ->
   sayOutput = (to) => (out) =>
-    # TODO: Remove whitespace in output
-    #       Limit output characters
-    @say to, " #{@BOLD}=#{@RESET} #{out.result}"
+    stdout = out.result.replace(/[\r|\n]/g, '')
+    if stdout.length > MAX_CHARS
+      stdout = stdout[...MAX_CHARS] + "... #{@BOLD}(output truncated)#{@RESET}"
+    @say to, " #{@BOLD}=#{@RESET} #{stdout}"
 
     return unless out.console.length > 0
 
     con = "[ "
-    con += (util.inspect(log) for log in out.console[..MAX_LOGS]).join ', '
+    con += (util.inspect(log) for log in out.console[...MAX_LOGS]).join ', '
 
     if out.console.length > MAX_LOGS
       con += ', ...'
 
     con += " ]"
+
+    con = con.replace(/[\r|\n]/g, '')
+    if con.length > MAX_CHARS
+      con = con[...MAX_CHARS] + "... #{@BOLD}(output truncated)#{@RESET}"
     @say to, "#{@BOLD}>>#{@RESET} #{con}"
 
   s = new Sandbox()
