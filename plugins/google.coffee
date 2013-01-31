@@ -20,7 +20,7 @@ module.exports = ->
       @notice from.nick, 'You should specify a search query!'
       return
 
-    failure = (err) ->
+    failure = (err) =>
       @say channel, banner "#{@BOLD}#{err}#{@RESET}"
 
     request

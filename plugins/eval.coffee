@@ -28,8 +28,8 @@ module.exports = ({coffee}) ->
 
   s = new Sandbox()
 
-  readBlock = (nick, readOn, end_pattern, cb) ->
-    do ->
+  readBlock = (nick, readOn, end_pattern, cb) =>
+    do =>
       buffer = ''
       message = (from, msg, to) ->
         if from.nick == nick and msg != end_pattern and to == readOn
@@ -58,7 +58,7 @@ module.exports = ({coffee}) ->
       to ?= nnick
       @say to,
         " #{@color 'red'}! Reading JavaScript block from #{nick}#{@RESET}"
-      readBlock nick, to, '!end', (buffer) =>
+      readBlock nick, to, "#{@config.prefix}end", (buffer) =>
         s.run buffer, sayOutput to
 
   if coffee
@@ -83,7 +83,7 @@ module.exports = ({coffee}) ->
         to ?= nick
         @say to,
           " #{@color 'red'}! Reading CoffeeScript block from #{nick}#{@RESET}"
-        readBlock nick, to, '!end', (buffer) =>
+        readBlock nick, to, "#{@config.prefix}end", (buffer) =>
           try
             js = cs.compile trailing, bare: true
             s.run js, sayOutput to
