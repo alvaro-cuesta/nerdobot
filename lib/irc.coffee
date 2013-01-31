@@ -129,8 +129,8 @@ module.exports.Client = class Client
     color
 
   stripControl: (string) ->
-    string = string.replace /[\x02|\x1f\x0f]/, ''
-    string = string.replace /\x03[0-9][0-9]?(,[0-9][0-9]?)?/, ''
+    string = string.replace /[\x02|\x1f|\x0f]/g, ''
+    string = string.replace /\x03[0-9][0-9]?(,[0-9][0-9]?)?/g, ''
     string
 
   BOLD: "\x02"
