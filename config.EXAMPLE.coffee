@@ -67,7 +67,7 @@ module.exports =
     quotes: '/opt/nerdo/nerdobot.sqlite3'
     raw: {}
     spy: {}
-    tiny: 'api-key'
+    tinysong: 'api-key'
     tits: {}
     wunderground: 'api-key'
     youtube: {}

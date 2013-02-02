@@ -6,7 +6,6 @@ request = require('request')
 ROWS = 3 # number of results to return from ISOHunt query
 
 searchURL = (q) ->
-#  ihq = query.replace /\s/g, '+'
   q = encodeURIComponent q
   "http://ca.isohunt.com/js/json.php?q=#{ihq}&rows=#{ROWS}&sort=seeds"
 fileURL = (guid) ->
