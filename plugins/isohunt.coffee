@@ -17,8 +17,7 @@ shortenURL = (url) ->
 module.exports = (shorten) ->
 
   banner = (message) =>
-    "#{@BOLD}#{@color 'blue'}ISOHunt Torrent Search#{@RESET}" +
-    " - #{message}"
+    "#{@BOLD}#{@color 'blue'}ISOHunt Torrent Search#{@RESET} - #{message}"
 
   itemBanner = (item, link) =>
     title = item['title'].replace /<(.|\n)*?>/g, ""
