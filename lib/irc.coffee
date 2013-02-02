@@ -70,10 +70,10 @@ module.exports.Client = class Client
       # Auth to IRC server
 
       # Try nicks until one of them is available
-      if @config.user.nick not instanceof Array
-        nicklist = [@config.user.nick]
-      else
+      if Array.isArray @config.user.nick
         nicklist = @config.user.nick
+      else
+        nicklist = [@config.user.nick]
 
       i = 0
       @raw "NICK :#{nicklist[i++]}"
@@ -129,10 +129,12 @@ module.exports.Client = class Client
       when 'JOIN'
         who = parse_prefix(message.prefix)
         message.params = [message.trailing] if message.trailing?
-        if who.nick == @nick
-          @channels.unshift message.trailing
+        console.log @channels
         for channel in message.params
+          @channels.push channel if who.nick == @nick
+          console.log channel
           @events.emit 'join', who, channel
+        console.log @channels
       when 'ERROR'
         if message.trailing == 'Your host is trying to (re)connect too fast -- throttled'
           setTimeout (=> @connect()), @throttleTime *= 2
@@ -143,10 +145,10 @@ module.exports.Client = class Client
     @socket.write message + '\r\n'
 
   setNick: (nick, cb) ->
-    if nick not instanceof Array
-      nicklist = [nick]
-    else
+    if Array.isArray nick
       nicklist = nick
+    else
+      nicklist = [nick]
 
     do (i = 0, nicklist) =>
       @raw "NICK :#{nicklist[i++]}"
@@ -171,17 +173,35 @@ module.exports.Client = class Client
       @server.on '438', throttleListener
       @server.on 'NICK', nickListener
 
-  join: (channel) ->
-    @raw "JOIN #{channel}"
+  join: (channels) ->
+    if not Array.isArray channels
+      channels = [channels]
 
-  say: (to, message) ->
-    @raw "PRIVMSG #{to} :#{message}"
+    @raw "JOIN #{channels.join ' '}"
 
-  me: (to, message) ->
-    @say to, "\x01ACTION #{message}\x01"
+  broadcastHelper: (args) ->
+    args = [].slice.call(args) ? []
+    switch args.length
+      when 2
+        [recipients, message] = args
+        if not Array.isArray recipients
+          recipients = [recipients]
 
-  notice: (to, message) ->
-    @raw "NOTICE #{to} :#{message}"
+        return [recipients, message]
+      when 1
+        return [@channels, args[0]]
+
+  say: ->
+    [recipients, message] = (@broadcastHelper arguments) ? []
+    @raw "PRIVMSG #{to} :#{message}" for to in recipients if recipients?
+
+  me: ->
+    [recipients, message] = (@broadcastHelper arguments) ? []
+    @say recipients, "\x01ACTION #{message}\x01" if recipients?
+
+  notice: ->
+    [recipients, message] = (@broadcastHelper arguments) ? []
+    @raw "NOTICE #{to} :#{message}" for to in recipients if recipients?
 
   # IRC control characters (color, bold...)
   color: (foreground, background) ->

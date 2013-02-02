@@ -3,7 +3,7 @@ module.exports = ->
     args: '<command>',
     description: 'Send a raw command to the IRC server'
     (from, command) =>
-      if command? and command != ''
+      if command?
         @raw command
       else
         @notice from.nick, "What should I do?"
