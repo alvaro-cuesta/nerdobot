@@ -16,7 +16,6 @@ module.exports = (apikey) ->
   @addCommand 'wunderground',
     args: '<location>'
     description: 'Weather forecast'
-    aliases: ['weather']
     (from, location, channel) =>
       if not channel?
         @notice from.nick, 'That command only works in channels'

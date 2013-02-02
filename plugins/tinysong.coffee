@@ -9,10 +9,9 @@ module.exports = (apikey) ->
   banner = (message) =>
     "#{@color 'blue'}#{@BOLD}TinySong#{@RESET} - #{message}"
 
-  @addCommand 'song',
+  @addCommand 'tinysong',
     args: '<search terms>'
     description: 'Search TinySong (GrooveShark)'
-    aliases: ['tiny']
     (from, query, channel) =>
       if not channel?
         @notice from.nick, 'That command only works in channels'

@@ -55,13 +55,11 @@ module.exports = ->
 
   @addCommand 'google',
     args: '<search terms>'
-    aliases: ['g']
     description: 'Google Search'
     google ''
 
-  @addCommand 'wiki',
+  @addCommand 'wikipedia',
     args: '<search terms>',
-    aliases: ['w']
     description: 'Wikipedia Search'
     google 'site:en.wikipedia.org'
 

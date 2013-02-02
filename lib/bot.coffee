@@ -28,7 +28,8 @@ module.exports.Bot = class Bot extends irc.Client
       botInstance.addCommand = (command, meta, cb) =>
         commands[command] = meta
         @commands.on command, cb
-        @commands.on alias, cb for alias in meta.aliases if meta.aliases?
+        if @config.aliases[command]?
+          @commands.on alias, cb for alias in @config.aliases[command]
 
       meta = require('../plugins/' + plugin).apply botInstance, [config]
       # = {name, version, description, authors}

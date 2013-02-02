@@ -29,7 +29,6 @@ module.exports = ->
   @addCommand 'youtube',
     args: '<search terms>'
     description: 'YouTube search'
-    aliases: ['yt']
     (from, query, channel) =>
       if not channel?
         @notice from.nick, 'That command only works in channels'

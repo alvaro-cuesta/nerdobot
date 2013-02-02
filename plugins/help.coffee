@@ -11,7 +11,8 @@ module.exports = ->
 
         for _, meta of @plugins
           for cmd, info of meta.commands
-            if command == cmd or (info.aliases? and command in info.aliases)
+            if command == cmd or \
+               (@config.aliases[cmd]? and command in @config.aliases[cmd])
               helpMsg = "#{@BOLD}#{@color 'red'}#{@config.prefix}#{cmd}#{@RESET}"
               helpMsg += ' ' + info.args if info.args?
               helpMsg += ' - ' + info.description if info.description?
@@ -21,8 +22,9 @@ module.exports = ->
               if info.help?
                 @say to, " #{info.help}"
 
-              if info.aliases? and info.aliases.length > 0
-                @say to, " #{@BOLD}Aliases:#{@RESET} #{@config.prefix + info.aliases.join ", #{@config.prefix}"}"
+              if @config.aliases[cmd]?
+                aliases = @config.aliases[cmd]
+                @say to, " #{@BOLD}Aliases:#{@RESET} #{@config.prefix + aliases.join ", #{@config.prefix}"}"
 
               return
 

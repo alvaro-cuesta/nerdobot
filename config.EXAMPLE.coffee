@@ -72,3 +72,15 @@ module.exports =
     tits: {}
     wunderground: 'api-key'
     youtube: {}
+  aliases:
+    dice: ['d']
+    eval: ['js']
+    eval-block: ["jsb"]
+    coffee: ['coff']
+    coffee-block: ["coffb"]
+    google: ['g']
+    wikipedia: ['wiki', 'w']
+    isohunt: ['torrent', 't']
+    tinysong: ['song', 'tiny']
+    wunderground: ['weather']
+    youtube: ['yt']

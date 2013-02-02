@@ -9,7 +9,6 @@ module.exports = ->
 
   @addCommand 'dice',
     args: "<dices, default=#{DEFAULT_DIES}, max=#{MAX_DIES}> <faces, default=#{DEFAULT_FACES}>"
-    aliases: ['d']
     description: 'Throw dies and show their sum'
     ({nick}, message, to) =>
       to ?= nick

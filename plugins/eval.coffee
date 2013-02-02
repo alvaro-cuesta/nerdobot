@@ -45,13 +45,11 @@ module.exports = ({coffee}) ->
 
   @addCommand 'eval',
     args: '<js code>'
-    aliases: ['js']
     description: 'Evaluate JavaScript code'
     ({nick}, trailing, to) =>
       s.run trailing, sayOutput to ? nick
 
-  @addCommand "#{@config.prefix}eval",
-    aliases: ["#{@config.prefix}js"]
+  @addCommand "eval-block",
     description: 'Evaluate a block of JavaScript code',
     help: "When done, write #{@config.prefix}#{@config.prefix}end and the full block will be executed"
     ({nick}, trailing, to) =>
@@ -65,7 +63,6 @@ module.exports = ({coffee}) ->
     cs = require 'coffee-script'
     @addCommand 'coffee',
       args: '<cs code>'
-      aliases: ['coff']
       description: 'Evaluate CoffeeScript code'
       ({nick}, trailing, to) =>
         to ?= nick
@@ -75,8 +72,7 @@ module.exports = ({coffee}) ->
         catch error
           @say to, " #{@BOLD}=#{@RESET} '#{error}'"
 
-    @addCommand "#{@config.prefix}coffee",
-      aliases: ["#{@config.prefix}coff"]
+    @addCommand "coffee-block",
       description: 'Evaluate a block of CoffeeScript code'
       help: "When done, write #{@config.prefix}#{@config.prefix}end and the full block will be executed"
       ({nick}, trailing, to) =>
