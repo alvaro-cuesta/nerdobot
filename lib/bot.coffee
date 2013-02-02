@@ -48,8 +48,8 @@ module.exports.Bot = class Bot extends irc.Client
 
         for _, meta of @plugins
           for cmd, info of meta.commands
-            if command == cmd
-              helpMsg = "#{@BOLD}#{@color 'red'}#{@config.prefix}#{command}#{@RESET}"
+            if command == cmd or (info.aliases? and command in info.aliases)
+              helpMsg = "#{@BOLD}#{@color 'red'}#{@config.prefix}#{cmd}#{@RESET}"
               helpMsg += ' ' + info.args if info.args?
               helpMsg += ' - ' + info.description if info.description?
 
