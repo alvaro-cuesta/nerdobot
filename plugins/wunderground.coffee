@@ -4,8 +4,10 @@ util = require '../lib/util'
 module.exports = (apikey) ->
 
   searchURL = (location) ->
+    location = encodeURIComponent location
     "http://api.wunderground.com/api/#{apikey}/forecast/lang:EN/q/autoip/#{location}.json"
   infoURL = (zmw) ->
+    zmw = encodeURIComponent zmw
     "http://api.wunderground.com/api/#{apikey}/forecast/lang:EN/q/zmw:#{zmw}.json"
 
   banner = (message) =>

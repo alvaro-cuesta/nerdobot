@@ -84,6 +84,8 @@ module.exports = (file) ->
                 num = parseInt arg
               else
                 chn = arg
+            else
+              return
 
         if channel
           chn ?= channel

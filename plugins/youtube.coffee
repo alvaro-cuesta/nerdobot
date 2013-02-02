@@ -1,6 +1,7 @@
 request = require('request')
 
 searchURL = (q) ->
+  q = encodeURIComponent q
   "http://gdata.youtube.com/feeds/api/videos?q=#{q}&max-results=1&v=2&alt=json"
 watchURL = (v) ->
   "http://youtu.be/#{v}"

@@ -5,12 +5,14 @@ request = require('request')
 
 ROWS = 3 # number of results to return from ISOHunt query
 
-searchURL = (query) ->
-  ihq = query.replace /\s/g, '+'
-  "http://ca.isohunt.com/js/json.php?ihq=#{ihq}&rows=#{ROWS}&sort=seeds"
+searchURL = (q) ->
+#  ihq = query.replace /\s/g, '+'
+  q = encodeURIComponent q
+  "http://ca.isohunt.com/js/json.php?q=#{ihq}&rows=#{ROWS}&sort=seeds"
 fileURL = (guid) ->
   "http://isohunt.com/download/#{guid}/file.torrent"
 shortenURL = (url) ->
+  url = encodeURIComponent q
   "http://ou.gd/api.php?format=json&action=shorturl&url=#{url}"
 
 module.exports = (shorten) ->

@@ -1,6 +1,7 @@
 request = require 'request'
 
 searchURL = (q) ->
+  q = encodeURIComponent q
   "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=#{q}"
 
 module.exports = ->
@@ -41,8 +42,8 @@ module.exports = ->
           failure 'No results...'
           return
 
-        link = data.results[0].url
-        title = data.results[0].title
+        link = decodeURIComponent data.results[0].url
+        title = decodeURIComponent data.results[0].title
           .replace('<b>', @BOLD)
           .replace('</b>', @BOLD)
           .replace(/<(.|\n)*?>/g, "")

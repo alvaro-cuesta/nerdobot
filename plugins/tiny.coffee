@@ -3,7 +3,8 @@ request = require('request')
 module.exports = (apikey) ->
 
   songURL = (query) ->
-    query = query.replace /\s/g, '+'
+    #query = query.replace /\s/g, '+'
+    query = encodeURIComponent query
     "http://tinysong.com/b/#{query}?format=json&key=#{apikey}"
 
   banner = (message) =>
