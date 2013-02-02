@@ -31,6 +31,7 @@ module.exports =
         to: ['#mv.nerd']
       ]
     google: {}
+    help: {}
     hi: [
       (channel) ->
         @me channel, 'says hi'

@@ -22,7 +22,7 @@ module.exports = ->
 
   @addCommand 'nick',
     args: '<list of nicks>'
-    description: "Change the bot's nickname, trying nicks on list one by one."
+    description: "Change the bot's nickname, trying nicks on <list> one by one"
     ({nick}, message, to) =>
       to ?= nick
       if message? and message != ''
