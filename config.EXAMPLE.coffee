@@ -6,7 +6,7 @@ module.exports =
   connection:
     encoding: 'utf8'
   user:
-    nick: 'nerdobot'
+    nick: ['nerdobot', 'nerdobot_', 'nerdobot__']
     login: 'nerdobot'
     pass: 'password'
     realname: 'NerdoBot'
@@ -52,6 +52,7 @@ module.exports =
       , (channel) ->
         @say channel, "no, I won't !help you"
     ]
+    irc: {}
     isohunt: false # true = shorten torrent URL
     q:
       service:
@@ -64,7 +65,6 @@ module.exports =
       channels: ['#mv.nerd'] # channels to log AFTER Q authing
     quotes: '/opt/nerdo/nerdobot.sqlite3'
     raw: {}
-    say: {}
     spy: {}
     tiny: 'api-key'
     tits: {}
