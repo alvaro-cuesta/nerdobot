@@ -2,7 +2,7 @@ util = require './util'
 net = require('net')
 EventEmitter = require('events').EventEmitter
 
-# Parse an IRC command into {prefix, command, [params], trailing}
+# Parse an IRC command into [prefix, command, [params], trailing]
 # prefix, params and trailing may be undefined
 module.exports.parse = parse = (message) ->
   [prefix, message] = util.split message[1..], ' ' if message[0] == ':'
@@ -25,7 +25,6 @@ module.exports.parse_prefix = parse_prefix = (prefix) ->
 # IRC client class
 module.exports.Client = class Client
   constructor: (@config) ->
-    @nick = @config.user.nick
     @channels = []
 
     @events = new EventEmitter()
@@ -56,19 +55,43 @@ module.exports.Client = class Client
           offset = buffer.indexOf '\r\n'
           return if offset < 0
 
-          if offset > 0
-            @message parse buffer[0...offset]
+          @message parse buffer[0...offset] if offset > 0
 
           buffer = buffer[offset+2..]
 
       @socket.on 'end', => @events.emit 'end'
 
       # Auth to IRC server
-      @raw "NICK #{@config.user.nick}"
+
+      # Try nicks until one of them is available
+      if @config.user.nick not instanceof Array
+        nicklist = [@config.user.nick]
+      else
+        nicklist = @config.user.nick
+
+      i = 0
+      @raw "NICK :#{nicklist[i++]}"
+      usedListener = =>
+        if nicklist[i]?
+          @raw "NICK :#{nicklist[i++]}"
+        else
+          plural = if nicklist.length > 1 then 'are' else 'is'
+          throw "NICK_ERR: Couldn't change nick, [#{nicklist}] #{plural} taken"
+      welcomeListener = =>
+        @server.removeListener '433', usedListener
+        @events.removeListener 'welcome', welcomeListener
+
+      @server.on '433', usedListener
+      @events.on 'welcome', welcomeListener
+
+      # Usermodes
       modes = 0
       modes += 1<<2 if @config.user.wallops
       modes += 1<<3 if @config.user.invisible
+
+      # Username
       @raw "USER #{@config.user.login} #{modes} * :#{@config.user.realname}"
+
 
     @socket.setEncoding @config.connection.encoding
 
@@ -86,6 +109,9 @@ module.exports.Client = class Client
         @raw "PONG :#{message.trailing}"
       when '001'
         @events.emit 'welcome'
+        @nick = message.params[0]
+      when 'NICK'
+        @nick = message.trailing if @nick == message.prefix.nick
       when 'PRIVMSG'
         who = parse_prefix(message.prefix)
         if message.params[0] != @config.user.nick
@@ -106,6 +132,35 @@ module.exports.Client = class Client
   raw: (message) ->
     @events.emit 'out', parse message
     @socket.write message + '\r\n'
+
+  setNick: (nick, cb) ->
+    if nick not instanceof Array
+      nicklist = [nick]
+    else
+      nicklist = nick
+
+    do (i = 0, nicklist) =>
+      @raw "NICK :#{nicklist[i++]}"
+
+      usedListener = =>
+        if nicklist[i]? #and nicklist[i] != @nick
+          @raw "NICK :#{nicklist[i++]}"
+        else
+          plural = if nicklist.length > 1 then 'are' else 'is'
+          finish "Couldn't change nick, [#{nicklist}] #{plural} taken"
+      throttleListener = (_, [current, tried], msg) =>
+        finish "Changing nick to #{tried} - #{msg}"
+      nickListener = (_, _0, acceptedNick) =>
+        finish() if acceptedNick == nicklist[i-1]
+      finish = (err) =>
+        @server.removeListener '433', usedListener
+        @server.removeListener '438', throttleListener
+        @server.removeListener 'NICK', nickListener
+        cb err
+
+      @server.on '433', usedListener
+      @server.on '438', throttleListener
+      @server.on 'NICK', nickListener
 
   join: (channel) ->
     @raw "JOIN #{channel}"
