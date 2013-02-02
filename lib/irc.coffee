@@ -2,6 +2,8 @@ util = require './util'
 net = require('net')
 EventEmitter = require('events').EventEmitter
 
+DEFAULT_THROTTLE = 10000
+
 # Parse an IRC command into [prefix, command, [params], trailing]
 # prefix, params and trailing may be undefined
 module.exports.parse = parse = (message) ->
@@ -25,6 +27,8 @@ module.exports.parse_prefix = parse_prefix = (prefix) ->
 # IRC client class
 module.exports.Client = class Client
   constructor: (@config) ->
+    @throttleTime = @config.throttle ? DEFAULT_THROTTLE
+
     @channels = []
 
     @events = new EventEmitter()
@@ -46,6 +50,8 @@ module.exports.Client = class Client
     @socket = net.connect @config.socket, =>
       # ON CONNECTION
       @events.emit 'connected'
+
+      @throttleTime = @config.throttle ? DEFAULT_THROTTLE
 
       # Receive chunks in a buffer, splitting by \r\n
       buffer = ''
@@ -83,6 +89,7 @@ module.exports.Client = class Client
 
       @server.on '433', usedListener
       @events.on 'welcome', welcomeListener
+      @events.on 'end', welcomeListener
 
       # Usermodes
       modes = 0
@@ -91,7 +98,6 @@ module.exports.Client = class Client
 
       # Username
       @raw "USER #{@config.user.login} #{modes} * :#{@config.user.realname}"
-
 
     @socket.setEncoding @config.connection.encoding
 
@@ -127,6 +133,9 @@ module.exports.Client = class Client
           @channels.unshift message.trailing
         for channel in message.params
           @events.emit 'join', who, channel
+      when 'ERROR'
+        if message.trailing == 'Your host is trying to (re)connect too fast -- throttled'
+          setTimeout (=> @connect()), @throttleTime *= 2
 
   # IRC actions
   raw: (message) ->
