@@ -1,5 +1,4 @@
-util = require '../lib/util'
-nutil = require 'util'
+util = require 'util'
 clc = require 'cli-color'
 
 module.exports = ->
@@ -12,16 +11,16 @@ module.exports = ->
 
   @events.on 'in', ({prefix, command, params, trailing}) ->
     console.log clc.bold.blue('<-'),
-      "[#{clc.yellow prefix}, " +
       "#{clc.bold command}, " +
       "#{array2str params}, " +
-      "#{util.escape trailing}]"
+      util.inspect(trailing) +
+      clc.yellow(" (#{prefix})")
 
   @events.on 'out', ({_, command, params, trailing}) ->
     console.log clc.bold.red('->'),
       "[#{clc.bold command}, " +
       "#{array2str params}, " +
-      "#{util.escape trailing}]"
+      util.inspect trailing
 
   name: 'Debug'
   description: "Show in/out communication in nerdobot's console"
