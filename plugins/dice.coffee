@@ -18,7 +18,6 @@ module.exports = ->
 
       if message?
         [a, b] = util.split message, ' '
-        console.log 1 + a, 1 + b
 
         if b? and b != ''
           dies = parseInt a, 10

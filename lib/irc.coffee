@@ -120,21 +120,20 @@ module.exports.Client = class Client
         @nick = message.trailing if @nick == message.prefix.nick
       when 'PRIVMSG'
         who = parse_prefix(message.prefix)
-        if message.params[0] != @config.user.nick
-          channel = message.params[0]
-        @events.emit 'message', who, message.trailing, channel
+        if message.params[0] != @nick
+          recipient = message.params[0]
+        @events.emit 'message', who, message.trailing, recipient
       when 'NOTICE'
         who = parse_prefix(message.prefix) if message.prefix?
-        @events.emit 'notice', who, message.trailing, message.params[0]
+        if message.params[0] != @nick
+          recipient = message.params[0]
+        @events.emit 'notice', who, message.trailing, recipient
       when 'JOIN'
         who = parse_prefix(message.prefix)
         message.params = [message.trailing] if message.trailing?
-        console.log @channels
         for channel in message.params
           @channels.push channel if who.nick == @nick
-          console.log channel
           @events.emit 'join', who, channel
-        console.log @channels
       when 'ERROR'
         if message.trailing == 'Your host is trying to (re)connect too fast -- throttled'
           setTimeout (=> @connect()), @throttleTime *= 2
