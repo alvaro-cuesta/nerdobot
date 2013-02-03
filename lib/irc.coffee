@@ -47,11 +47,11 @@ module.exports.Client = class Client
     # Emits server commands -> prefix, [params], trailing
 
   connect: ->
+    @throttilng = false
+
     @socket = net.connect @config.socket, =>
       # ON CONNECTION
       @events.emit 'connected'
-
-      @throttleTime = @config.throttle ? DEFAULT_THROTTLE
 
       # Receive chunks in a buffer, splitting by \r\n
       buffer = ''
@@ -65,7 +65,11 @@ module.exports.Client = class Client
 
           buffer = buffer[offset+2..]
 
-      @socket.on 'end', => @events.emit 'end'
+      @socket.on 'end', =>
+        if @throttling
+          @events.emit 'throttled', @throttling / 1000
+        else
+          @events.emit 'end'
 
       # Auth to IRC server
 
@@ -77,19 +81,22 @@ module.exports.Client = class Client
 
       i = 0
       @raw "NICK :#{nicklist[i++]}"
-      usedListener = =>
+
+      nextNick = =>
         if nicklist[i]?
           @raw "NICK :#{nicklist[i++]}"
         else
           plural = if nicklist.length > 1 then 'are' else 'is'
           throw "NICK_ERR: Couldn't change nick, [#{nicklist}] #{plural} taken"
-      welcomeListener = =>
-        @server.removeListener '433', usedListener
-        @events.removeListener 'welcome', welcomeListener
+      removeListeners = =>
+        @server.removeListener '433', nextNick
+        @events.removeListener 'welcome', removeListeners
 
-      @server.on '433', usedListener
-      @events.on 'welcome', welcomeListener
-      @events.on 'end', welcomeListener
+      @server.on '433', nextNick
+      @events.on 'welcome', removeListeners
+      @events.on 'end', removeListeners
+      @events.on 'welcome', =>
+        @throttleTime = @config.throttle ? DEFAULT_THROTTLE
 
       # Usermodes
       modes = 0
@@ -136,6 +143,7 @@ module.exports.Client = class Client
           @events.emit 'join', who, channel
       when 'ERROR'
         if message.trailing == 'Your host is trying to (re)connect too fast -- throttled'
+          @throttling = @throttleTime
           setTimeout (=> @connect()), @throttleTime *= 2
 
   # IRC actions
@@ -152,25 +160,26 @@ module.exports.Client = class Client
     do (i = 0, nicklist) =>
       @raw "NICK :#{nicklist[i++]}"
 
-      usedListener = =>
+      nextNick = =>
         if nicklist[i]? #and nicklist[i] != @nick
           @raw "NICK :#{nicklist[i++]}"
         else
           plural = if nicklist.length > 1 then 'are' else 'is'
           finish "Couldn't change nick, [#{nicklist}] #{plural} taken"
-      throttleListener = (_, [current, tried], msg) =>
+      throttled = (_, [current, tried], msg) =>
         finish "Changing nick to #{tried} - #{msg}"
-      nickListener = (_, _0, acceptedNick) =>
+      accepted = (_, _0, acceptedNick) =>
         finish() if acceptedNick == nicklist[i-1]
+
       finish = (err) =>
-        @server.removeListener '433', usedListener
-        @server.removeListener '438', throttleListener
-        @server.removeListener 'NICK', nickListener
+        @server.removeListener '433', nextNick
+        @server.removeListener '438', throttled
+        @server.removeListener 'NICK', accepted
         cb err
 
-      @server.on '433', usedListener
-      @server.on '438', throttleListener
-      @server.on 'NICK', nickListener
+      @server.on '433', nextNick
+      @server.on '438', throttled
+      @server.on 'NICK', accepted
 
   join: (channels) ->
     if not Array.isArray channels
