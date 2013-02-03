@@ -32,7 +32,7 @@ module.exports =
         to: ['#mv.nerd']
       ]
     google: {}
-    help: {}
+    help: ['raw', 'say', 'asay', 'me', 'ame']
     hi: [
       (channel) ->
         @me channel, 'says hi'

@@ -1,4 +1,4 @@
-module.exports = ->
+module.exports = (hidden) ->
 
   @addCommand 'help',
     args: '<command, optional>'
@@ -11,8 +11,8 @@ module.exports = ->
 
         for _, meta of @plugins
           for cmd, info of meta.commands
-            if command == cmd or \
-               (@config.aliases[cmd]? and command in @config.aliases[cmd])
+            if hidden?.length? and cmd not in hidden and (command == cmd or
+               (@config.aliases[cmd]? and command in @config.aliases[cmd]))
               helpMsg = "#{@BOLD}#{@color 'red'}#{@config.prefix}#{cmd}#{@RESET}"
               helpMsg += ' ' + info.args if info.args?
               helpMsg += ' - ' + info.description if info.description?
@@ -33,7 +33,7 @@ module.exports = ->
         commands = []
         for _, meta of @plugins
           for cmd, _ of meta.commands
-            commands.push cmd
+            commands.push cmd if hidden?.length? and cmd not in hidden
 
         commands.sort (a, b) ->
           return 1 if a > b
