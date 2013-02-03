@@ -18,7 +18,7 @@ module.exports = ->
 
   @events.on 'out', ({_, command, params, trailing}) ->
     console.log clc.bold.red('->'),
-      "[#{clc.bold command}, " +
+      "#{clc.bold command}, " +
       "#{array2str params}, " +
       util.inspect trailing
 
