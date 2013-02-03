@@ -9,7 +9,7 @@ module.exports = (config) ->
   app.post config.path, ps.handler
   server = app.listen config.port ? 9999
 
-  process.on 'exit', -> server.close()
+  @events.on 'end', -> server.close()
 
   ps.on 'push', (branch, payload) =>
     for repo in config.repositories when \
