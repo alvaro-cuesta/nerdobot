@@ -58,7 +58,9 @@ module.exports =
     help: ['raw', 'say', 'asay', 'me', 'ame', 'nick']
     hi: greetings
     irc: {}
-    isohunt: false # true = shorten torrent URL
+    isohunt:
+      results: 3
+      shorten: false
     q:
       service:
         nick: 'Q'

@@ -3,18 +3,19 @@
 
 request = require('request')
 
-ROWS = 3 # number of results to return from ISOHunt query
-
-searchURL = (q) ->
-  q = encodeURIComponent q
-  "http://ca.isohunt.com/js/json.php?q=#{ihq}&rows=#{ROWS}&sort=seeds"
 fileURL = (guid) ->
   "http://isohunt.com/download/#{guid}/file.torrent"
 shortenURL = (url) ->
   url = encodeURIComponent q
   "http://ou.gd/api.php?format=json&action=shorturl&url=#{url}"
 
-module.exports = (shorten) ->
+module.exports = ({results, shorten}) ->
+
+  results ?= 3
+
+  searchURL = (q) ->
+    q = encodeURIComponent q
+    "http://ca.isohunt.com/js/json.php?q=#{ihq}&rows=#{results}&sort=seeds"
 
   banner = (message) =>
     "#{@BOLD}#{@color 'blue'}ISOHunt Torrent Search#{@RESET} - #{message}"
@@ -68,7 +69,7 @@ module.exports = (shorten) ->
             return
 
           @say channel,
-            banner "#{@BOLD}#{query}#{@RESET} - top seeded results (up to #{ROWS})"
+            banner "#{@BOLD}#{query}#{@RESET} - top seeded results (up to #{rows})"
           doURL item for item in data.items.list
 
   name: 'ISOHunt Search'
