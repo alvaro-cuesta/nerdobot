@@ -55,7 +55,7 @@ module.exports =
         to: ['#mv.nerd']
       ]
     google: {}
-    help: ['raw', 'say', 'asay', 'me', 'ame']
+    help: ['raw', 'say', 'asay', 'me', 'ame', 'nick']
     hi: greetings
     irc: {}
     isohunt: false # true = shorten torrent URL
@@ -89,6 +89,7 @@ module.exports =
     youtube: ['yt']
   whitelist:
     raw: [] # only users in group 'admin' can run this command
+    nick: []
     say: ['talker']
     me: ['talker']
     asay: ['broadcaster']
@@ -96,6 +97,6 @@ module.exports =
     'eval-block': ['developer']
     'coff-block': ['developer']
   users:
-    kaoD: ['admin']
+    alvaro: ['admin']
     Tunner: ['talker', 'broadcaster']
     'nerdobot-dev': ['talker']
