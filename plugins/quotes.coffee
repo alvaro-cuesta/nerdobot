@@ -20,6 +20,9 @@ module.exports = (file) ->
       by VARCHAR NOT NULL,
       timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL);"
 
+    # Index quotes by channel
+    db.run "CREATE INDEX IF NOT EXISTS qchannel on quotes (channel)"
+
     # COMMAND !addquote <quote>
     #  only works in channels
     @addCommand 'addquote',
