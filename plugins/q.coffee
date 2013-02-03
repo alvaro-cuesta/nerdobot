@@ -14,8 +14,10 @@ module.exports = (config) ->
 
   # Check for challenge responses
   @events.on 'notice', (who, notice, to) =>
+
     # Only parse service messages
-    if who? and to == @nick and who.nick == nick and who.user == user and who.host == host
+    if who? and not to? and who.nick == nick and who.user == user and who.host == host
+      console.log 'noticed'
       split = notice.split ' '
 
       # Challenge arrived
