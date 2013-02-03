@@ -53,6 +53,8 @@ module.exports =
         @say channel, "wooops, sorry, it's me"
       , (channel) ->
         @say channel, "no, I won't !help you"
+      , (channel) ->
+        @say channel, "mi no abla espagniolo"
     ]
     irc: {}
     isohunt: false # true = shorten torrent URL
