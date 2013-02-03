@@ -1,11 +1,12 @@
 crypto = require 'crypto'
+clc = require 'cli-color'
 
 module.exports = (config) ->
   {nick, user, host} = config.service
 
   if config.pass?
-    console.log "[Q] WARNING! Your password is stored as plaintext in your config file"
-    console.log "[Q]          Please, consider storing it SHA-1 hashed as key 'hash'."
+    console.log clc.yellowBright "[Q] WARNING! Your password is stored as plaintext in your config file"
+    console.log clc.yellowBright "[Q]          Please, consider storing it SHA-1 hashed as key 'hash'."
 
   # Ask for challeng when welcome to IRC server
   @events.on 'welcome', =>

@@ -1,5 +1,6 @@
 util = require '../lib/util'
 sqlite3 = require('sqlite3')
+clc = require 'cli-color'
 
 isInt = (n) ->
   !isNaN(parseInt(n)) and isFinite(n)
@@ -7,8 +8,8 @@ isInt = (n) ->
 module.exports = (file) ->
   db = new sqlite3.cached.Database file, (err) =>
     if err
-      console.log "Error opening deatabase #{file}: #{err}"
-      console.log "Disabling quote system!"
+      console.log clc.redBright "Error opening deatbase #{file}: #{err}"
+      console.log clc.yellowBright "Disabling quote system!"
       return
 
     # Initialize DB tables if not present

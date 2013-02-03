@@ -28,7 +28,8 @@
   },
   "keywords": ["irc", "bot"],
   "dependencies": {
-    "sqlite3": "*"
+    "sqlite3": "*",
+    "cli-color": "*"
   },
   "devDependencies": {},
   "license": "MIT",

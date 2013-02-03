@@ -1,5 +1,6 @@
 util = require './util'
 irc = require './irc'
+clc = require 'cli-color'
 EventEmitter = require('events').EventEmitter
 
 module.exports.Bot = class Bot extends irc.Client
@@ -36,9 +37,11 @@ module.exports.Bot = class Bot extends irc.Client
       if meta
         @plugins[plugin] = meta
         @plugins[plugin].commands = commands
-        console.log "#{meta.name} v#{meta.version} - #{meta.description}"
+        console.log clc.bold("#{meta.name} v#{meta.version}") + " - #{meta.description}"
       else
-        console.log "Error loading '#{plugin}'"
+        console.log clc.redBright.bold "Error loading '#{plugin}'"
+
+    console.log ''
 
   # Parse messages looking for client commands
   parseCommand: (from, message, channel) ->
