@@ -2,7 +2,7 @@ util = require './util'
 net = require('net')
 EventEmitter = require('events').EventEmitter
 
-DEFAULT_THROTTLE = 10000
+DEFAULT_THROTTLE = 15000
 
 # Parse an IRC command into [prefix, command, [params], trailing]
 # prefix, params and trailing may be undefined

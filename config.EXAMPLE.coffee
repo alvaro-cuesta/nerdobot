@@ -12,7 +12,7 @@ module.exports =
     realname: 'NerdoBot'
     invisible: true
     wallops: false
-  throttle: 10000 # first throttle time (increments *= 2 per throttle)
+  throttle: 15000 # first throttle time (increments *= 2 per throttle)
   admins: ['.*!.*@your.host.here'] # admin prefix (regexes)
   channels: ['#mediavida'] # channels to log upon connection (even before service auths)
   prefix: '!'
