@@ -74,7 +74,14 @@ module.exports =
     tinysong: 'api-key'
     tits: {}
     wunderground: 'api-key'
-    youtube: {}
+    youtube:
+      results: 1
+      random: false
+      options:
+        region: 'US'
+        'max-results': 1
+        'paid-content': false
+        safeSearch: 'none'
   aliases:
     dice: ['d']
     eval: ['js']

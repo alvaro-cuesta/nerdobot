@@ -1,12 +1,22 @@
 request = require('request')
 
-searchURL = (q) ->
-  q = encodeURIComponent q
-  "http://gdata.youtube.com/feeds/api/videos?q=#{q}&max-results=1&v=2&alt=json"
 watchURL = (v) ->
   "http://youtu.be/#{v}"
 
-module.exports = ->
+module.exports = ({results, random, options}) ->
+
+  results ?= 1
+  random ?= false
+
+  searchURL = (q) ->
+    q = encodeURIComponent q
+
+    if options?
+      query = '&' + ("#{k}=#{v}" for k, v of options).join '&'
+    else
+      query = ''
+
+    "http://gdata.youtube.com/feeds/api/videos?q=#{q}&v=2&alt=json#{query}"
 
   banner = (message) =>
     "#{@BOLD}You#{@color 'white', 'red'}Tube#{@RESET} - #{message}"
@@ -45,15 +55,24 @@ module.exports = ->
             sendErr "Couldn't connect...", channel
             return
 
+          if not data?.feed?
+            console.log data
+            sendErr "ERROR: empty feed!", channel
+            return
+
           if data.feed.openSearch$totalResults['$t'] is 0
             sendErr "No results...", channel
             return
 
-          sendMsg data.feed.entry[0], channel
+          videos = data.feed.entry
+          videos = videos.sort -> 0.5 - Math.random() if random
+
+          sendMsg video, channel for video in videos[...results]
 
   name: 'Youtube Search'
   description: 'Returns the first YouTube result.'
-  version: '0.4'
+  version: '0.5'
   authors: [
-    'Tunnecino @ arrogance.es'
+    'Tunnecino @ arrogance.es',
+    'Álvaro Cuesta'
   ]
