@@ -1,3 +1,27 @@
+grettings = [
+  (channel) ->
+    @me channel, 'says hi'
+  , (channel) ->
+    @me channel, "is pleased to be in #{channel}!"
+  , (channel) ->
+    @me channel, "doesn't follow the laws of robotics..."
+  , (channel) ->
+    @me channel, 'is going to kill you'
+  , (channel) ->
+    @say channel, 'hi!'
+  , (channel) ->
+    @say channel, 'did you miss me?'
+  , (channel) ->
+    @say channel, "I'm back!"
+  , (channel) ->
+    @say channel, "what's that smell?"
+    @say channel, "wooops, sorry, it's me"
+  , (channel) ->
+    @say channel, "no, I won't !help you"
+  , (channel) ->
+    @say channel, "mi no abla espagniolo"
+]
+
 module.exports =
   socket:
     port: 6667
@@ -13,7 +37,6 @@ module.exports =
     invisible: true
     wallops: false
   throttle: 15000 # first throttle time (increments *= 2 per throttle)
-  admins: ['.*!.*@your.host.here'] # admin prefix (regexes)
   channels: ['#mediavida'] # channels to log upon connection (even before service auths)
   prefix: '!'
   timeout: 1000 # Antiflood ms time
@@ -33,29 +56,7 @@ module.exports =
       ]
     google: {}
     help: ['raw', 'say', 'asay', 'me', 'ame']
-    hi: [
-      (channel) ->
-        @me channel, 'says hi'
-      , (channel) ->
-        @me channel, "is pleased to be in #{channel}!"
-      , (channel) ->
-        @me channel, "doesn't follow the laws of robotics..."
-      , (channel) ->
-        @me channel, 'is going to kill you'
-      , (channel) ->
-        @say channel, 'hi!'
-      , (channel) ->
-        @say channel, 'did you miss me?'
-      , (channel) ->
-        @say channel, "I'm back!"
-      , (channel) ->
-        @say channel, "what's that smell?"
-        @say channel, "wooops, sorry, it's me"
-      , (channel) ->
-        @say channel, "no, I won't !help you"
-      , (channel) ->
-        @say channel, "mi no abla espagniolo"
-    ]
+    hi: greetings
     irc: {}
     isohunt: false # true = shorten torrent URL
     q:
@@ -86,3 +87,13 @@ module.exports =
     tinysong: ['song', 'tiny']
     wunderground: ['weather']
     youtube: ['yt']
+  whitelist:
+    raw: ['admin']
+    say: ['admin', 'talker']
+    me: ['admin', 'talker']
+    asay: ['admin', 'broadcaster']
+    ame: ['admin', 'broadcaster']
+  users:
+    kaoD: ['admin']
+    Tunner: ['talker', 'broadcaster']
+    'nerdobot-dev': ['talker']

@@ -28,9 +28,10 @@ module.exports.Bot = class Bot extends irc.Client
       botInstance = Object.create this
       botInstance.addCommand = (command, meta, cb) =>
         commands[command] = meta
-        @commands.on command, cb
+        @commands.on command, (@checkPermission command, cb)
         if @config.aliases[command]?
-          @commands.on alias, cb for alias in @config.aliases[command]
+          for alias in @config.aliases[command]
+            @commands.on alias, (@checkPermission command, cb)
 
       meta = require('../plugins/' + plugin).apply botInstance, [config]
       # = {name, version, description, authors}
@@ -69,3 +70,16 @@ module.exports.Bot = class Bot extends irc.Client
 
       else
         @notice from.nick, "Unknown command #{@BOLD}#{@config.prefix}#{command}#{@RESET}"
+
+  checkPermission: (command, cb) -> (from, message, to) =>
+    {whitelist, users} = @config
+
+    if not (whitelist? and command of whitelist)
+      cb from, message, to
+      return
+
+    if users? and from.nick of users
+      for group in users[from.nick]
+        if group in whitelist[command]
+          cb from, message, to
+          return
