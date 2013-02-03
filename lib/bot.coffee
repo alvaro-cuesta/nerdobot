@@ -63,11 +63,15 @@ module.exports.Bot = class Bot extends irc.Client
       args = rest if rest != ''
 
       if @commands.listeners(command).length > 0
-        if @time == true
-          @time = false
-          @commands.emit command, from, args, channel
-          antiflood()
+        if not @time
+          return
 
+        #if not hasPermission from.nick, command
+        #  return
+
+        @time = false
+        @commands.emit command, from, args, channel
+        antiflood()
       else
         @notice from.nick, "Unknown command #{@BOLD}#{@config.prefix}#{command}#{@RESET}"
 
