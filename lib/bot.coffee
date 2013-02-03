@@ -10,12 +10,18 @@ module.exports.Bot = class Bot extends irc.Client
     @plugins = {}
     @time = true
 
+    # Default user provider = nick
+    if @config.userProvider
+      @getUser = require "./user/#{@config.userProvider}"
+    else
+      @getUser ?= ({nick}) -> nick
+
     @commands = new EventEmitter()
     # Emits commands issues by users
     #   command -> from, args, channel
     #     channel is undefined in private messages
 
-    @events.on 'welcome', () =>
+    @events.on 'welcome', =>
       @join channel for channel in @config.channels
 
     @events.on 'message', (from, message, channel) =>
@@ -28,10 +34,10 @@ module.exports.Bot = class Bot extends irc.Client
       botInstance = Object.create this
       botInstance.addCommand = (command, meta, cb) =>
         commands[command] = meta
-        @commands.on command, (@checkPermission command, cb)
+        @commands.on command, cb
         if @config.aliases[command]?
           for alias in @config.aliases[command]
-            @commands.on alias, (@checkPermission command, cb)
+            @commands.on alias, cb
 
       meta = require('../plugins/' + plugin).apply botInstance, [config]
       # = {name, version, description, authors}
@@ -46,10 +52,6 @@ module.exports.Bot = class Bot extends irc.Client
 
   # Parse messages looking for client commands
   parseCommand: (from, message, channel) ->
-    antiflood = =>
-      setTimeout =>
-        @time = true
-      , @config.timeout
 
     [command, rest] = util.split message, ' '
     if not command? or command == ''
@@ -66,24 +68,28 @@ module.exports.Bot = class Bot extends irc.Client
         if not @time
           return
 
-        #if not hasPermission from.nick, command
-        #  return
+        if not @checkPermission @getUser(from), command
+          return
 
         @time = false
         @commands.emit command, from, args, channel
-        antiflood()
+
+        # Antiflood
+        if @config.timeout
+          setTimeout =>
+            @time = true
+          , @config.timeout
       else
         @notice from.nick, "Unknown command #{@BOLD}#{@config.prefix}#{command}#{@RESET}"
 
-  checkPermission: (command, cb) -> (from, message, to) =>
+  checkPermission: (user, command) ->
     {whitelist, users} = @config
 
-    if not (whitelist? and command of whitelist)
-      cb from, message, to
-      return
+    if not whitelist?[command]?
+      return true  # disabled
 
-    if users? and from.nick of users
-      for group in users[from.nick]
-        if group in whitelist[command]
-          cb from, message, to
-          return
+    if users?[user]?
+      return true if 'admin' in users[user]  # admin group = god
+      return true for group in users[user] when group in whitelist[command]
+
+    return false

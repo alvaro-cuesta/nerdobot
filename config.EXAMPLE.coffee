@@ -88,11 +88,13 @@ module.exports =
     wunderground: ['weather']
     youtube: ['yt']
   whitelist:
-    raw: ['admin']
-    say: ['admin', 'talker']
-    me: ['admin', 'talker']
-    asay: ['admin', 'broadcaster']
-    ame: ['admin', 'broadcaster']
+    raw: [] # only users in group 'admin' can run this command
+    say: ['talker']
+    me: ['talker']
+    asay: ['broadcaster']
+    ame: ['broadcaster']
+    'eval-block': ['developer']
+    'coff-block': ['developer']
   users:
     kaoD: ['admin']
     Tunner: ['talker', 'broadcaster']
