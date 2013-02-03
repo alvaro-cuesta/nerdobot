@@ -1,4 +1,4 @@
-grettings = [
+greetings = [
   (channel) ->
     @me channel, 'says hi'
   , (channel) ->
@@ -78,9 +78,9 @@ module.exports =
   aliases:
     dice: ['d']
     eval: ['js']
-    eval-block: ["jsb"]
+    'eval-block': ['jsb']
     coffee: ['coff']
-    coffee-block: ["coffb"]
+    'coffee-block': ["coffb"]
     google: ['g']
     wikipedia: ['wiki', 'w']
     isohunt: ['torrent', 't']
