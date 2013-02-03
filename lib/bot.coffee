@@ -35,7 +35,7 @@ module.exports.Bot = class Bot extends irc.Client
       botInstance.addCommand = (command, meta, cb) =>
         commands[command] = meta
         @commands.on command, cb
-        if @config.aliases[command]?
+        if @config.aliases?[command]?
           for alias in @config.aliases[command]
             @commands.on alias, cb
 

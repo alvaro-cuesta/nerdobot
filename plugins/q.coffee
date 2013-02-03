@@ -17,7 +17,6 @@ module.exports = (config) ->
 
     # Only parse service messages
     if who? and not to? and who.nick == nick and who.user == user and who.host == host
-      console.log 'noticed'
       split = notice.split ' '
 
       # Challenge arrived
