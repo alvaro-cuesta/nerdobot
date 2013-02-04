@@ -163,7 +163,7 @@ module.exports.Client = class Client
         @events.emit 'welcome'
         @nick = message.params[0]
       when 'NICK'
-        @nick = message.trailing if @nick == message.prefix.nick
+        @nick = message.trailing if @nick == (parse_prefix message.prefix).nick
       when 'PRIVMSG'
         who = parse_prefix(message.prefix)
         if message.params[0] != @nick
