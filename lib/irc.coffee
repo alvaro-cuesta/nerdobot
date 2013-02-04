@@ -24,6 +24,45 @@ module.exports.parse_prefix = parse_prefix = (prefix) ->
     user: match[2]
     host: match[3]
 
+# IRC control characters (color, bold...)
+module.exports.color = color = (foreground, background) ->
+  fore = @COLORS.indexOf foreground
+  color = "\x03#{fore}"
+  if background?
+    back = @COLORS.indexOf background
+    color += ",#{back}"
+  color
+
+module.exports.stripControl = stripControl = (string) ->
+  string = string.replace /[\x02|\x1f|\x0f]/g, ''
+  string = string.replace /\x03[0-9][0-9]?(,[0-9][0-9]?)?/g, ''
+  string
+
+module.exports.BOLD = BOLD = "\x02"
+
+module.exports.UNDERLINE = UNDERLINE = "\x1f"
+
+module.exports.RESET = RESET = "\x0f"
+
+module.exports.COLORS = COLORS = [
+  'white',
+  'black',
+  'blue',
+  'green',
+  'red',
+  'brown',
+  'purple',
+  'orange',
+  'yellow',
+  'light green',
+  'teal',
+  'cyan',
+  'light blue',
+  'pink',
+  'grey',
+  'light grey'
+  ]
+
 # IRC client class
 module.exports.Client = class Client
   constructor: (@config) ->
@@ -211,41 +250,9 @@ module.exports.Client = class Client
     [recipients, message] = (@broadcastHelper arguments) ? []
     @raw "NOTICE #{to} :#{message}" for to in recipients if recipients?
 
-  # IRC control characters (color, bold...)
-  color: (foreground, background) ->
-    fore = @COLORS.indexOf foreground
-    color = "\x03#{fore}"
-    if background?
-      back = @COLORS.indexOf background
-      color += ",#{back}"
-    color
-
-  stripControl: (string) ->
-    string = string.replace /[\x02|\x1f|\x0f]/g, ''
-    string = string.replace /\x03[0-9][0-9]?(,[0-9][0-9]?)?/g, ''
-    string
-
-  BOLD: "\x02"
-
-  UNDERLINE: "\x1f"
-
-  RESET: "\x0f"
-
-  COLORS: [
-    'white',
-    'black',
-    'blue',
-    'green',
-    'red',
-    'brown',
-    'purple',
-    'orange',
-    'yellow',
-    'light green',
-    'teal',
-    'cyan',
-    'light blue',
-    'pink',
-    'grey',
-    'light grey'
-    ]
+  color: color
+  stripControl: stripControl
+  BOLD: BOLD
+  UNDERLINE: UNDERLINE
+  RESET: RESET
+  COLORS: COLORS
