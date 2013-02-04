@@ -60,7 +60,7 @@ module.exports = (results) ->
         if results > 1
           @say channel,
             banner " #{@BOLD}Search#{@RESET} - #{count} results"
-          @say channel, formatResult result for result in res
+          @say channel, formatResult result for result in res[...results]
         else
           @say channel, banner " - #{formatResult res[0]} (#{count} results)"
 
