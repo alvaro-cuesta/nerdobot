@@ -57,7 +57,7 @@ module.exports =
     google: 1
     help:
       hidden: ['raw', 'say', 'asay', 'me', 'ame', 'nick']
-      banner: " Contribute to \x02nerdobot\x0f! Visit \x032\x1fhttps://github.com/alvaro-cuesta/nerdobot\x0f for instructions."
+      banner: " Contribute to \x02nerdobot\x0f! Visit \x032\x1fhttps://github.com/alvaro-cuesta/nerdobot\x0f for download and free source code."
     hi: greetings
     irc: {}
     isohunt:
