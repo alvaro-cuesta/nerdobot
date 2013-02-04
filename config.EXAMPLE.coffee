@@ -55,7 +55,9 @@ module.exports =
         to: ['#mv.nerd']
       ]
     google: {}
-    help: ['raw', 'say', 'asay', 'me', 'ame', 'nick']
+    help:
+      hidden: ['raw', 'say', 'asay', 'me', 'ame', 'nick']
+      banner: " Contribute to \x02nerdobot\x0f! Visit \x032\x1fhttps://github.com/alvaro-cuesta/nerdobot\x0f for instructions."
     hi: greetings
     irc: {}
     isohunt:

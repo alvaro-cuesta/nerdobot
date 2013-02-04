@@ -1,4 +1,4 @@
-module.exports = (hidden) ->
+module.exports = ({hidden, banner}) ->
 
   @addCommand 'help',
     args: '<command, optional>'
@@ -42,6 +42,7 @@ module.exports = (hidden) ->
 
         @say to, "#{@BOLD}#{@color 'red'}Available commands:#{@RESET} #{@config.prefix + commands.join ", #{@config.prefix}"}"
         @say to, " Type #{@BOLD}#{@config.prefix}help <command>#{@BOLD} for detailed instructions."
+        @say to, banner if banner?
 
   name: 'Help'
   description: 'Print help for bot commands'
