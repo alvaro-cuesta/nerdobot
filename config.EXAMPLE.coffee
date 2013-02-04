@@ -36,10 +36,10 @@ module.exports =
     realname: 'NerdoBot'
     invisible: true
     wallops: false
-  throttle: 15000 # first throttle time (increments *= 2 per throttle)
-  channels: ['#mediavida'] # channels to log upon connection (even before service auths)
+  throttle: 15000  # first throttle time (increments *= 2 per throttle)
+  channels: ['#mediavida']  # channels to log upon connection (even before service auths)
   prefix: '!'
-  timeout: 1000 # Antiflood ms time
+  antiflood: 1000  # min msecs between commands
   plugins:
     debug: {}
     dice: {}
@@ -70,8 +70,8 @@ module.exports =
         host: 'CServe.quakenet.org'
       user: 'nerdobot'
       pass: 'password'
-      hash: '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8' # remove 'pass' if you use this
-      channels: ['#mv.nerd'] # channels to log AFTER Q authing
+      hash: '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'  # remove 'pass' if you use this
+      channels: ['#mv.nerd']  # channels to log AFTER Q authing
     quotes: '/opt/nerdo/nerdobot.sqlite3'
     raw: {}
     spy: {}
@@ -99,7 +99,7 @@ module.exports =
     wunderground: ['weather']
     youtube: ['yt']
   whitelist:
-    raw: [] # only users in group 'admin' can run this command
+    raw: []  # only users in group 'admin' can run this command
     nick: []
     say: ['talker']
     me: ['talker']
