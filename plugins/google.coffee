@@ -34,7 +34,7 @@ module.exports = (results) ->
       return
 
     failure = (err) =>
-      @say channel, banner "#{@BOLD}#{err}#{@RESET}"
+      @say channel, banner " - #{@BOLD}#{err}#{@RESET}"
 
     request
       url: searchURL "#{query} #{postfix}"
