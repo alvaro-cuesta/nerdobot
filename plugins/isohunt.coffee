@@ -69,7 +69,7 @@ module.exports = ({results, shorten}) ->
             return
 
           @say channel,
-            banner "#{@BOLD}#{query}#{@RESET} - top seeded results (up to #{rows})"
+            banner "#{@BOLD}#{query}#{@RESET} - top seeded results (up to #{results})"
           doURL item for item in data.items.list
 
   name: 'ISOHunt Search'
