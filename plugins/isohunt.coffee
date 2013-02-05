@@ -39,7 +39,7 @@ module.exports = ({results, shorten}) ->
         @notice from.nick, 'You should specify a search query!'
         return
 
-      doURL = (item) ->
+      doURL = (item) =>
         link = fileURL item.guid
         if shorten
           request
@@ -59,7 +59,7 @@ module.exports = ({results, shorten}) ->
       request
         url: searchURL query
         json: true
-        (err, res, data) ->
+        (err, res, data) =>
           if err?
             failure "Couldn't connect..."
             return
