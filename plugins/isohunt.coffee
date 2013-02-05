@@ -15,7 +15,7 @@ module.exports = ({results, shorten}) ->
 
   searchURL = (q) ->
     q = encodeURIComponent q
-    "http://ca.isohunt.com/js/json.php?q=#{ihq}&rows=#{results}&sort=seeds"
+    "http://ca.isohunt.com/js/json.php?q=#{q}&rows=#{results}&sort=seeds"
 
   banner = (message) =>
     "#{@BOLD}#{@color 'blue'}ISOHunt Torrent Search#{@RESET} - #{message}"
