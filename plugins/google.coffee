@@ -16,11 +16,13 @@ module.exports = (results) ->
     "#{@BOLD}#{@color 'black'}Wikipedia#{@RESET}#{message}"
 
   formatResult = (result) =>
+
     link = decodeURIComponent result.url
     title = decodeURIComponent result.title
-      .replace('<b>', @BOLD)
-      .replace('</b>', @BOLD)
-      .replace(/<(.|\n)*?>/g, "")
+      .replace(/%/g, '%25')
+      .replace(/<b>/g, @BOLD)
+      .replace(/<\/b>/g, @BOLD)
+      .replace(/<(.|\n)*?>/g, '')
 
     "#{@UNDERLINE}#{@color 'blue'}#{link}#{@RESET} - \"#{title}\""
 
