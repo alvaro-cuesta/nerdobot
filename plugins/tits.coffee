@@ -25,7 +25,7 @@ module.exports = (bot) ->
         num = Math.floor Math.random() * data.data.children.length
         link = data.data.children[num].data.url
         bot.say channel,
-          "#{bot.UNDERLINE}#{bot.color 'blue'}#{link}#{bot.RESET}"
+          "[NSFW] #{bot.UNDERLINE}#{bot.color 'blue'}#{link}#{bot.RESET}"
 
   name: 'Tits'
   description: 'Tits or get the fuck out '
