@@ -1,7 +1,7 @@
 {
   "name": "nerdobot",
   "preferGlobal": "true",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Álvaro Cuesta <alvaro-cuesta@GitHub>",
   "description": "IRC bot for #mv.nerd built with CoffeeScript + NodeJS",
   "contributors": [
@@ -31,11 +31,11 @@
     "express": "3.0.x",
     "sqlite3": "2.1.x",
     "cli-color": "0.2.x",
-    "coffee-script": "1.4.x"
+    "coffee-script": "1.6.x"
   },
   "devDependencies": {},
   "license": "MIT",
   "engines": {
-    "coffee": "1.4.x"
+    "coffee": "1.6.x"
   }
 }
