@@ -1,3 +1,27 @@
+greetings = [
+  (channel) ->
+    @me channel, 'says hi'
+  , (channel) ->
+    @me channel, "is pleased to be in #{channel}!"
+  , (channel) ->
+    @me channel, "doesn't follow the laws of robotics..."
+  , (channel) ->
+    @me channel, 'is going to kill you'
+  , (channel) ->
+    @say channel, 'hi!'
+  , (channel) ->
+    @say channel, 'did you miss me?'
+  , (channel) ->
+    @say channel, "I'm back!"
+  , (channel) ->
+    @say channel, "what's that smell?"
+    @say channel, "wooops, sorry, it's me"
+  , (channel) ->
+    @say channel, "no, I won't !help you"
+  , (channel) ->
+    @say channel, "mi no abla espagniolo"
+]
+
 module.exports =
   socket:
     port: 6667
@@ -6,18 +30,19 @@ module.exports =
   connection:
     encoding: 'utf8'
   user:
-    nick: 'nerdobot'
+    nick: ['nerdobot', 'nerdobot_', 'nerdobot__']
     login: 'nerdobot'
     pass: 'password'
     realname: 'NerdoBot'
     invisible: true
     wallops: false
-  admins: ['.*!.*@your.host.here'] # admin prefix (regexes)
-  channels: ['#mediavida'] # channels to log upon connection (even before service auths)
+  throttle: 15000  # first throttle time (increments *= 2 per throttle)
+  channels: ['#mediavida']  # channels to log upon connection (even before service auths)
   prefix: '!'
-  timeout: 1000 # Antiflood ms time
+  antiflood: 1000  # min msecs between commands
   plugins:
     debug: {}
+    dice: {}
     eval:
       coffee: true
     gitpush:
@@ -29,29 +54,15 @@ module.exports =
         owner: 'alvaro-cuesta'
         to: ['#mv.nerd']
       ]
-    google: {}
-    hi: [
-      (bot, channel) ->
-        bot.me channel, 'says hi'
-      , (bot, channel) ->
-        bot.me channel, "is pleased to be in #{channel}!"
-      , (bot, channel) ->
-        bot.me channel, "doesn't follow the laws of robotics..."
-      , (bot, channel) ->
-        bot.me channel, 'is going to kill you'
-      , (bot, channel) ->
-        bot.say channel, 'hi!'
-      , (bot, channel) ->
-        bot.say channel, 'did you miss me?'
-      , (bot, channel) ->
-        bot.say channel, "I'm back!"
-      , (bot, channel) ->
-        bot.say channel, "what's that smell?"
-        bot.say channel, "wooops, sorry, it's me"
-      , (bot, channel) ->
-        bot.say channel, "no, I won't !help you"
-    ]
-    isohunt: false # true = shorten torrent URL
+    google: 1
+    help:
+      hidden: ['raw', 'say', 'asay', 'me', 'ame', 'nick']
+      banner: " Contribute to \x02nerdobot\x0f! Visit \x032\x1fhttps://github.com/alvaro-cuesta/nerdobot\x0f for download and free source code."
+    hi: greetings
+    irc: {}
+    isohunt:
+      results: 3
+      shorten: false
     q:
       service:
         nick: 'Q'
@@ -59,13 +70,44 @@ module.exports =
         host: 'CServe.quakenet.org'
       user: 'nerdobot'
       pass: 'password'
-      hash: '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8' # remove 'pass' if you use this
-      channels: ['#mv.nerd'] # channels to log AFTER Q authing
+      hash: '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'  # remove 'pass' if you use this
+      channels: ['#mv.nerd']  # channels to log AFTER Q authing
     quotes: '/opt/nerdo/nerdobot.sqlite3'
     raw: {}
-    say: {}
     spy: {}
-    tiny: 'api-key'
+    tinysong: 'api-key'
     tits: {}
     wunderground: 'api-key'
-    youtube: {}
+    youtube:
+      results: 1
+      random: false
+      options:
+        region: 'US'
+        'max-results': 1
+        'paid-content': false
+        safeSearch: 'none'
+  aliases:
+    dice: ['d']
+    eval: ['js']
+    'eval-block': ['jsb']
+    coffee: ['coff']
+    'coffee-block': ["coffb"]
+    google: ['g']
+    wikipedia: ['wiki', 'w']
+    isohunt: ['torrent', 't']
+    tinysong: ['song', 'tiny']
+    wunderground: ['weather']
+    youtube: ['yt']
+  whitelist:
+    raw: []  # only users in group 'admin' can run this command
+    nick: []
+    say: ['talker']
+    me: ['talker']
+    asay: ['broadcaster']
+    ame: ['broadcaster']
+    'eval-block': ['developer']
+    'coff-block': ['developer']
+  users:
+    alvaro: ['admin']
+    Tunner: ['talker', 'broadcaster']
+    'nerdobot-dev': ['talker']

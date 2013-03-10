@@ -1,32 +1,47 @@
 request = require 'request'
 
 searchURL = (q) ->
+  q = encodeURIComponent q
   "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=#{q}"
 
-module.exports = (bot) ->
+module.exports = (results) ->
 
-  banner = (message) ->
-    "#{bot.BOLD}#{bot.color 'blue'}G#{bot.color 'red'}o" +
-    "#{bot.color 'yellow'}o#{bot.color 'blue'}g" +
-    "#{bot.color 'green'}l#{bot.color 'red'}e" +
-    "#{bot.RESET} - #{message}"
+  googleBanner = (message) =>
+    "#{@BOLD}#{@color 'blue'}G#{@color 'red'}o" +
+    "#{@color 'yellow'}o#{@color 'blue'}g" +
+    "#{@color 'green'}l#{@color 'red'}e" +
+    "#{@RESET}#{message}"
 
-  google = (postfix) -> (from, query, channel) ->
+  wikipediaBanner = (message) =>
+    "#{@BOLD}#{@color 'black'}Wikipedia#{@RESET}#{message}"
+
+  formatResult = (result) =>
+
+    link = decodeURIComponent result.url
+    title = decodeURIComponent result.title
+      .replace(/%/g, '%25')
+      .replace(/<b>/g, @BOLD)
+      .replace(/<\/b>/g, @BOLD)
+      .replace(/<(.|\n)*?>/g, '')
+
+    "#{@UNDERLINE}#{@color 'blue'}#{link}#{@RESET} - \"#{title}\""
+
+  google = (postfix, banner = googleBanner) => (from, query, channel) =>
     if not channel?
-      bot.notice from.nick, 'That command only works in channels'
+      @notice from.nick, 'That command only works in channels'
       return
 
     if not query?
-      bot.notice from.nick, 'You should specify a search query!'
+      @notice from.nick, 'You should specify a search query!'
       return
 
-    failure = (err) ->
-      bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
+    failure = (err) =>
+      @say channel, banner " - #{@BOLD}#{err}#{@RESET}"
 
     request
       url: searchURL "#{query} #{postfix}"
       json: true
-      (err, res, data) ->
+      (err, res, data) =>
         if err?
           failure "Couldn't connect..."
           return
@@ -37,30 +52,31 @@ module.exports = (bot) ->
 
         data = data.responseData
 
-        if not data.results.length > 0
+        if not data.results.length
           failure 'No results...'
           return
 
-        link = data.results[0].url
-        title = data.results[0].title
-          .replace('<b>', bot.BOLD)
-          .replace('</b>', bot.BOLD)
-          .replace(/<(.|\n)*?>/g, "")
-        results = data.cursor.resultCount
+        res = data.results
+        count = data.cursor.resultCount
 
-        bot.say channel,
-          banner "#{bot.UNDERLINE}#{bot.color 'blue'}#{link}#{bot.RESET}" +
-            " - \"#{title}\" (#{results} results)"
+        if results > 1
+          @say channel,
+            banner " #{@BOLD}Search#{@RESET} - #{count} results"
+          @say channel, formatResult result for result in res[...results]
+        else
+          @say channel, banner " - #{formatResult res[0]} (#{count} results)"
 
-  goog = google('')
-  wiki = google('site:en.wikipedia.org')
+  @addCommand 'google',
+    args: '<search terms>'
+    description: 'Google Search'
+    google '', googleBanner
 
-  bot.commands.on 'google', goog
-  bot.commands.on 'g', goog
-  bot.commands.on 'wiki', wiki
-  bot.commands.on 'w', wiki
+  @addCommand 'wikipedia',
+    args: '<search terms>',
+    description: 'Wikipedia Search'
+    google 'site:en.wikipedia.org', wikipediaBanner
 
   name: 'Google Search'
   description: 'Returns the first Google result.'
-  version: '0.1'
+  version: '0.2'
   authors: ['Álvaro Cuesta']

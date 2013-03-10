@@ -1,20 +1,22 @@
 crypto = require 'crypto'
+clc = require 'cli-color'
 
-module.exports = (bot, config) ->
+module.exports = (config) ->
   {nick, user, host} = config.service
 
   if config.pass?
-    console.log "[Q] WARNING! Your password is stored as plaintext in your config file"
-    console.log "[Q]          Please, consider storing it SHA-1 hashed as key 'hash'."
+    console.log clc.yellowBright "[Q] WARNING! Your password is stored as plaintext in your config file"
+    console.log clc.yellowBright "[Q]          Please, consider storing it SHA-1 hashed as key 'hash'."
 
   # Ask for challeng when welcome to IRC server
-  bot.events.on 'welcome', ->
-    bot.say "#{nick}@#{host}", 'CHALLENGE'
+  @events.on 'welcome', =>
+    @say "#{nick}@#{host}", 'CHALLENGE'
 
   # Check for challenge responses
-  bot.events.on 'notice', (who, notice, to) ->
+  @events.on 'notice', (who, notice, to) =>
+
     # Only parse service messages
-    if who? and to == bot.nick and who.nick == nick and who.user == user and who.host == host
+    if who? and not to? and who.nick == nick and who.user == user and who.host == host
       split = notice.split ' '
 
       # Challenge arrived
@@ -28,18 +30,18 @@ module.exports = (bot, config) ->
             k = crypto.createHash('sha1').update("#{userLow}:#{passHash}").digest('hex')
             response = crypto.createHmac('sha1', k).update(challenge).digest('hex')
 
-            bot.say "#{nick}@#{host}", "CHALLENGEAUTH #{config.user} #{response} HMAC-SHA-1"
+            @say "#{nick}@#{host}", "CHALLENGEAUTH #{config.user} #{response} HMAC-SHA-1"
           else
             console.log "[Q] None of the algorithms is supported: #{algorithms.join ', '}"
 
       # Challenge accepted, set mode +x (hidden host)
       else if notice == "You are now logged in as #{config.user}."
-        bot.raw "MODE #{bot.nick} +x"
+        @raw "MODE #{@nick} +x"
 
   # Mode +x set = hidden host --- join channels
-  bot.server.on '396', (from, params, trailing) ->
+  @server.on '396', (from, params, trailing) =>
     if trailing == 'is now your hidden host'
-        bot.join channel for channel in config.channels
+      @join channel for channel in config.channels
 
   name: 'Q'
   description: 'Q authentication using CHALLENGEAUTH'

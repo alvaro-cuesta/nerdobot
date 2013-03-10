@@ -1,7 +1,7 @@
 EventEmitter = require('events').EventEmitter
 express = require 'express'
 
-module.exports = (bot, config) ->
+module.exports = (config) ->
   ps = new PushServer(config)
 
   app = express()
@@ -9,12 +9,13 @@ module.exports = (bot, config) ->
   app.post config.path, ps.handler
   server = app.listen config.port ? 9999
 
-  bot.events.on 'end', -> server.close()
+  @events.on 'end', -> server.close()
 
-  ps.on 'push', (branch, payload) ->
-    for repo in config.repositories \
-        when repo.name == payload.repository.name \
+  ps.on 'push', (branch, payload) =>
+    for repo in config.repositories when \
+        repo.name == payload.repository.name \
         and repo.owner == payload.repository.owner.name
+
       commits = payload.commits.length
       if commits == 0
         return
@@ -22,12 +23,12 @@ module.exports = (bot, config) ->
       plural = if commits > 1 then 's' else ''
 
       for to in repo.to
-        bot.say to,
-          "#{bot.color 'orange'}#{payload.pusher.name}#{bot.RESET} " +
-          "pushed#{bot.color 'green'} #{commits} commit#{plural} " +
-          "#{bot.RESET}to #{bot.BOLD}#{repo.owner}/#{repo.name}" +
-          (if branch? then "/#{branch}" else '') + "#{bot.RESET} <- " +
-          "#{bot.color 'blue'}#{bot.UNDERLINE}#{payload.compare}#{bot.RESET}"
+        @say to,
+          "#{@color 'orange'}#{payload.pusher.name}#{@RESET} " +
+          "pushed#{@color 'green'} #{commits} commit#{plural} " +
+          "#{@RESET}to #{@BOLD}#{repo.owner}/#{repo.name}" +
+          (if branch? then "/#{branch}" else '') + "#{@RESET} <- " +
+          "#{@color 'blue'}#{@UNDERLINE}#{payload.compare}#{@RESET}"
 
   name: 'GitPush'
   description: 'GitHub push notifications plugin for nerdobot'

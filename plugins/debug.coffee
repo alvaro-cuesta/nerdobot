@@ -1,15 +1,26 @@
-util = require '../lib/util'
-nutil = require 'util'
+util = require 'util'
+clc = require 'cli-color'
 
-module.exports = (bot) ->
+module.exports = ->
   array2str = (params) ->
-    if params then "[#{params.join ', '}]" else '[]'
+    if params
+      params = (clc.greenBright param for param in params)
+      "[#{params.join ', '}]"
+    else
+      '[]'
 
-  bot.events.on 'in', ({prefix, command, params, trailing}) ->
-    util.log " <- [#{prefix}, #{command}, #{array2str params}, #{trailing}]"
+  @events.on 'in', ({prefix, command, params, trailing}) ->
+    console.log clc.bold.blue('<-'),
+      "#{clc.bold command}, " +
+      "#{array2str params}, " +
+      util.inspect(trailing) +
+      clc.yellow(" (#{prefix})")
 
-  bot.events.on 'out', ({_, command, params, trailing}) ->
-    util.log " -> [#{command}, #{array2str params}, #{trailing}]"
+  @events.on 'out', ({_, command, params, trailing}) ->
+    console.log clc.bold.red('->'),
+      "#{clc.bold command}, " +
+      "#{array2str params}, " +
+      util.inspect trailing
 
   name: 'Debug'
   description: "Show in/out communication in nerdobot's console"

@@ -3,74 +3,74 @@
 
 request = require('request')
 
-ROWS = 3 # number of results to return from ISOHunt query
-
-searchURL = (query) ->
-  ihq = query.replace /\s/g, '+'
-  "http://ca.isohunt.com/js/json.php?ihq=#{ihq}&rows=#{ROWS}&sort=seeds"
 fileURL = (guid) ->
   "http://isohunt.com/download/#{guid}/file.torrent"
 shortenURL = (url) ->
+  url = encodeURIComponent q
   "http://ou.gd/api.php?format=json&action=shorturl&url=#{url}"
-              
-module.exports = (bot, shorten) ->
 
-  banner = (message) ->
-    "#{bot.BOLD}#{bot.color 'blue'}ISOHunt Torrent Search#{bot.RESET}" +
-    " - #{message}"
-    
-  itemBanner = (item, link) ->
+module.exports = ({results, shorten}) ->
+
+  results ?= 3
+
+  searchURL = (q) ->
+    q = encodeURIComponent q
+    "http://ca.isohunt.com/js/json.php?ihq=#{q}&rows=#{results}&sort=seeds"
+
+  banner = (message) =>
+    "#{@BOLD}#{@color 'blue'}ISOHunt Torrent Search#{@RESET} - #{message}"
+
+  itemBanner = (item, link) =>
     title = item['title'].replace /<(.|\n)*?>/g, ""
-    "\"#{title}\" - #{bot.UNDERLINE}#{bot.color 'blue'}#{link}" +
-    "#{bot.RESET} (#{item['size']}) Ratio:#{bot.BOLD}" +
-    "#{bot.color 'green'} #{item['Seeds']}#{bot.RESET}#{bot.BOLD} /" +
-    "#{bot.color 'red'} #{item['leechers']}#{bot.RESET}"
+    "\"#{title}\" - #{@UNDERLINE}#{@color 'blue'}#{link}" +
+    "#{@RESET} (#{item['size']}) Ratio:#{@BOLD}" +
+    "#{@color 'green'} #{item['Seeds']}#{@RESET}#{@BOLD} /" +
+    "#{@color 'red'} #{item['leechers']}#{@RESET}"
 
-  search = (from, query, channel) ->
-    if not channel?
-      bot.notice from.nick, 'That command only works in channels'
-      return
+  @addCommand 'isohunt',
+    args: '<search terms>'
+    description: 'Search torrents in ISOHunt'
+    (from, query, channel) =>
+      if not channel?
+        @notice from.nick, 'That command only works in channels'
+        return
 
-    if not query?
-      bot.notice from.nick, 'You should specify a search query!'
-      return
+      if not query?
+        @notice from.nick, 'You should specify a search query!'
+        return
 
-    doURL = (item) ->
-      link = fileURL item.guid
-      if shorten
-        request
-          url: shortenURL link
-          json: true
-          (err, res, data) ->
-            if not err? and data? and data['status'] is 'success'
-              link = data['shorturl']
+      doURL = (item) =>
+        link = fileURL item.guid
+        if shorten
+          request
+            url: shortenURL link
+            json: true
+            (err, res, data) ->
+              if not err? and data? and data['status'] is 'success'
+                link = data['shorturl']
 
-            bot.say channel, itemBanner(item, link)
-      else
-        bot.say channel, itemBanner(item, link)
+              @say channel, itemBanner(item, link)
+        else
+          @say channel, itemBanner(item, link)
 
-    failure = (err) ->
-      bot.say channel, banner "#{bot.BOLD}#{err}#{bot.RESET}"
+      failure = (err) =>
+        @say channel, banner "#{@BOLD}#{err}#{@RESET}"
 
-    request 
-      url: searchURL query
-      json: true
-      (err, res, data) ->
-        if err?
-          failure "Couldn't connect..."
-          return
+      request
+        url: searchURL query
+        json: true
+        (err, res, data) =>
+          if err?
+            failure "Couldn't connect..."
+            return
 
-        if not data.items?
-          failure "No results..."
-          return
+          if not data.items?
+            failure "No results..."
+            return
 
-        bot.say channel, 
-          banner "#{bot.BOLD}#{query}#{bot.RESET} - top seeded results (up to #{ROWS})"
-        doURL item for item in data.items.list
-
-  bot.commands.on 'torrent', search
-  bot.commands.on 't', search
-  bot.commands.on 'isohunt', search
+          @say channel,
+            banner "#{@BOLD}#{query}#{@RESET} - top seeded results (up to #{results})"
+          doURL item for item in data.items.list
 
   name: 'ISOHunt Search'
   description: "Returns ISOHunt's top results."

@@ -2,7 +2,9 @@ util = require './util'
 net = require('net')
 EventEmitter = require('events').EventEmitter
 
-# Parse an IRC command into {prefix, command, [params], trailing}
+DEFAULT_THROTTLE = 15000
+
+# Parse an IRC command into [prefix, command, [params], trailing]
 # prefix, params and trailing may be undefined
 module.exports.parse = parse = (message) ->
   [prefix, message] = util.split message[1..], ' ' if message[0] == ':'
@@ -22,10 +24,50 @@ module.exports.parse_prefix = parse_prefix = (prefix) ->
     user: match[2]
     host: match[3]
 
+# IRC control characters (color, bold...)
+module.exports.color = color = (foreground, background) ->
+  fore = @COLORS.indexOf foreground
+  color = "\x03#{fore}"
+  if background?
+    back = @COLORS.indexOf background
+    color += ",#{back}"
+  color
+
+module.exports.stripControl = stripControl = (string) ->
+  string = string.replace /[\x02|\x1f|\x0f]/g, ''
+  string = string.replace /\x03[0-9][0-9]?(,[0-9][0-9]?)?/g, ''
+  string
+
+module.exports.BOLD = BOLD = "\x02"
+
+module.exports.UNDERLINE = UNDERLINE = "\x1f"
+
+module.exports.RESET = RESET = "\x0f"
+
+module.exports.COLORS = COLORS = [
+  'white',
+  'black',
+  'blue',
+  'green',
+  'red',
+  'brown',
+  'purple',
+  'orange',
+  'yellow',
+  'light green',
+  'teal',
+  'cyan',
+  'light blue',
+  'pink',
+  'grey',
+  'light grey'
+  ]
+
 # IRC client class
 module.exports.Client = class Client
   constructor: (@config) ->
-    @nick = @config.user.nick
+    @throttleTime = @config.throttle ? DEFAULT_THROTTLE
+
     @channels = []
 
     @events = new EventEmitter()
@@ -44,6 +86,8 @@ module.exports.Client = class Client
     # Emits server commands -> prefix, [params], trailing
 
   connect: ->
+    @throttilng = false
+
     @socket = net.connect @config.socket, =>
       # ON CONNECTION
       @events.emit 'connected'
@@ -56,18 +100,49 @@ module.exports.Client = class Client
           offset = buffer.indexOf '\r\n'
           return if offset < 0
 
-          if offset > 0
-            @message parse buffer[0..offset-1]
+          @message parse buffer[0...offset] if offset > 0
 
           buffer = buffer[offset+2..]
 
-      @socket.on 'end', => @events.emit 'end'
+      @socket.on 'end', =>
+        if @throttling
+          @events.emit 'throttled', @throttling / 1000
+        else
+          @events.emit 'end'
 
       # Auth to IRC server
-      @raw "NICK #{@config.user.nick}"
+
+      # Try nicks until one of them is available
+      if Array.isArray @config.user.nick
+        nicklist = @config.user.nick
+      else
+        nicklist = [@config.user.nick]
+
+      i = 0
+      @raw "NICK :#{nicklist[i++]}"
+
+      nextNick = =>
+        if nicklist[i]?
+          @raw "NICK :#{nicklist[i++]}"
+        else
+          plural = if nicklist.length > 1 then 'are' else 'is'
+          throw "NICK_ERR: Couldn't change nick, [#{nicklist}] #{plural} taken"
+      removeListeners = =>
+        @server.removeListener '433', nextNick
+        @events.removeListener 'welcome', removeListeners
+
+      @server.on '433', nextNick
+      @events.on 'welcome', removeListeners
+      @events.on 'end', removeListeners
+      @events.on 'welcome', =>
+        @throttleTime = @config.throttle ? DEFAULT_THROTTLE
+
+      # Usermodes
       modes = 0
       modes += 1<<2 if @config.user.wallops
       modes += 1<<3 if @config.user.invisible
+
+      # Username
       @raw "USER #{@config.user.login} #{modes} * :#{@config.user.realname}"
 
     @socket.setEncoding @config.connection.encoding
@@ -86,69 +161,98 @@ module.exports.Client = class Client
         @raw "PONG :#{message.trailing}"
       when '001'
         @events.emit 'welcome'
+        @nick = message.params[0]
+      when 'NICK'
+        @nick = message.trailing if @nick == (parse_prefix message.prefix).nick
       when 'PRIVMSG'
         who = parse_prefix(message.prefix)
-        if message.params[0] != @config.user.nick
-          channel = message.params[0]
-        @events.emit 'message', who, message.trailing, channel
+        if message.params[0] != @nick
+          recipient = message.params[0]
+        @events.emit 'message', who, message.trailing, recipient
       when 'NOTICE'
         who = parse_prefix(message.prefix) if message.prefix?
-        @events.emit 'notice', who, message.trailing, message.params[0]
+        if message.params[0] != @nick
+          recipient = message.params[0]
+        @events.emit 'notice', who, message.trailing, recipient
       when 'JOIN'
         who = parse_prefix(message.prefix)
         message.params = [message.trailing] if message.trailing?
-        if who.nick == @nick
-          @channels.unshift message.trailing
         for channel in message.params
+          @channels.push channel if who.nick == @nick
           @events.emit 'join', who, channel
+      when 'ERROR'
+        if message.trailing == 'Your host is trying to (re)connect too fast -- throttled'
+          @throttling = @throttleTime
+          setTimeout (=> @connect()), @throttleTime *= 2
 
   # IRC actions
   raw: (message) ->
     @events.emit 'out', parse message
     @socket.write message + '\r\n'
 
-  join: (channel) ->
-    @raw "JOIN #{channel}"
+  setNick: (nick, cb) ->
+    if Array.isArray nick
+      nicklist = nick
+    else
+      nicklist = [nick]
 
-  say: (to, message) ->
-    @raw "PRIVMSG #{to} :#{message}"
+    do (i = 0, nicklist) =>
+      @raw "NICK :#{nicklist[i++]}"
 
-  me: (to, message) ->
-    @say to, "\x01ACTION #{message}\x01"
+      nextNick = =>
+        if nicklist[i]? #and nicklist[i] != @nick
+          @raw "NICK :#{nicklist[i++]}"
+        else
+          plural = if nicklist.length > 1 then 'are' else 'is'
+          finish "Couldn't change nick, [#{nicklist}] #{plural} taken"
+      throttled = (_, [current, tried], msg) =>
+        finish "Changing nick to #{tried} - #{msg}"
+      accepted = (_, _0, acceptedNick) =>
+        finish() if acceptedNick == nicklist[i-1]
 
-  notice: (to, message) ->
-    @raw "NOTICE #{to} :#{message}"
+      finish = (err) =>
+        @server.removeListener '433', nextNick
+        @server.removeListener '438', throttled
+        @server.removeListener 'NICK', accepted
+        cb err
 
-  # IRC control characters (color, bold...)
-  color: (foreground, background) ->
-    fore = @COLORS.indexOf foreground
-    color = "\x03#{fore}"
-    if background?
-      back = @COLORS.indexOf background
-      color += ",#{back}"
-    color
+      @server.on '433', nextNick
+      @server.on '438', throttled
+      @server.on 'NICK', accepted
 
-  BOLD: "\x02"
+  join: (channels) ->
+    if not Array.isArray channels
+      channels = [channels]
 
-  UNDERLINE: "\x1f"
+    @raw "JOIN #{channels.join ' '}"
 
-  RESET: "\x0f"
+  broadcastHelper: (args) ->
+    args = [].slice.call(args) ? []
+    switch args.length
+      when 2
+        [recipients, message] = args
+        if not Array.isArray recipients
+          recipients = [recipients]
 
-  COLORS: [
-    'white',
-    'black',
-    'blue',
-    'green',
-    'red',
-    'brown',
-    'purple',
-    'orange',
-    'yellow',
-    'light green',
-    'teal',
-    'cyan',
-    'light blue',
-    'pink',
-    'grey',
-    'light grey'
-    ]
+        return [recipients, message]
+      when 1
+        return [@channels, args[0]]
+
+  say: ->
+    [recipients, message] = (@broadcastHelper arguments) ? []
+    @raw "PRIVMSG #{to} :#{message}" for to in recipients if recipients?
+
+  me: ->
+    [recipients, message] = (@broadcastHelper arguments) ? []
+    @say recipients, "\x01ACTION #{message}\x01" if recipients?
+
+  notice: ->
+    [recipients, message] = (@broadcastHelper arguments) ? []
+    @raw "NOTICE #{to} :#{message}" for to in recipients if recipients?
+
+  color: color
+  stripControl: stripControl
+  BOLD: BOLD
+  UNDERLINE: UNDERLINE
+  RESET: RESET
+  COLORS: COLORS

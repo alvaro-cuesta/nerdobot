@@ -1,71 +1,90 @@
 Sandbox = require 'sandbox'  # TODO: bugged!
 util = require 'util'
-MAX_LOGS = 5
 
-sayOutput = (bot, to) -> (out) ->
-  # TODO: Remove whitespace in output
-  #       Limit output characters
-  bot.say to, " #{bot.BOLD}=#{bot.RESET} #{out.result}"
+MAX_CHARS = 128
+MAX_LOGS = 30
 
-  return unless out.console.length > 0
+module.exports = ({coffee}) ->
+  sayOutput = (to) => (out) =>
+    stdout = out.result.replace(/[\r|\n]/g, '')
+    if stdout.length > MAX_CHARS
+      stdout = stdout[...MAX_CHARS] + "... #{@BOLD}(output truncated)#{@RESET}"
+    @say to, " #{@BOLD}=#{@RESET} #{stdout}"
 
-  con = "[ "
-  con += (util.inspect(log) for log in out.console[..MAX_LOGS]).join ', '
+    return unless out.console.length > 0
 
-  if out.console.length > MAX_LOGS
-    con += ', ...'
+    con = "[ "
+    con += (util.inspect(log) for log in out.console[...MAX_LOGS]).join ', '
 
-  con += " ]"
-  bot.say to, "#{bot.BOLD}>>#{bot.RESET} #{con}"
+    if out.console.length > MAX_LOGS
+      con += ', ...'
 
-module.exports = (bot, {coffee}) ->
+    con += " ]"
+
+    con = con.replace(/[\r|\n]/g, '')
+    if con.length > MAX_CHARS
+      con = con[...MAX_CHARS] + "... #{@BOLD}(output truncated)#{@RESET}"
+    @say to, "#{@BOLD}>>#{@RESET} #{con}"
+
   s = new Sandbox()
 
-  readBlock = (nick, readOn, end_pattern, cb) ->
-    do ->
+  readBlock = (nick, readOn, end_pattern, cb) =>
+    do =>
       buffer = ''
       message = (from, msg, to) ->
         if from.nick == nick and msg != end_pattern and to == readOn
           buffer += "#{msg}\n"
-      end = (from, trailing, to) ->
+      end = (from, trailing, to) =>
         if from.nick == nick and to == readOn
           cb buffer
-          bot.events.removeListener 'message', message
-          bot.commands.removeListener end_pattern, end
+          @events.removeListener 'message', message
+          @commands.removeListener end_pattern, end
 
-      bot.events.on 'message', message
-      bot.commands.on end_pattern, end
+      @events.on 'message', message
+      @commands.on end_pattern, end
 
-  bot.commands.on 'eval', ({nick}, trailing, to) ->
-    s.run trailing, sayOutput(bot, to ? nick)
+  @addCommand 'eval',
+    args: '<js code>'
+    description: 'Evaluate JavaScript code'
+    ({nick}, trailing, to) =>
+      s.run trailing, sayOutput to ? nick
 
-  bot.commands.on '!eval', ({nick}, trailing, to) ->
-    to ?= nnick
-    bot.say to,
-      " #{bot.color 'red'}! Reading JavaScript block from #{nick}#{bot.RESET}"
-    readBlock nick, to, '!end', (buffer) ->
-      s.run buffer, sayOutput(bot, to)
+  @addCommand "eval-block",
+    description: 'Evaluate a block of JavaScript code',
+    help: "When done, write #{@config.prefix}#{@config.prefix}end and the full block will be executed"
+    ({nick}, trailing, to) =>
+      to ?= nnick
+      @say to,
+        " #{@color 'red'}! Reading JavaScript block from #{nick}#{@RESET}"
+      readBlock nick, to, "#{@config.prefix}end", (buffer) =>
+        s.run buffer, sayOutput to
 
   if coffee
     cs = require 'coffee-script'
-    bot.commands.on 'coff', ({nick}, trailing, to) ->
-      to ?= nick
-      try
-        js = cs.compile trailing, bare: true
-        s.run js, sayOutput(bot, to)
-      catch error
-        bot.say to, " #{bot.BOLD}=#{bot.RESET} '#{error}'"
-
-    bot.commands.on '!coff', ({nick}, trailing, to) ->
-      to ?= nick
-      bot.say to,
-        " #{bot.color 'red'}! Reading CoffeeScript block from #{nick}#{bot.RESET}"
-      readBlock nick, to, '!end', (buffer) ->
+    @addCommand 'coffee',
+      args: '<cs code>'
+      description: 'Evaluate CoffeeScript code'
+      ({nick}, trailing, to) =>
+        to ?= nick
         try
           js = cs.compile trailing, bare: true
-          s.run js, sayOutput(bot, to)
+          s.run js, sayOutput to
         catch error
-          bot.say to, " #{bot.BOLD}=#{bot.RESET} '#{error}'"
+          @say to, " #{@BOLD}=#{@RESET} '#{error}'"
+
+    @addCommand "coffee-block",
+      description: 'Evaluate a block of CoffeeScript code'
+      help: "When done, write #{@config.prefix}#{@config.prefix}end and the full block will be executed"
+      ({nick}, trailing, to) =>
+        to ?= nick
+        @say to,
+          " #{@color 'red'}! Reading CoffeeScript block from #{nick}#{@RESET}"
+        readBlock nick, to, "#{@config.prefix}end", (buffer) =>
+          try
+            js = cs.compile trailing, bare: true
+            s.run js, sayOutput to
+          catch error
+            @say to, " #{@BOLD}=#{@RESET} '#{error}'"
 
   name: 'Eval'
   description: 'Evaluate sandboxed code using !eval (CoffeeScript optional)'
