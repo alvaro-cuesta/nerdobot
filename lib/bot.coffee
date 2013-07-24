@@ -27,28 +27,62 @@ module.exports.Bot = class Bot extends irc.Client
     @events.on 'message', (from, message, channel) =>
       @parseCommand from, message, channel
 
-    # Load plugins
-    for own plugin, config of config.plugins
-      commands = {}
-
-      botInstance = Object.create this
-      botInstance.addCommand = (command, meta, cb) =>
-        commands[command] = meta
-        @commands.on command, cb
-        if @config.aliases?[command]?
-          for alias in @config.aliases[command]
-            @commands.on alias, cb
-
-      meta = require('../plugins/' + plugin).apply botInstance, [config]
-      # = {name, version, description, authors}
-      if meta
-        @plugins[plugin] = meta
-        @plugins[plugin].commands = commands
-        console.log clc.bold("#{meta.name} v#{meta.version}") + " - #{meta.description}"
-      else
-        console.log clc.redBright.bold "Error loading '#{plugin}'"
+    @loadPlugins()
 
     console.log ''
+
+  # Plugin management
+  load: (plugin) ->
+    config = @config.plugins[plugin]
+
+    @unload plugin if @plugins[plugin]?
+
+    commands = {}
+
+    botInstance = Object.create this
+    botInstance.addCommand = (command, meta, cb) =>
+      commands[command] = meta
+      commands[command].cb = cb
+
+      @commands.on command, cb
+      if @config.aliases?[command]?
+        for alias in @config.aliases[command]
+          @commands.on alias, cb
+
+    # Invalidate plugin cache
+    path = "../plugins/#{plugin}"
+    delete require.cache[require.resolve path]
+
+    # = {name, version, description, authors, unload?)
+    meta = require(path).apply botInstance, [config]
+    if meta
+      @plugins[plugin] = meta
+      @plugins[plugin].commands = commands
+      console.log clc.bold("#{meta.name} v#{meta.version}") + " - #{meta.description}"
+    else
+      console.log clc.redBright.bold "Error loading '#{plugin}'"
+
+  unload: (plugin) ->
+    meta = @plugins[plugin]
+    meta.unload?()
+
+    for own command, cmd_meta of meta.commands
+      @commands.removeListener command, cmd_meta.cb
+      if @config.aliases?[command]?
+        for alias in @config.aliases[command]
+          @commands.removeListener alias, cmd_meta.cb
+
+    delete @plugins[plugin]
+
+    console.log clc.bold("[UNLOADING] #{meta.name} v#{meta.version}") + " - #{meta.description}"
+
+  loadPlugins: ->
+    for own plugin of @config.plugins
+      @load plugin
+
+  unloadPlugins: ->
+    for own plugin of @plugins
+      @unload plugin
 
   # Parse messages looking for client commands
   parseCommand: (from, message, channel) ->
