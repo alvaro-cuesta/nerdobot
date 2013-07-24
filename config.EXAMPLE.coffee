@@ -96,6 +96,8 @@ module.exports =
     google: ['g']
     wikipedia: ['wiki', 'w']
     isohunt: ['torrent', 't']
+    searchquote: ['search', 'find']
+    nickquote: ['nickq']
     tinysong: ['song', 'tiny']
     wunderground: ['weather']
     youtube: ['yt']
