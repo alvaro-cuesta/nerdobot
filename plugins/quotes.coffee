@@ -70,6 +70,22 @@ module.exports = (file) ->
       "strftime('%Y-%m-%d %H:%M', timestamp, 'localtime') as timestamp"]
       .join ', '
 
+    quote_cb = (to, chn) =>
+      (err, row) =>
+        if err
+          @say to, "Error selecting quote: #{err}"
+          return
+
+        if not row?
+          @say to, 'Quote not found'
+          return
+
+        @say to,
+          "#{@UNDERLINE}#{row.timestamp}#{@RESET} - #{row.by} " +
+          "#{@BOLD}(#{row.rowid})#{@RESET} | #{@color 'red'}#{row.nick}" +
+          (if not (chn? or chn == replyTo) then "@#{row.channel}" else '') +
+          "#{@RESET}: #{row.quote}"
+
     # COMMAND !quote <channel> <number> (both optional)
     @addCommand 'quote',
       args: '<channel, only in queries, optional> <number, optional>'
@@ -91,7 +107,7 @@ module.exports = (file) ->
             else
               return
 
-        if channel
+        if channel?
           chn ?= channel
           replyTo = channel
         else
@@ -110,23 +126,52 @@ module.exports = (file) ->
 
         db.get "SELECT #{FIELDS} FROM quotes #{clause};",
           $channel: chn
-          $id: num,
-          (err, row) =>
-            if err
-              @say replyTo, "Error selecting quote: #{err}"
-              return
+          $id: num
+          , (quote_cb replyTo, chn)
 
-            if not row?
-              @say replyTo, 'Quote not found'
-              return
+      # COMMAND !searchquote <word>
+      @addCommand 'searchquote',
+        args: '<query>'
+        description: 'Search quotes by text'
+        (from, query, channel) =>
+          if channel?
+            chn = channel
+            replyTo = channel
+          else
+            replyTo = from.nick
 
-            @say replyTo,
-              "#{@UNDERLINE}#{row.timestamp}#{@RESET} - #{row.by} " +
-              "#{@BOLD}(#{row.rowid})#{@RESET} | #{@color 'red'}#{row.nick}" +
-              (if not (chn? or chn == replyTo) then "@#{row.channel}" else '') +
-              "#{@RESET}: #{row.quote}"
+          if not query?
+            @say replyTo, "Search #{@BOLD}what#{@RESET} !?"
+            return
+
+          clause = if chn? then 'AND channel = $channel' else ''
+
+          db.get "SELECT #{FIELDS} FROM quotes WHERE quote LIKE $query #{clause} ORDER BY RANDOM() LIMIT 1",
+            $channel: chn
+            $query: query
+            , (quote_cb replyTo, chn)
+
+      # COMMAND !nickquote <nick>
+      @addCommand 'nickquote',
+        args: '<nick>'
+        description: 'Search quotes by nick'
+        (from, nick, channel) =>
+          if channel?
+            replyTo = channel
+          else
+            replyTo = from.nick
+
+          nick ?= from.nick
+
+          clause = 'WHERE nick = $nick'
+          clause += ' AND channel = $channel' if channel?
+
+          db.get "SELECT #{FIELDS} FROM quotes #{clause} ORDER BY RANDOM() LIMIT 1",
+            $nick: nick
+            $channel: channel
+            , (quote_cb replyTo, channel)
 
   name: 'Quotes'
   description: 'Add and print/browse quotes'
-  version: '0.1'
+  version: '0.2'
   authors: ['Álvaro Cuesta']
