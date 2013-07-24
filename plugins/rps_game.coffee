@@ -295,6 +295,9 @@ module.exports = ->
           @say running.channel,
             banner "Canceled the game on #{running.channel} :("
 
+          if game[channel].timer?
+            clearTimeout(game[channel].timer)
+
           delete game[running.channel]
           delete game[running.player1.nick]
           delete game[running.player2.nick]
