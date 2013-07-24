@@ -129,47 +129,47 @@ module.exports = (file) ->
           $id: num
           , (quote_cb replyTo, chn)
 
-      # COMMAND !searchquote <word>
-      @addCommand 'searchquote',
-        args: '<query>'
-        description: 'Search quotes by text'
-        (from, query, channel) =>
-          if channel?
-            chn = channel
-            replyTo = channel
-          else
-            replyTo = from.nick
+    # COMMAND !searchquote <word>
+    @addCommand 'searchquote',
+      args: '<query>'
+      description: 'Search quotes by text'
+      (from, query, channel) =>
+        if channel?
+          chn = channel
+          replyTo = channel
+        else
+          replyTo = from.nick
 
-          if not query?
-            @say replyTo, "Search #{@BOLD}what#{@RESET} !?"
-            return
+        if not query?
+          @say replyTo, "Search #{@BOLD}what#{@RESET} !?"
+          return
 
-          clause = if chn? then 'AND channel = $channel' else ''
+        clause = if chn? then 'AND channel = $channel' else ''
 
-          db.get "SELECT #{FIELDS} FROM quotes WHERE quote LIKE $query #{clause} ORDER BY RANDOM() LIMIT 1",
-            $channel: chn
-            $query: query
-            , (quote_cb replyTo, chn)
+        db.get "SELECT #{FIELDS} FROM quotes WHERE quote LIKE $query #{clause} ORDER BY RANDOM() LIMIT 1",
+          $channel: chn
+          $query: query
+          , (quote_cb replyTo, chn)
 
-      # COMMAND !nickquote <nick>
-      @addCommand 'nickquote',
-        args: '<nick>'
-        description: 'Search quotes by nick'
-        (from, nick, channel) =>
-          if channel?
-            replyTo = channel
-          else
-            replyTo = from.nick
+    # COMMAND !nickquote <nick>
+    @addCommand 'nickquote',
+      args: '<nick>'
+      description: 'Search quotes by nick'
+      (from, nick, channel) =>
+        if channel?
+          replyTo = channel
+        else
+          replyTo = from.nick
 
-          nick ?= from.nick
+        nick ?= from.nick
 
-          clause = 'WHERE nick = $nick'
-          clause += ' AND channel = $channel' if channel?
+        clause = 'WHERE nick = $nick'
+        clause += ' AND channel = $channel' if channel?
 
-          db.get "SELECT #{FIELDS} FROM quotes #{clause} ORDER BY RANDOM() LIMIT 1",
-            $nick: nick
-            $channel: channel
-            , (quote_cb replyTo, channel)
+        db.get "SELECT #{FIELDS} FROM quotes #{clause} ORDER BY RANDOM() LIMIT 1",
+          $nick: nick
+          $channel: channel
+          , (quote_cb replyTo, channel)
 
   name: 'Quotes'
   description: 'Add and print/browse quotes'
