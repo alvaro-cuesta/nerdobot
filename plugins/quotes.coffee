@@ -132,7 +132,7 @@ module.exports = (file) ->
     # COMMAND !searchquote <word>
     @addCommand 'searchquote',
       args: '<query>'
-      description: 'Search quotes by text'
+      description: "Search quotes by text. #{@BOLD}%#{@RESET} acts as a wildcard."
       (from, query, channel) =>
         if channel?
           chn = channel
@@ -148,7 +148,7 @@ module.exports = (file) ->
 
         db.get "SELECT #{FIELDS} FROM quotes WHERE quote LIKE $query #{clause} ORDER BY RANDOM() LIMIT 1",
           $channel: chn
-          $query: query
+          $query: "%#{query}%"
           , (quote_cb replyTo, chn)
 
     # COMMAND !nickquote <nick>
