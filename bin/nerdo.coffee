@@ -2,9 +2,9 @@
 
 clc = require 'cli-color'
 Bot = require('../lib/bot').Bot
-config = require process.argv[2] or process.env.NERDO_CONFIG or '../config'
+config_path = process.argv[2] or process.env.NERDO_CONFIG or '../config'
 
-bot = new Bot(config)
+bot = new Bot(config_path)
 
 bot.events.on 'connected', ->
   console.log clc.bold.greenBright '- Connected! -\n'

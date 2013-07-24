@@ -9,7 +9,9 @@ module.exports = (config) ->
   app.post config.path, ps.handler
   server = app.listen config.port ? 9999
 
-  @events.on 'end', -> server.close()
+  unload = -> server.close()
+
+  @events.on 'end', unload
 
   ps.on 'push', (branch, payload) =>
     for repo in config.repositories when \
@@ -30,6 +32,9 @@ module.exports = (config) ->
           (if branch? then "/#{branch}" else '') + "#{@RESET} <- " +
           "#{@color 'blue'}#{@UNDERLINE}#{payload.compare}#{@RESET}"
 
+  unload: =>
+    @events.removeListener 'end', unload
+    unload()
   name: 'GitPush'
   description: 'GitHub push notifications plugin for nerdobot'
   version: '0.1'

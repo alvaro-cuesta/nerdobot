@@ -65,7 +65,9 @@ module.exports.COLORS = COLORS = [
 
 # IRC client class
 module.exports.Client = class Client
-  constructor: (@config) ->
+  constructor: (@config_path) ->
+    @loadConfig()
+
     @throttleTime = @config.throttle ? DEFAULT_THROTTLE
 
     @channels = []
@@ -84,6 +86,9 @@ module.exports.Client = class Client
 
     @server = new EventEmitter()
     # Emits server commands -> prefix, [params], trailing
+
+  loadConfig: (path = @config_path) ->
+    @config = require path
 
   connect: ->
     @throttilng = false

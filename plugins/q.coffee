@@ -9,12 +9,11 @@ module.exports = (config) ->
     console.log clc.yellowBright "[Q]          Please, consider storing it SHA-1 hashed as key 'hash'."
 
   # Ask for challeng when welcome to IRC server
-  @events.on 'welcome', =>
+  ask_challenge = =>
     @say "#{nick}@#{host}", 'CHALLENGE'
 
   # Check for challenge responses
-  @events.on 'notice', (who, notice, to) =>
-
+  check_challenge = (who, notice, to) =>
     # Only parse service messages
     if who? and not to? and who.nick == nick and who.user == user and who.host == host
       split = notice.split ' '
@@ -39,10 +38,18 @@ module.exports = (config) ->
         @raw "MODE #{@nick} +x"
 
   # Mode +x set = hidden host --- join channels
-  @server.on '396', (from, params, trailing) =>
+  hidden_host = (from, params, trailing) =>
     if trailing == 'is now your hidden host'
       @join channel for channel in config.channels
 
+  @events.on 'welcome', ask_challenge
+  @events.on 'notice', check_challenge
+  @server.on '396', hidden_host
+
+  unload: =>
+    @events.removeListener 'welcome', ask_challenge
+    @events.removeListener 'notice', check_challenge
+    @server.removeListener '396', hidden_host
   name: 'Q'
   description: 'Q authentication using CHALLENGEAUTH'
   version: '0.1'
