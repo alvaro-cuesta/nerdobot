@@ -163,11 +163,11 @@ module.exports = (file) ->
 
         nick ?= from.nick
 
-        clause = 'WHERE nick = $nick'
+        clause = 'WHERE nick LIKE $nick'
         clause += ' AND channel = $channel' if channel?
 
         db.get "SELECT #{FIELDS} FROM quotes #{clause} ORDER BY RANDOM() LIMIT 1",
-          $nick: nick
+          $nick: "%#{nick}%"
           $channel: channel
           , (quote_cb replyTo, channel)
 
