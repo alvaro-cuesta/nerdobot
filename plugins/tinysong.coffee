@@ -44,5 +44,5 @@ module.exports = (apikey) ->
   description: 'Return the first TinySong search result.'
   version: '0.5'
   authors: [
-    'Tunnecino @ arrogance.es'
+    'Tunnecino @ ignitae.com'
   ]
