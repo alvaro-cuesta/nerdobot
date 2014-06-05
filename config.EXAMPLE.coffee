@@ -41,6 +41,7 @@ module.exports =
   prefix: '!'
   antiflood: 1000  # min msecs between commands
   plugins:
+    admin: {}
     debug: {}
     dice: {}
     eval:
@@ -56,13 +57,10 @@ module.exports =
       ]
     google: 1
     help:
-      hidden: ['raw', 'say', 'asay', 'me', 'ame', 'nick']
+      hidden: ['raw', 'say', 'asay', 'me', 'ame', 'nick', 'load', 'unload', 'reload', 'config']
       banner: " Contribute to \x02nerdobot\x0f! Visit \x032\x1fhttps://github.com/alvaro-cuesta/nerdobot\x0f for download and free source code."
     hi: greetings
     irc: {}
-    isohunt:
-      results: 3
-      shorten: false
     q:
       service:
         nick: 'Q'
@@ -95,12 +93,18 @@ module.exports =
     google: ['g']
     wikipedia: ['wiki', 'w']
     isohunt: ['torrent', 't']
+    searchquote: ['search', 'find']
+    nickquote: ['nickq']
     tinysong: ['song', 'tiny']
     wunderground: ['weather']
     youtube: ['yt']
   whitelist:
     raw: []  # only users in group 'admin' can run this command
     nick: []
+    load: []
+    unload: []
+    reload: []
+    config: []
     say: ['talker']
     me: ['talker']
     asay: ['broadcaster']

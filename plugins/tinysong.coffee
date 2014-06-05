@@ -29,6 +29,11 @@ module.exports = (apikey) ->
               banner "#{@BOLD}Couldn't connect...#{@RESET}"
             return
 
+          if data.error?
+            @say channel,
+              banner "#{@BOLD}Error: #{data.error}#{@RESET}"
+            return
+
           if not data.SongName?
             @say channel,
               banner "#{@BOLD}No results...#{@RESET}"
@@ -42,7 +47,7 @@ module.exports = (apikey) ->
 
   name: 'TinySong Search'
   description: 'Return the first TinySong search result.'
-  version: '0.5'
+  version: '0.6'
   authors: [
-    'Tunnecino @ arrogance.es'
+    'Tunnecino @ ignitae.com'
   ]

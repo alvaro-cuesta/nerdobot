@@ -9,19 +9,25 @@ module.exports = ->
     else
       '[]'
 
-  @events.on 'in', ({prefix, command, params, trailing}) ->
+  in_cb = ({prefix, command, params, trailing}) ->
     console.log clc.bold.blue('<-'),
       "#{clc.bold command}, " +
       "#{array2str params}, " +
       util.inspect(trailing) +
       clc.yellow(" (#{prefix})")
 
-  @events.on 'out', ({_, command, params, trailing}) ->
+  out_cb = ({_, command, params, trailing}) ->
     console.log clc.bold.red('->'),
       "#{clc.bold command}, " +
       "#{array2str params}, " +
       util.inspect trailing
 
+  @events.on 'in', in_cb
+  @events.on 'out', out_cb
+
+  unload: =>
+    @events.removeListener 'in', in_cb
+    @events.removeListener 'out', out_cb
   name: 'Debug'
   description: "Show in/out communication in nerdobot's console"
   version: '0.1'

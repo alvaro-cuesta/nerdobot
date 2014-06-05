@@ -116,7 +116,7 @@ module.exports = (pluginConfig) ->
 ## Contributors
 
 - [blzkz](https://github.com/blzkz)
-- [Tunnecino](https://github.com/Arrogance) @ [arrogance.es](http://www.arrogance.es)
+- [Tunnecino](https://github.com/Arrogance) @ [ignitae.com](http://www.ignitae.com)
 
 ## License
 
