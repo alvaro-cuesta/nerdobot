@@ -87,5 +87,5 @@ module.exports = (apikey) ->
   description: 'Returns weather (today+tomorrow) for the most approximate city'
   version: '0.5'
   authors: [
-    'Tunnecino @ arrogance.es'
+    'Tunnecino @ ignitae.com'
   ]
