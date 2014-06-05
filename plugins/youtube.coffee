@@ -73,6 +73,6 @@ module.exports = ({results, random, options}) ->
   description: 'Returns the first YouTube result.'
   version: '0.5'
   authors: [
-    'Tunnecino @ arrogance.es',
+    'Tunnecino @ ignitae.com',
     'Álvaro Cuesta'
   ]

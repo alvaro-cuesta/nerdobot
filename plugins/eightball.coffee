@@ -46,4 +46,4 @@ module.exports = ->
   name: '8Ball Game'
   description: 'Ask something to the 8Ball and see what answers'
   version: '0.2'
-  authors: ['Tunnecino @ arrogance.es']
+  authors: ['Tunnecino @ ignitae.com']

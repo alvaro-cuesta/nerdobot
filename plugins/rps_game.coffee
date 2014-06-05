@@ -32,7 +32,7 @@ module.exports = ->
     help: 'Use the command rps help to learn how to play'
     (from, message, channel) =>
 
-      start = (from) =>
+      start = =>
         if game[channel]?
           @say channel,
             banner "The game is already started on this channel, Please, use " +
@@ -91,7 +91,7 @@ module.exports = ->
                   delete game[running.player1.nick]
                   delete game[running.player2.nick]
 
-      status = (from) =>
+      status = =>
         if not game[channel]?
           @say channel,
             banner "There are not any games active on this channel, you can " +
@@ -111,7 +111,7 @@ module.exports = ->
             "#{@BOLD}#{running.player1.nick} vs " +
             "#{running.player2.nick}#{@RESET}."
 
-      join = (from) =>
+      join = =>
         if not game[channel]?
           @say channel,
             banner "There are not any games active on this channel, you can " +
@@ -173,7 +173,7 @@ module.exports = ->
 
         game[running.player2.nick] = running
 
-      pick = (from, message) =>
+      pick = (message) =>
         if channel?
           @notice from.nick,
             "This command can be only used in private"
@@ -289,7 +289,7 @@ module.exports = ->
           delete game[running.player1.nick]
           delete game[running.player2.nick]
 
-      cancel = (from) =>
+      cancel = =>
         if game[from.nick]
           running = game[from.nick]
           @say running.channel,
@@ -304,26 +304,26 @@ module.exports = ->
 
       switch message
         when "help"
-          help from
+          help(from)
 
         when "start"
-          start from
+          start()
 
         when "join"
-          join from
+          join()
 
         when "rock"
-          pick from,"rock"
+          pick "rock"
         when "paper"
-          pick from,"paper"
+          pick "paper"
         when "scissors"
-          pick from,"scissors"
+          pick "scissors"
 
         when "cancel"
-          cancel from
+          cancel()
 
         when "status"
-          status from
+          status()
 
         else
           @say channel,
@@ -335,5 +335,5 @@ module.exports = ->
   description: 'Play againts other users!'
   version: '0.5'
   authors: [
-    'Tunnecino @ arrogance.es'
+    'Tunnecino @ ignitae.com'
   ]

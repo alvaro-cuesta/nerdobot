@@ -8,9 +8,13 @@ module.exports = ->
   help = (from) =>
     @say from.nick, 
       banner "How to play?"
+    @say from.nick,
+      "In this game you'll try to survive, and each shot can be the last one. " +
+      "Use the commands #{@BOLD}#{command} shot#{@RESET} to shot or " +
+      "#{@BOLD}#{command} reload#{@RESET} to start with all the bullets." 
 
   banner = (message) =>
-    "#{@BOLD}#{@color 'red'}Russian Roullete#{@RESET} - #{message}"
+    "#{@BOLD}#{@color 'red'}Russian Roulette#{@RESET} - #{message}"
 
   render = (bullets) =>
     drum = "#{@color 'yellow', 'black'}#{@BOLD}"
@@ -40,13 +44,6 @@ module.exports = ->
             bullets: 6
             channel: channel
 
-        if game[channel].bullets is 1
-          @say game[channel].channel,
-            banner "Nobody died this time..."
-          @me game[channel].channel,
-            "Reloads the gun..."
-          game[channel]['bullets'] = 6
-
         running = game[channel]
 
         num = Math.floor(Math.random() * 1.28)
@@ -72,6 +69,13 @@ module.exports = ->
             "#{@RESET} you're a Lucky Bastard... #{render running.bullets} " +
             "bullets remaining..."
 
+          if game[channel].bullets is 1
+            @say game[channel].channel,
+              banner "Nobody died this time..."
+            @me game[channel].channel,
+              "Reloads the gun..."
+            game[channel]['bullets'] = 6
+
       reload = (from) =>
         if not game[channel]?
           game[channel] =
@@ -95,7 +99,9 @@ module.exports = ->
 
         else
           @say channel,
-            banner "Hola"
+            banner "Play the Russian Roullete and di... live if you can. Use " +
+            "#{@BOLD}#{command} shot#{@RESET} to defy the Death. Use #{@BOLD} " +
+            "#{command} help#{@RESET} to learn more about this game."
 
   name: 'Russian Roulette Game'
   description: 'Play the Russian Roullete and di... live if you can'
